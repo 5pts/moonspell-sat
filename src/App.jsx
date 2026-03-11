@@ -26,7 +26,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/moonspell-sat">
       <ErrorBoundary>
       <div className={`min-h-screen flex flex-col items-center justify-center relative moonspell-container theme-bg-body theme-text-primary overflow-x-hidden ${isDarkMode ? 'dark-mode' : ''}`}>
         <div className="grain-overlay"></div>
