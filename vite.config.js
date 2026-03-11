@@ -4,7 +4,7 @@ import { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/moonspell-sat/',
+  base: process.env.GITHUB_ACTIONS ? '/moonspell-sat/' : '/',
   plugins: [react()],
   build: {
     rollupOptions: {
