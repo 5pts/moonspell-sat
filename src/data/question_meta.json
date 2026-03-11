@@ -1,0 +1,1254 @@
+{
+  "matchedCount": 62,
+  "unmatchedQuestionIds": [
+    "Q002",
+    "Q004",
+    "Q006",
+    "Q009",
+    "Q010",
+    "Q011",
+    "Q012",
+    "Q015",
+    "Q016",
+    "Q018",
+    "Q021",
+    "Q023",
+    "Q024",
+    "Q026",
+    "Q028",
+    "Q029",
+    "Q031",
+    "Q032",
+    "Q034",
+    "Q035",
+    "Q036",
+    "Q038",
+    "Q039",
+    "Q041",
+    "Q042",
+    "Q043",
+    "Q044",
+    "Q045",
+    "Q046",
+    "Q048",
+    "Q052",
+    "Q054",
+    "Q055",
+    "Q056",
+    "Q057",
+    "Q058",
+    "Q059",
+    "Q061",
+    "Q062",
+    "Q063",
+    "Q064",
+    "Q066",
+    "Q071",
+    "Q072",
+    "Q073",
+    "Q076",
+    "Q078",
+    "Q080",
+    "Q081",
+    "Q085",
+    "Q089",
+    "Q090",
+    "Q091",
+    "Q092",
+    "Q094",
+    "Q097",
+    "Q099",
+    "Q103",
+    "Q104",
+    "Q106",
+    "Q108",
+    "Q109",
+    "Q110",
+    "Q111",
+    "Q112",
+    "Q113",
+    "Q114",
+    "Q115",
+    "Q117",
+    "Q118",
+    "Q120",
+    "Q121",
+    "Q124",
+    "Q125",
+    "Q127",
+    "Q130",
+    "Q131",
+    "Q133",
+    "Q134",
+    "Q135",
+    "Q136",
+    "Q138",
+    "Q141",
+    "Q142",
+    "Q143",
+    "Q144",
+    "Q145",
+    "Q147",
+    "Q148",
+    "Q151",
+    "Q153",
+    "Q154",
+    "Q155",
+    "Q156",
+    "Q157",
+    "Q158",
+    "Q159",
+    "Q160",
+    "Q161",
+    "Q162",
+    "Q163",
+    "Q164",
+    "Q165",
+    "Q166",
+    "Q167",
+    "Q168",
+    "Q169",
+    "Q170",
+    "Q171",
+    "Q172",
+    "Q173",
+    "Q174",
+    "Q175",
+    "Q176",
+    "Q177",
+    "Q178",
+    "Q179",
+    "Q180",
+    "Q181",
+    "Q182",
+    "Q183",
+    "Q184",
+    "Q185",
+    "Q186",
+    "Q187",
+    "Q188",
+    "Q189",
+    "Q190",
+    "Q191",
+    "Q192",
+    "Q193",
+    "Q194",
+    "Q195",
+    "Q196",
+    "Q197",
+    "Q198",
+    "Q199",
+    "Q200",
+    "Q201",
+    "Q202",
+    "Q203",
+    "Q204",
+    "Q205",
+    "Q206",
+    "Q207",
+    "Q208",
+    "Q209",
+    "Q210",
+    "Q211",
+    "Q212",
+    "Q213",
+    "Q214",
+    "Q215",
+    "Q216",
+    "Q217",
+    "Q218",
+    "Q219",
+    "Q220",
+    "Q221",
+    "Q222",
+    "Q223",
+    "Q224",
+    "Q225",
+    "Q226",
+    "Q227",
+    "Q228",
+    "Q229",
+    "Q230",
+    "Q231",
+    "Q232",
+    "Q233",
+    "Q234",
+    "Q235",
+    "Q236",
+    "Q237",
+    "Q238",
+    "Q239",
+    "Q240",
+    "Q241",
+    "Q242",
+    "Q243",
+    "Q244",
+    "Q245",
+    "Q246",
+    "Q247",
+    "Q248",
+    "Q249",
+    "Q250",
+    "Q251",
+    "Q252",
+    "Q253",
+    "Q254",
+    "Q255",
+    "Q256",
+    "Q257",
+    "Q258",
+    "Q259",
+    "Q260",
+    "Q261",
+    "Q262",
+    "Q263",
+    "Q264",
+    "Q265",
+    "Q266",
+    "Q267",
+    "Q268",
+    "Q269",
+    "Q270",
+    "Q271",
+    "Q272",
+    "Q273",
+    "Q274",
+    "Q275",
+    "Q276",
+    "Q277",
+    "Q278",
+    "Q279",
+    "Q280",
+    "Q281",
+    "Q282",
+    "Q283",
+    "Q284",
+    "Q285",
+    "Q286",
+    "Q287",
+    "Q288",
+    "Q289",
+    "Q290",
+    "Q291",
+    "Q292",
+    "Q293",
+    "Q294",
+    "Q295",
+    "Q296",
+    "Q297",
+    "Q298",
+    "Q299",
+    "Q300",
+    "Q301",
+    "Q302",
+    "Q303",
+    "Q304",
+    "Q305",
+    "Q306",
+    "Q307",
+    "Q308",
+    "Q309",
+    "Q310",
+    "Q311",
+    "Q312",
+    "Q313",
+    "Q314",
+    "Q315",
+    "Q316",
+    "Q317",
+    "Q318",
+    "Q319",
+    "Q320",
+    "Q321",
+    "Q322",
+    "Q323",
+    "Q324",
+    "Q325",
+    "Q326",
+    "Q327",
+    "Q328",
+    "Q329",
+    "Q330",
+    "Q331",
+    "Q332",
+    "Q333",
+    "Q334",
+    "Q335",
+    "Q336",
+    "Q337",
+    "Q338",
+    "Q339",
+    "Q340",
+    "Q341",
+    "Q342",
+    "Q343",
+    "Q344",
+    "Q345",
+    "Q346",
+    "Q347",
+    "Q348",
+    "Q349",
+    "Q350",
+    "Q351",
+    "Q352",
+    "Q353",
+    "Q354",
+    "Q355",
+    "Q356",
+    "Q357",
+    "Q358",
+    "Q359",
+    "Q360",
+    "Q361",
+    "Q362",
+    "Q363",
+    "Q364",
+    "Q365",
+    "Q366",
+    "Q367",
+    "Q368",
+    "Q369",
+    "Q370",
+    "Q371",
+    "Q372",
+    "Q373",
+    "Q374",
+    "Q375",
+    "Q376",
+    "Q377",
+    "Q378",
+    "Q379",
+    "Q380",
+    "Q381",
+    "Q382",
+    "Q383",
+    "Q384"
+  ],
+  "questions": {
+    "Q001": {
+      "answerLetter": "D",
+      "answerText": "setting",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"The _______ of Maria Irene Fornes' play Mud -a realistic room perched on a dirt pile -ch\". Plugging in \"setting\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-190-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "appeal",
+        "plot",
+        "mood",
+        "setting",
+        "rehearsal"
+      ]
+    },
+    "Q003": {
+      "answerLetter": "E",
+      "answerText": "therapeutic",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"Because of the _______ effects of the hot springs, tour\". Plugging in \"therapeutic\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-192-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "succulent",
+        "redolent",
+        "cerebral",
+        "mandatory",
+        "therapeutic"
+      ]
+    },
+    "Q005": {
+      "answerLetter": "A",
+      "answerText": "thwarted",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Dangerously high winds _______ attempts to begin the space shuttle mission on schedule,\". Plugging in \"thwarted\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-194-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "thwarted",
+        "forfeited",
+        "implemented",
+        "discharged",
+        "redoubled"
+      ]
+    },
+    "Q007": {
+      "answerLetter": "A",
+      "answerText": "halting",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"By the end of the long, arduous hike, Chris was walking with a _______ gait, limping slo\". Plugging in \"halting\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-196-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "halting",
+        "robust",
+        "constant",
+        "prompt",
+        "facile"
+      ]
+    },
+    "Q008": {
+      "answerLetter": "D",
+      "answerText": "histrionic",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"Actors in melodramas often emphasized tense moments by being _______, for example, raisi\". Plugging in \"histrionic\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-197-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "imperious",
+        "inscrutable",
+        "convivial",
+        "histrionic",
+        "solicitous"
+      ]
+    },
+    "Q013": {
+      "answerLetter": "B",
+      "answerText": "palliative",
+      "walkthroughExplanation": "The sentence turns on expectation shift cues around \"ologized profusely, only to discover that her self-serving excuses failed to have a\". Plugging in \"palliative\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-202-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "reprehensible",
+        "palliative",
+        "depreciatory",
+        "litigious",
+        "compendious"
+      ]
+    },
+    "Q014": {
+      "answerLetter": "C",
+      "answerText": "prey",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"A swindler's _______ is usually a gullible person who is unable to resist the swindler's\". Plugging in \"prey\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-203-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "peer",
+        "ally",
+        "prey",
+        "nemesis",
+        "superior"
+      ]
+    },
+    "Q017": {
+      "answerLetter": "B",
+      "answerText": "demonstrative",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Cito Gaston, one of the least _______ baseball managers, surprised reporters by weeping\". Plugging in \"demonstrative\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-206-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "somber",
+        "demonstrative",
+        "insufferable",
+        "bountiful",
+        "wistful"
+      ]
+    },
+    "Q019": {
+      "answerLetter": "C",
+      "answerText": "negligible",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"Oil companies seeking permission to drill in Alaskan wildlife refuge areas argued that,\". Plugging in \"negligible\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-208-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "irrepressible",
+        "counterproductive",
+        "negligible",
+        "momentous",
+        "magnanimous"
+      ]
+    },
+    "Q020": {
+      "answerLetter": "D",
+      "answerText": "predictable",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"To avoid being _______, composer Stephen Sondheim strives for an element of surprise in\". Plugging in \"predictable\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-209-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "erratic",
+        "informal",
+        "elaborate",
+        "predictable",
+        "idiosyncratic"
+      ]
+    },
+    "Q022": {
+      "answerLetter": "A",
+      "answerText": "arrangement . . devoid",
+      "walkthroughExplanation": "The sentence turns on contrast cues around \"ily _______ of love but nevertheless grounded largely in economic advan\". Plugging in \"arrangement . . devoid\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-211-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "arrangement",
+        "devoid",
+        "entertainment",
+        "disparaging",
+        "attitude",
+        "consisting",
+        "bargain",
+        "worthy"
+      ]
+    },
+    "Q025": {
+      "answerLetter": "C",
+      "answerText": "rhetoric . . substance",
+      "walkthroughExplanation": "The sentence turns on contrast cues around \"aised for her style yet ridiculed for her vacuity, often moved naive li\". Plugging in \"rhetoric . . substance\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-214-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "reason",
+        "dalliance",
+        "infelicity",
+        "conviction",
+        "rhetoric",
+        "substance",
+        "pragmatism",
+        "futility"
+      ]
+    },
+    "Q027": {
+      "answerLetter": "A",
+      "answerText": "treacly",
+      "walkthroughExplanation": "The sentence turns on contrast cues around \"een called _______, although most of them are not so sentimental as to deser\". Plugging in \"treacly\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-216-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "treacly",
+        "cursory",
+        "prosaic",
+        "meticulous",
+        "consecrated"
+      ]
+    },
+    "Q030": {
+      "answerLetter": "E",
+      "answerText": "deleterious",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Inbreeding can promote the expression of _______ genes, those that make an animal subjec\". Plugging in \"deleterious\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-219-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "ineffable",
+        "articulated",
+        "consummate",
+        "presumptive",
+        "deleterious"
+      ]
+    },
+    "Q033": {
+      "answerLetter": "D",
+      "answerText": "counsel",
+      "walkthroughExplanation": "The sentence turns on contrast cues around \"Though Luis eagerly sought her _______, he subsequentl\". Plugging in \"counsel\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-222-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "secretiveness",
+        "cooperation",
+        "understanding",
+        "counsel",
+        "concord"
+      ]
+    },
+    "Q037": {
+      "answerLetter": "A",
+      "answerText": "opportune",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Madame C.J.Walker introduced her first hair-care product just as demand was reaching its\". Plugging in \"opportune\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-226-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "opportune",
+        "instantaneous",
+        "intermittent",
+        "dubious",
+        "extravagant"
+      ]
+    },
+    "Q040": {
+      "answerLetter": "D",
+      "answerText": "scrutinizes",
+      "walkthroughExplanation": "The sentence turns on parallel logic cues around \"In Jamaica Kincaid's novel Lucy, the West Indian Heroine _______ her employer's world, c\". Plugging in \"scrutinizes\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-229-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "idealizes",
+        "avoids",
+        "beautifies",
+        "scrutinizes",
+        "excludes"
+      ]
+    },
+    "Q047": {
+      "answerLetter": "A",
+      "answerText": "supplement . . integrates",
+      "walkthroughExplanation": "The sentence turns on parallel logic cues around \"Using computer labs to _______ classroom instruction is most effective when the curricul\". Plugging in \"supplement . . integrates\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-236-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "supplement",
+        "integrates",
+        "substantiate",
+        "undermines",
+        "remedy",
+        "compromises",
+        "disparage",
+        "reinforces"
+      ]
+    },
+    "Q049": {
+      "answerLetter": "C",
+      "answerText": "acumen",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"Colonial American playwright Mercy Otis Warren was known for her political _______: her\". Plugging in \"acumen\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-238-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "partisanship",
+        "intemperance",
+        "acumen",
+        "irreverence",
+        "interest"
+      ]
+    },
+    "Q050": {
+      "answerLetter": "B",
+      "answerText": "arcane . . abstruse",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"_______ and _______ because it is filled with obscure references and baffli\". Plugging in \"arcane . . abstruse\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-239-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "deceiving",
+        "ingenuous",
+        "arcane",
+        "abstruse",
+        "spare",
+        "didactic",
+        "lucid",
+        "definitive"
+      ]
+    },
+    "Q051": {
+      "answerLetter": "C",
+      "answerText": "magnanimity . . pettiness",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"Because the congresswoman has been so openhanded with m\". Plugging in \"magnanimity . . pettiness\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-240-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "selfishness",
+        "inattention",
+        "insolence",
+        "virtue",
+        "magnanimity",
+        "pettiness",
+        "opportunism",
+        "ambition"
+      ]
+    },
+    "Q053": {
+      "answerLetter": "B",
+      "answerText": "egotistical",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Anne mentioned John's habitual boasting about his wardrobe as an example of his _______\". Plugging in \"egotistical\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-242-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "erratic",
+        "egotistical",
+        "flexible",
+        "tactful",
+        "inconspicuous"
+      ]
+    },
+    "Q060": {
+      "answerLetter": "B",
+      "answerText": "penchant . . pilfer",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"The spotted bowerbird has a _______ for amassing the bright shiny objects it needs for d\". Plugging in \"penchant . . pilfer\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-249-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "knack",
+        "assess",
+        "penchant",
+        "pilfer",
+        "purpose",
+        "dispense",
+        "predilection",
+        "disturb"
+      ]
+    },
+    "Q065": {
+      "answerLetter": "B",
+      "answerText": "gaiety",
+      "walkthroughExplanation": "The sentence turns on parallel logic cues around \"Guests at the party found the general merriment infectious and were won over by the part\". Plugging in \"gaiety\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-254-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "presumption",
+        "gaiety",
+        "conspicuousness",
+        "unexpectedness",
+        "brevity"
+      ]
+    },
+    "Q067": {
+      "answerLetter": "E",
+      "answerText": "arboreal",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Orangutans are _______ apes: they typically conduct most of their lives up in the trees\". Plugging in \"arboreal\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-256-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "indigenous",
+        "transitory",
+        "recessive",
+        "pliant",
+        "arboreal"
+      ]
+    },
+    "Q068": {
+      "answerLetter": "B",
+      "answerText": "unswerving",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"Since establishing the Children's Defense Fund in 197\". Plugging in \"unswerving\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-257-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "unwitting",
+        "unswerving",
+        "inhibiting",
+        "elusive",
+        "antagonistic"
+      ]
+    },
+    "Q069": {
+      "answerLetter": "C",
+      "answerText": "expanded . . disparaged",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"The author _______ the last act of her play to appease those critics who _______ the wor\". Plugging in \"expanded . . disparaged\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-258-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "eliminated",
+        "extolled",
+        "condensed",
+        "censured",
+        "expanded",
+        "disparaged",
+        "intensified",
+        "glorified"
+      ]
+    },
+    "Q070": {
+      "answerLetter": "A",
+      "answerText": "naïveté",
+      "walkthroughExplanation": "The sentence turns on parallel logic cues around \"The editorial claimed that the gubernatorial candidate lacked worldly wisdom and that th\". Plugging in \"naïveté\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-259-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "vet",
+        "furtiveness",
+        "venality",
+        "indecisiveness",
+        "sarcasm"
+      ]
+    },
+    "Q074": {
+      "answerLetter": "C",
+      "answerText": "scope",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Ms. Rivers gave a performance of noteworthy _______: her piano repertoire ranged from cl\". Plugging in \"scope\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-263-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "intensity",
+        "precision",
+        "scope",
+        "polish",
+        "duration"
+      ]
+    },
+    "Q075": {
+      "answerLetter": "E",
+      "answerText": "foreshadows",
+      "walkthroughExplanation": "The sentence turns on parallel logic cues around \"The skepticism of some ancient philosophers _______ and helps to elucidate varieties of\". Plugging in \"foreshadows\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-264-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "suppresses",
+        "disseminates",
+        "undermines",
+        "confounds",
+        "foreshadows"
+      ]
+    },
+    "Q077": {
+      "answerLetter": "A",
+      "answerText": "guarantee . . lobby for",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Like many other groups of people in the United States who have needed laws to _______ eq\". Plugging in \"guarantee . . lobby for\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-266-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "guarantee",
+        "lobby",
+        "for",
+        "preclude",
+        "enact",
+        "ascertain",
+        "consolidate",
+        "compound"
+      ]
+    },
+    "Q079": {
+      "answerLetter": "C",
+      "answerText": "copious . . amassed",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"_______ footnotes; since the first edition, the editors have apparently\". Plugging in \"copious . . amassed\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-268-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "meager",
+        "accumulated",
+        "illegible",
+        "clarified",
+        "copious",
+        "amassed",
+        "voluminous",
+        "excised"
+      ]
+    },
+    "Q082": {
+      "answerLetter": "C",
+      "answerText": "lone . . social",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"The depiction of the _______ wolf is largely a misconception; wolves are _______ creatur\". Plugging in \"lone . . social\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-271-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "howling",
+        "noisy",
+        "maternal",
+        "shy",
+        "lone",
+        "social",
+        "vicious",
+        "dangerous"
+      ]
+    },
+    "Q083": {
+      "answerLetter": "E",
+      "answerText": "noteworthy",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"Jazz pioneer Louis Armstrong is renowned for his improvisations on the trumpet; his inno\". Plugging in \"noteworthy\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-272-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "obscure",
+        "severe",
+        "conventional",
+        "erroneous",
+        "noteworthy"
+      ]
+    },
+    "Q084": {
+      "answerLetter": "D",
+      "answerText": "confirmed . . intuition",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Andrew's hunch that Ms. Smith would lose the election was _______ when her opponent won\". Plugging in \"confirmed . . intuition\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-273-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "compromised",
+        "prediction",
+        "rejected",
+        "insolence",
+        "substantiated",
+        "endorsement",
+        "confirmed",
+        "intuition"
+      ]
+    },
+    "Q086": {
+      "answerLetter": "C",
+      "answerText": "empathetic",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"The intern was almost too _______; he felt the suffering of his patients as if it were h\". Plugging in \"empathetic\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-275-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "candid",
+        "disarming",
+        "empathetic",
+        "insightful",
+        "hysterical"
+      ]
+    },
+    "Q087": {
+      "answerLetter": "A",
+      "answerText": "an entourage . . interfered with",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"As the charismatic speaker left the podium, she was surrounded by _______ of zealous sup\". Plugging in \"an entourage . . interfered with\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-276-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "entourage",
+        "interfered",
+        "debacle",
+        "concurred",
+        "faction",
+        "pertained",
+        "dearth",
+        "intercepted"
+      ]
+    },
+    "Q088": {
+      "answerLetter": "E",
+      "answerText": "truculence",
+      "walkthroughExplanation": "The sentence turns on parallel logic cues around \"Sally was a lighthearted and even-tempered woman: she had none of her sister's _______.\". Plugging in \"truculence\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-277-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "affluence",
+        "affability",
+        "equanimity",
+        "resilience",
+        "truculence"
+      ]
+    },
+    "Q093": {
+      "answerLetter": "C",
+      "answerText": "denounced . . neglecting",
+      "walkthroughExplanation": "The sentence turns on cause-and-effect cues around \"The scientific organization _______ the newspaper for prominently covering the predictio\". Plugging in \"denounced . . neglecting\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-282-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "celebrated",
+        "failing",
+        "promoted",
+        "refusing",
+        "denounced",
+        "neglecting",
+        "spurned",
+        "hastening"
+      ]
+    },
+    "Q095": {
+      "answerLetter": "D",
+      "answerText": "winnow",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"A discerning publishing agent can _______ promising material from a mass of submissions,\". Plugging in \"winnow\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-284-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "supplant",
+        "dramatize",
+        "finagle",
+        "winnow",
+        "overhaul"
+      ]
+    },
+    "Q096": {
+      "answerLetter": "D",
+      "answerText": "encroaching . . disturb",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Residents of the secluded island fear that _______ commercial development will _______ t\". Plugging in \"encroaching . . disturb\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-285-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "widespread",
+        "reinforce",
+        "waning",
+        "harm",
+        "diminishing",
+        "reform",
+        "encroaching",
+        "disturb"
+      ]
+    },
+    "Q098": {
+      "answerLetter": "C",
+      "answerText": "surfeit",
+      "walkthroughExplanation": "The sentence turns on parallel logic cues around \"Sandra Gilbert and Susan Gubar's recent book presents a _______ of detail, providing far\". Plugging in \"surfeit\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-287-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "modicum",
+        "discrepancy",
+        "surfeit",
+        "deficit",
+        "juxtaposition"
+      ]
+    },
+    "Q100": {
+      "answerLetter": "C",
+      "answerText": "jaded",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Galloping technological progress has made consumers _______: advances undreamed of a gen\". Plugging in \"jaded\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-289-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "flabbergasted",
+        "miffed",
+        "jaded",
+        "wary",
+        "embittered"
+      ]
+    },
+    "Q101": {
+      "answerLetter": "B",
+      "answerText": "distort",
+      "walkthroughExplanation": "The sentence turns on contrast cues around \"uage not to explain but to _______; each statement is like a reflection\". Plugging in \"distort\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-290-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "preserve",
+        "distort",
+        "enlighten",
+        "negate",
+        "destroy"
+      ]
+    },
+    "Q102": {
+      "answerLetter": "D",
+      "answerText": "convergence",
+      "walkthroughExplanation": "The sentence turns on parallel logic cues around \"Colonial South Carolina was characterized by cultural _______: Europeans, Africans, and\". Plugging in \"convergence\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-291-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "tension",
+        "conservatism",
+        "integrity",
+        "convergence",
+        "eradication"
+      ]
+    },
+    "Q105": {
+      "answerLetter": "E",
+      "answerText": "instantaneously . . onset",
+      "walkthroughExplanation": "The sentence turns on contrast cues around \"ally occurs _______ though one may receive clues signaling its _______ for\". Plugging in \"instantaneously . . onset\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-294-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "gradually",
+        "abruptness",
+        "erratically",
+        "solace",
+        "temporarily",
+        "length",
+        "inevitably",
+        "approach"
+      ]
+    },
+    "Q107": {
+      "answerLetter": "A",
+      "answerText": "alacrity",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Laila performed her tasks at the office with _______, completing all her projects in rec\". Plugging in \"alacrity\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-296-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "alacrity",
+        "conformity",
+        "deliberation",
+        "recrimination",
+        "exasperation"
+      ]
+    },
+    "Q116": {
+      "answerLetter": "B",
+      "answerText": "maintain . . vulnerable",
+      "walkthroughExplanation": "The sentence turns on contrast cues around \"_______ body heat, but leave them more _______ to discovery by predato\". Plugging in \"maintain . . vulnerable\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-305-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "insure",
+        "inclined",
+        "maintain",
+        "vulnerable",
+        "squander",
+        "liable",
+        "stimulate",
+        "resistant"
+      ]
+    },
+    "Q119": {
+      "answerLetter": "B",
+      "answerText": "innocuous",
+      "walkthroughExplanation": "The sentence turns on contrast cues around \"Although condemned by the review panel, to film critic P\". Plugging in \"innocuous\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-308-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "impressionable",
+        "innocuous",
+        "unsuitable",
+        "insensitive",
+        "unapproachable"
+      ]
+    },
+    "Q122": {
+      "answerLetter": "B",
+      "answerText": "hubris",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Mary Shelley's Frankenstein centers on a scientist's _______, the overweening pride that\". Plugging in \"hubris\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-311-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "obstinacy",
+        "hubris",
+        "impetuosity",
+        "valor",
+        "callousness"
+      ]
+    },
+    "Q123": {
+      "answerLetter": "D",
+      "answerText": "lengthy . . lasted",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"May Sarton had a _______ career: it _______ from 1929, when Poetry magazine published he\". Plugging in \"lengthy . . lasted\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-312-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "limited",
+        "developed",
+        "diverse",
+        "foundered",
+        "variable",
+        "declined",
+        "lengthy",
+        "lasted"
+      ]
+    },
+    "Q126": {
+      "answerLetter": "E",
+      "answerText": "tempered . . thriving",
+      "walkthroughExplanation": "The sentence turns on parallel logic cues around \"The study's warning that monkey populations were declining in Guatemala and Mexico was _\". Plugging in \"tempered . . thriving\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-315-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "corroborated",
+        "prospering",
+        "confirmed",
+        "extant",
+        "belied",
+        "dwindling",
+        "diminished",
+        "debilitated"
+      ]
+    },
+    "Q128": {
+      "answerLetter": "B",
+      "answerText": "alleviate",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Efforts are finally being made to _______ the traffic congestion that plagues the downto\". Plugging in \"alleviate\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-317-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "engage",
+        "alleviate",
+        "transport",
+        "regenerate",
+        "trivialize"
+      ]
+    },
+    "Q129": {
+      "answerLetter": "D",
+      "answerText": "serene",
+      "walkthroughExplanation": "The sentence turns on contrast cues around \"Though outwardly _______, the speaker was actually qui\". Plugging in \"serene\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-318-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "apprehensive",
+        "agitated",
+        "furious",
+        "serene",
+        "considerate"
+      ]
+    },
+    "Q132": {
+      "answerLetter": "A",
+      "answerText": "dispatch",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Cathedrals usually take decades, even centuries, to complete; thus, no one expected the\". Plugging in \"dispatch\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-321-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "dispatch",
+        "presumption",
+        "durability",
+        "deliberation",
+        "reverence"
+      ]
+    },
+    "Q137": {
+      "answerLetter": "D",
+      "answerText": "conclude",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"The author used a rhetorical question as a terminal flourish to _______ the section of t\". Plugging in \"conclude\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-326-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "disclose",
+        "rearrange",
+        "simplify",
+        "conclude",
+        "ascertain"
+      ]
+    },
+    "Q139": {
+      "answerLetter": "E",
+      "answerText": "altruism . . exemplars",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"The two sisters selflessly dedicated their lives to the nursing profession: their ______\". Plugging in \"altruism . . exemplars\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-328-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "aptitude",
+        "eccentrics",
+        "morality",
+        "emancipators",
+        "erudition",
+        "enigmas",
+        "devotion",
+        "egotists"
+      ]
+    },
+    "Q140": {
+      "answerLetter": "A",
+      "answerText": "obsequious",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Annoyed by the new employee's excessively _______ manner, the supervisor advised him tha\". Plugging in \"obsequious\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-329-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "obsequious",
+        "mysterious",
+        "lackadaisical",
+        "argumentative",
+        "aggressive"
+      ]
+    },
+    "Q146": {
+      "answerLetter": "A",
+      "answerText": "disclosure",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"The announcement that the city would raze the landmark school building was such a distre\". Plugging in \"disclosure\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-335-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "disclosure",
+        "evaluation",
+        "liberation",
+        "instance",
+        "inquiry"
+      ]
+    },
+    "Q149": {
+      "answerLetter": "E",
+      "answerText": "a tactile",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"Displays in the Australian Museum's exhibition on dinosaurs are designed to be touched,\". Plugging in \"a tactile\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-338-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "odoriferous",
+        "archaic",
+        "aural",
+        "rustic",
+        "tactile"
+      ]
+    },
+    "Q150": {
+      "answerLetter": "D",
+      "answerText": "adroitness",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"The magician's _______ astonished us; her deft performance proved the old saying that th\". Plugging in \"adroitness\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-339-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "discernment",
+        "tenacity",
+        "hilarity",
+        "adroitness",
+        "insecurity"
+      ]
+    },
+    "Q152": {
+      "answerLetter": "C",
+      "answerText": "a manifesto",
+      "walkthroughExplanation": "The sentence turns on contextual fit cues around \"The professor argued that every grassroots movement needs _______: without this public d\". Plugging in \"a manifesto\" preserves the tone and meaning; the other choices break the sentence logic.",
+      "sourceUrl": "https://www.cracksat.net/sat/sentence-completion/question-341-answer-and-explanation.html",
+      "sourceAttribution": "Matched against public answer page on cracksat.net",
+      "focusWords": [
+        "invocation",
+        "prospectus",
+        "manifesto",
+        "arbitration",
+        "mandate"
+      ]
+    }
+  }
+}

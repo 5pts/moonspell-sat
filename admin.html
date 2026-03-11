@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moonspell Mistakes Dashboard</title>
+    <style>body { display: none; }</style>
+    <link rel="stylesheet" href="app.css" />
+    <script>
+      (function() {
+        var PASS_KEY = 'moonspell_admin_token';
+        var PASSWORD = 'admin'; // 默认密码
+
+        function checkAuth() {
+          var token = localStorage.getItem(PASS_KEY);
+          if (token === PASSWORD) {
+            document.addEventListener('DOMContentLoaded', function() {
+              document.body.style.display = 'block';
+            });
+            return;
+          }
+
+          var input = prompt('Enter Admin Password (default: admin):');
+          if (input === PASSWORD) {
+            localStorage.setItem(PASS_KEY, input);
+            location.reload();
+          } else {
+            alert('Wrong password');
+            document.body.innerHTML = '<h1>Access Denied</h1>';
+            document.body.style.display = 'block';
+          }
+        }
+        checkAuth();
+      })();
+    </script>
+  </head>
+  <body class="page page-admin">
+    <div class="backdrop"></div>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero__copy">
+          <pre class="moon-ascii">
+    _..._
+  .::::. `.
+ :::::::.  :
+ ::::::::  :
+ `::::::' .'
+   `'::'-'
+          </pre>
+          <p class="eyebrow">Teaching Operations</p>
+          <h1>Error<br />Board</h1>
+          <p class="lede">
+            Teacher-side brutalist console for real student practice data, wrong-book review, and account-level follow-up.
+          </p>
+        </div>
+        <div class="hero__stats" id="dashboardStats"></div>
+      </header>
+
+      <main class="workspace workspace--dashboard">
+        <aside class="panel sidebar sidebar--students">
+          <div class="panel__header">
+            <h2>Students</h2>
+            <p>Filter real student accounts and inspect each learner's practice and wrong-book.</p>
+          </div>
+
+          <label class="field">
+            <span>Class</span>
+            <select id="classSelect"></select>
+          </label>
+
+          <div id="studentList" class="student-list"></div>
+          <a class="button button--ghost" href="index.html">Back to main app</a>
+        </aside>
+
+        <section class="panel content-panel">
+          <div class="toolbar">
+            <div>
+              <p class="toolbar__eyebrow">Review Queue</p>
+              <h2 id="recordHeading">Loading student records...</h2>
+            </div>
+            <div class="toolbar__meta">
+              <label class="field field--compact">
+                <span>Search</span>
+                <input id="recordSearch" type="search" placeholder="student, Q023, vocabulary..." />
+              </label>
+            </div>
+          </div>
+
+          <div id="studentSummary" class="student-summary" style="display: none; margin-bottom: 1rem; padding: 1rem; background: var(--surface-2); border: 1px solid var(--surface-3); border-radius: 4px;"></div>
+          <div class="status-bar" id="statusFilters"></div>
+          <div id="recordTable" class="record-table"></div>
+        </section>
+
+        <aside class="panel detail-panel">
+          <div class="panel__header">
+            <h2>Record Detail</h2>
+            <p>Edit note and status locally in the browser.</p>
+          </div>
+          <div id="detailCard" class="detail-card"></div>
+        </aside>
+      </main>
+    </div>
+
+    <script type="module" src="questions.data.js"></script>
+    <script type="module" src="ui-chrome.js"></script>
+    <script type="module" src="admin.js"></script>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moonspell Flashcards</title>
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body class="page page-flashcards">
+    <div class="backdrop"></div>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero__copy">
+          <pre class="moon-ascii">
+    _..._
+  .::::. `.
+ :::::::.  :
+ ::::::::  :
+ `::::::' .'
+   `'::'-'
+          </pre>
+          <p class="eyebrow">Wordbook Drill</p>
+          <h1>Flash<br />cards</h1>
+          <p class="lede">
+            Saved vocabulary turns into a repeatable memory board with hooks, derivatives, examples, and source links.
+          </p>
+        </div>
+        <div class="hero__stats" id="flashcardStats"></div>
+      </header>
+
+      <main class="workspace">
+        <aside class="panel sidebar">
+          <div class="panel__header">
+            <h2>Queue</h2>
+            <p>Use your saved wordbook as a quick review deck.</p>
+          </div>
+
+          <label class="field">
+            <span>Search Word</span>
+            <input id="flashcardSearch" type="search" placeholder="therapeutic, palliative..." />
+          </label>
+
+          <div class="detail-actions">
+            <button id="prevCard" class="button button--ghost" type="button">Previous</button>
+            <button id="flipCard" class="button button--solid" type="button">Flip card</button>
+            <button id="nextCard" class="button button--ghost" type="button">Next</button>
+          </div>
+
+          <a class="button button--ghost" href="index.html">Back to main app</a>
+        </aside>
+
+        <section class="panel content-panel">
+          <div class="toolbar">
+            <div>
+              <p class="toolbar__eyebrow">Current Card</p>
+              <h2 id="flashcardHeading">Loading saved words...</h2>
+            </div>
+            <div class="toolbar__meta" id="flashcardMeta"></div>
+          </div>
+
+          <div id="flashcardStage" class="flashcard-stage"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="questions.data.js"></script>
+    <script src="lexicon.data.js"></script>
+    <script src="ui-chrome.js"></script>
+    <script src="flashcards.js"></script>
+  </body>
+</html>

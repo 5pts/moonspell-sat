@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moonspell Local SC</title>
+    <link rel="stylesheet" href="local-site.css" />
+  </head>
+  <body>
+    <div class="grain-overlay"></div>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <pre class="moon-ascii">
+    _..._
+  .::::. `.
+ :::::::.  :
+ ::::::::  :
+ `::::::' .'
+   `'::'-'
+          </pre>
+          <p class="eyebrow">Local Preview Protocol</p>
+          <h1>Moon<br />spell</h1>
+          <p class="lede">
+            A local SAT SC preview site with practice mode, walkthrough mode,
+            word lookup, saved words, and manual wrong-book building.
+          </p>
+        </div>
+        <div class="hero-stats" id="heroStats"></div>
+      </header>
+
+      <section id="tutorialPanel" class="tutorial-panel"></section>
+
+      <main class="workspace">
+        <aside class="panel control-panel">
+          <div class="panel-header">
+            <h2>Control Desk</h2>
+            <p>Start with <code>START_LOCAL_PREVIEW.cmd</code> so dictionary and translation tools work.</p>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">View Mode</span>
+            <div class="chip-row" id="modeSwitch"></div>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">Question Set</span>
+            <div class="chip-row" id="collectionSwitch"></div>
+          </div>
+
+          <label class="field-group">
+            <span class="field-label">Section</span>
+            <select id="sectionSelect"></select>
+          </label>
+
+          <label class="field-group">
+            <span class="field-label">Search</span>
+            <input id="searchInput" type="search" placeholder="Q218, ambassador, flourish..." />
+          </label>
+
+          <div class="field-group">
+            <span class="field-label">Jump</span>
+            <div class="inline-row">
+              <input id="jumpInput" type="text" placeholder="Q305 or V1-01" />
+              <button id="jumpButton" class="button button-solid" type="button">Jump</button>
+            </div>
+          </div>
+
+          <div class="field-group nav-group">
+            <button id="prevButton" class="button button-ghost" type="button">Prev</button>
+            <button id="nextButton" class="button button-solid" type="button">Next</button>
+          </div>
+
+          <div class="field-group compact">
+            <label class="toggle-row">
+              <input id="duplicatesOnly" type="checkbox" />
+              <span>Duplicate candidates only</span>
+            </label>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">Wrong Book</span>
+            <div id="wrongBookList" class="chip-grid"></div>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">Favorite Picks -> Wrong Book</span>
+            <div id="wrongBookPicker" class="detail-card is-empty"></div>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">Saved Words</span>
+            <div id="savedWordsList" class="chip-grid"></div>
+          </div>
+        </aside>
+
+        <section class="panel question-panel">
+          <div class="toolbar">
+            <div>
+              <p class="eyebrow">Question View</p>
+              <h2 id="questionHeading">Loading...</h2>
+            </div>
+            <div id="questionMeta" class="toolbar-meta"></div>
+          </div>
+
+          <div id="questionCard" class="question-card"></div>
+        </section>
+
+        <aside class="panel side-panel">
+          <div class="panel-header">
+            <h2>Study Toolkit</h2>
+            <p>Click a word to inspect, save, and jump to external dictionaries.</p>
+          </div>
+
+          <section class="tool-block">
+            <p class="tool-label">Word Explorer</p>
+            <div id="wordExplorer" class="detail-card is-empty"></div>
+          </section>
+
+          <section class="tool-block">
+            <p class="tool-label">Flashcard Deck</p>
+            <div id="flashcardDeck" class="detail-card is-empty"></div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <script type="module" src="questions.data.js"></script>
+    <script type="module" src="question-meta.data.js"></script>
+    <script type="module" src="local-site.js"></script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+server/node_modules/
+server/moonspell.db
+*.db
+.env
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.log
+vite.config.js.timestamp-*
+.ocr_cache/
+.claude/
+.trae/
+*.pdf

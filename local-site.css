@@ -1,0 +1,709 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&family=VT323&family=Lora:wght@500;700&display=swap');
+
+:root {
+  --bg: #f4efe6;
+  --card: #ffffff;
+  --panel: #faf7f0;
+  --line: #000000;
+  --shadow: #000000;
+  --text: #000000;
+  --muted: #6f6f6f;
+  --blue: #0055ff;
+  --blue-soft: #e5eeff;
+  --orange: #ff9900;
+  --red: #ff3366;
+  --green: #00cc66;
+  --stripe: rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.page-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.hero-copy,
+.hero-stats,
+.panel {
+  background: var(--card);
+  border: 4px solid var(--line);
+  box-shadow: 8px 8px 0 var(--shadow);
+}
+
+.hero-copy {
+  position: relative;
+  overflow: hidden;
+  padding: 28px;
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--stripe) 10px, var(--stripe) 20px);
+}
+
+.moon-ascii {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  margin: 0;
+  color: var(--muted);
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+  line-height: 12px;
+  opacity: 0.4;
+}
+
+.eyebrow,
+.tool-label,
+.field-label {
+  margin: 0 0 10px;
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-copy h1 {
+  margin: 32px 0 18px;
+  color: var(--blue);
+  font-family: 'Press Start 2P', cursive;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  line-height: 1.03;
+  text-transform: uppercase;
+  text-shadow:
+    -3px -3px 0 var(--line),
+    0 -3px 0 var(--line),
+    3px -3px 0 var(--line),
+    3px 0 0 var(--line),
+    3px 3px 0 var(--line),
+    0 3px 0 var(--line),
+    -3px 3px 0 var(--line),
+    -3px 0 0 var(--line),
+    8px 8px 0 var(--line);
+}
+
+.lede {
+  max-width: 720px;
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  font-weight: 700;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 20px;
+  align-content: start;
+}
+
+.tutorial-panel {
+  margin-bottom: 24px;
+}
+
+.tutorial-card {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 4px solid var(--line);
+  box-shadow: 8px 8px 0 var(--shadow);
+  background: linear-gradient(135deg, var(--orange) 0%, #ffd35c 100%);
+}
+
+.tutorial-card h2 {
+  margin: 0;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1.5rem;
+}
+
+.tutorial-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tutorial-step {
+  padding: 14px;
+  border: 3px solid var(--line);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.tutorial-step strong {
+  display: block;
+  margin-bottom: 8px;
+  font-family: 'Archivo Black', sans-serif;
+}
+
+.stat-card {
+  padding: 18px 16px;
+  border: 3px solid var(--line);
+  background: var(--panel);
+}
+
+.stat-card strong {
+  display: block;
+  margin-bottom: 6px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.stat-card span {
+  color: var(--muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+.panel {
+  padding: 20px;
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--stripe) 10px, var(--stripe) 20px);
+}
+
+.panel-header h2,
+.toolbar h2 {
+  margin: 0 0 8px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.panel-header p,
+.muted,
+.detail-note {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.field-group {
+  margin-top: 18px;
+}
+
+.field-group input,
+.field-group select {
+  width: 100%;
+  border: 4px solid var(--line);
+  background: var(--card);
+  padding: 12px 14px;
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+
+.inline-row,
+.nav-group,
+.chip-row,
+.chip-grid,
+.action-row,
+.badge-row,
+.flashcard-actions,
+.toolbar-meta,
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.inline-row > input {
+  flex: 1;
+}
+
+.button,
+.chip,
+.option-button,
+.word-token {
+  appearance: none;
+  border: 3px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.button:hover,
+.chip:hover,
+.option-button:hover,
+.word-token:hover {
+  transform: translate(-3px, -3px) rotate(-1deg);
+  box-shadow: 8px 8px 0 var(--shadow);
+}
+
+.button {
+  padding: 11px 14px;
+  box-shadow: 6px 6px 0 var(--shadow);
+  text-decoration: none;
+  font-family: 'Archivo Black', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.button-solid {
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.button-ghost {
+  background: var(--card);
+}
+
+.chip {
+  padding: 8px 12px;
+  box-shadow: 4px 4px 0 var(--shadow);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.chip.is-active,
+.chip-static {
+  background: var(--orange);
+}
+
+.nav-group .button {
+  flex: 1;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.question-card {
+  border: 4px solid var(--line);
+  box-shadow: 8px 8px 0 var(--shadow);
+  background: var(--card);
+  padding: 24px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border: 3px solid var(--line);
+  background: var(--panel);
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.badge-danger {
+  background: var(--red);
+  color: #ffffff;
+}
+
+.badge-success {
+  background: var(--green);
+  color: #ffffff;
+}
+
+.badge-warning {
+  background: var(--orange);
+}
+
+.question-text {
+  margin: 20px 0;
+  padding: 20px;
+  border: 4px solid var(--line);
+  background: var(--card);
+  font-family: 'Lora', serif;
+  font-size: clamp(1.45rem, 2.2vw, 2.2rem);
+  line-height: 1.65;
+  font-weight: 700;
+}
+
+.blank-fill {
+  display: inline-block;
+  margin: 0 4px;
+  padding: 0 10px;
+  min-width: 5.6ch;
+  border: 3px solid var(--line);
+  background: var(--blue-soft);
+  color: var(--blue);
+  transform: rotate(-1deg);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.option-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.option-card {
+  display: grid;
+  gap: 10px;
+}
+
+.option-button {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  box-shadow: 6px 6px 0 var(--shadow);
+  text-align: left;
+}
+
+.option-button[disabled] {
+  cursor: default;
+}
+
+.option-button.correct {
+  background: var(--green);
+  color: #ffffff;
+}
+
+.option-button.incorrect {
+  background: var(--red);
+  color: #ffffff;
+}
+
+.option-button.dimmed {
+  opacity: 0.45;
+}
+
+.option-tag {
+  display: inline-flex;
+  min-width: 38px;
+  justify-content: center;
+  border: 3px solid var(--line);
+  background: var(--line);
+  color: #ffffff;
+  padding: 4px 8px;
+  font-family: 'Archivo Black', sans-serif;
+}
+
+.option-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.option-copy__text {
+  display: block;
+}
+
+.option-translation {
+  display: block;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  opacity: 0.92;
+}
+
+.option-translation--muted {
+  color: var(--muted);
+}
+
+.option-card__footer {
+  display: flex;
+  gap: 10px;
+}
+
+.option-card__footer .button {
+  flex: 1;
+}
+
+.answer-panel {
+  margin-top: 22px;
+  padding: 20px;
+  border: 4px solid var(--line);
+  box-shadow: 8px 8px 0 var(--shadow);
+  background: var(--blue-soft);
+}
+
+.answer-panel h3,
+.detail-card h3,
+.flashcard-face h3 {
+  margin: 0 0 12px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1.4rem;
+}
+
+.answer-panel p,
+.detail-card p,
+.flashcard-face p,
+.detail-card li {
+  line-height: 1.7;
+}
+
+.word-token {
+  padding: 0 4px;
+}
+
+.word-token.active {
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.tool-block + .tool-block {
+  margin-top: 22px;
+}
+
+.detail-card {
+  min-height: 180px;
+  padding: 18px;
+  border: 4px solid var(--line);
+  background: var(--card);
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+
+.detail-card.is-empty {
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+}
+
+.detail-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.detail-grid ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.saved-word-list {
+  display: grid;
+  gap: 10px;
+}
+
+.saved-word-row {
+  padding: 12px;
+  border: 3px solid var(--line);
+  background: var(--card);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.wrongbook-picker {
+  display: grid;
+  gap: 12px;
+}
+
+.wrongbook-picker__summary {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.wrongbook-picker__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.wrongbook-picker__actions .button {
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+
+.wrongbook-picker__list {
+  display: grid;
+  gap: 10px;
+  max-height: 300px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.wrongbook-picker__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 3px solid var(--line);
+  background: var(--card);
+}
+
+.wrongbook-picker__row input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.wrongbook-picker__copy {
+  display: grid;
+  gap: 4px;
+}
+
+.wrongbook-picker__copy strong {
+  font-family: 'Archivo Black', sans-serif;
+}
+
+.wrongbook-picker__meta {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.saved-word-row__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.saved-word-row__word {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.saved-word-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.saved-word-links .button {
+  box-shadow: none;
+  padding: 8px 10px;
+  font-size: 0.8rem;
+}
+
+.option-gloss-panel {
+  margin-top: 18px;
+  padding: 16px;
+  border: 4px solid var(--line);
+  background: var(--panel);
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+
+.option-gloss-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.gloss-row {
+  padding: 12px;
+  border: 3px solid var(--line);
+  background: var(--card);
+}
+
+.gloss-row strong {
+  display: block;
+  margin-bottom: 8px;
+  font-family: 'Archivo Black', sans-serif;
+}
+
+.gloss-row p {
+  margin: 0 0 10px;
+}
+
+.flashcard {
+  display: grid;
+  gap: 14px;
+}
+
+.flashcard-face {
+  min-height: 210px;
+  padding: 18px;
+  border: 4px solid var(--line);
+  background: var(--panel);
+}
+
+.flashcard-actions .button {
+  flex: 1;
+}
+
+.compact .toggle-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 700;
+}
+
+code {
+  font-family: 'VT323', monospace;
+  font-size: 1.05em;
+  background: var(--panel);
+  padding: 2px 6px;
+  border: 2px solid var(--line);
+}
+
+@media (max-width: 1180px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .tutorial-steps {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .option-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    padding: 14px;
+  }
+
+  .hero-copy,
+  .panel,
+  .hero-stats {
+    padding: 16px;
+  }
+
+  .question-card,
+  .question-text,
+  .answer-panel,
+  .detail-card {
+    padding: 14px;
+  }
+
+  .tutorial-steps {
+    grid-template-columns: 1fr;
+  }
+}

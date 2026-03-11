@@ -1,0 +1,16 @@
+{
+  "name": "moonspell-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "better-sqlite3": "^8.5.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

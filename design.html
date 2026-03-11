@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moonspell SC Studio</title>
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body class="page page-bank">
+    <div class="backdrop"></div>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero__copy">
+          <pre class="moon-ascii">
+    _..._
+  .::::. `.
+ :::::::.  :
+ ::::::::  :
+ `::::::' .'
+   `'::'-'
+          </pre>
+          <p class="eyebrow">Sentence Completion Studio</p>
+          <h1>Moon<br />spell</h1>
+          <p class="lede">
+            Brutalist SC lab for practice mode, walkthrough mode, word lookup, flashcards, and manual wrong-book building.
+          </p>
+        </div>
+        <div class="hero__stats" id="heroStats"></div>
+      </header>
+
+      <main class="workspace workspace--bank">
+        <aside class="panel sidebar">
+          <div class="panel__header">
+            <h2>Control Desk</h2>
+            <p>Build your own wrong book from any question, saved or unsaved.</p>
+          </div>
+
+          <div class="field">
+            <span>Mode</span>
+            <div class="mode-switch" id="modeSwitch"></div>
+          </div>
+
+          <label class="field">
+            <span>Keyword</span>
+            <input id="searchInput" type="search" placeholder="Q152, ambassador, therapeutic..." />
+          </label>
+
+          <label class="field">
+            <span>Section</span>
+            <select id="sectionSelect"></select>
+          </label>
+
+          <div class="field jump-field">
+            <span>Jump to Number</span>
+            <div class="inline-controls">
+              <input id="jumpInput" type="text" placeholder="Q305 or V1-01" />
+              <button id="jumpButton" class="button button--solid" type="button">Jump</button>
+            </div>
+          </div>
+
+          <label class="toggle">
+            <input id="duplicatesOnly" type="checkbox" />
+            <span>Show duplicate candidates only</span>
+          </label>
+
+          <div class="sidebar__block">
+            <div class="block__label">Question Collections</div>
+            <div id="collectionStats" class="collection-grid"></div>
+            <div id="collectionFilters" class="chip-grid"></div>
+          </div>
+
+          <div class="sidebar__block">
+            <div class="block__label">Quick Sections</div>
+            <div id="sectionChips" class="chip-grid"></div>
+          </div>
+
+          <div class="sidebar__block">
+            <div class="block__label">Duplicate Groups</div>
+            <div id="duplicateList" class="duplicate-list"></div>
+          </div>
+
+          <div class="sidebar__block">
+            <a class="button button--ghost" href="flashcards.html">Open flashcards</a>
+            <a class="button button--ghost" href="admin.html">Open mistakes dashboard</a>
+          </div>
+        </aside>
+
+        <section class="panel content-panel">
+          <div class="toolbar">
+            <div>
+              <p class="toolbar__eyebrow">Question Inventory</p>
+              <h2 id="resultHeading">Loading question bank...</h2>
+            </div>
+            <div class="toolbar__meta" id="toolbarMeta"></div>
+          </div>
+
+          <div id="questionSections" class="question-sections"></div>
+        </section>
+
+        <aside class="panel detail-panel">
+          <div class="panel__header">
+            <h2>Study Toolkit</h2>
+            <p>Click a word for lookup or pick a question to add it to your wrong book.</p>
+          </div>
+
+          <div class="drawer-stack">
+            <section class="drawer-card">
+              <p class="block__label">Word Explorer</p>
+              <div id="wordDetail" class="detail-card is-empty"></div>
+            </section>
+
+            <section class="drawer-card">
+              <p class="block__label">Custom Wrong Book</p>
+              <div id="selectionDetail" class="detail-card is-empty"></div>
+            </section>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script src="questions.data.js"></script>
+    <script src="question-meta.data.js"></script>
+    <script src="lexicon.data.js"></script>
+    <script src="ui-chrome.js"></script>
+    <script src="question-bank.js"></script>
+  </body>
+</html>
