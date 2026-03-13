@@ -63,6 +63,10 @@ function App() {
           <Route path="/dashboard" element={currentUser ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
+        <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-[90] text-center text-[11px] md:text-xs theme-text-secondary/80 px-3">
+          <div>created by IsoLab</div>
+          <div>Any issues, contact linjh0811@gmail.com</div>
+        </div>
       </div>
       </ErrorBoundary>
     </BrowserRouter>
