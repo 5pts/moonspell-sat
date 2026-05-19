@@ -186,6 +186,19 @@ export default function Quiz({ mode, timeAttack }) {
     }
   };
 
+  const canGoPrev = currentIndex > 0;
+  const canGoNext = currentIndex < filteredQuestions.length - 1;
+
+  const goToPrevQuestion = () => {
+    if (!canGoPrev) return;
+    setCurrentIndex((prev) => Math.max(0, prev - 1));
+  };
+
+  const goToNextQuestion = () => {
+    if (!canGoNext) return;
+    setCurrentIndex((prev) => Math.min(filteredQuestions.length - 1, prev + 1));
+  };
+
   const toggleBookmark = () => {
     DataManager.toggleBookmark(currentQ.id);
     setFilteredQuestions([...filteredQuestions]);
@@ -501,6 +514,30 @@ export default function Quiz({ mode, timeAttack }) {
         <div className="theme-bg-card border-2 md:border-4 theme-border px-3 py-2 font-pixel-eng brutal-shadow">
             {currentIndex + 1}/{filteredQuestions.length}
         </div>
+        <div className="flex items-stretch gap-2">
+          <button
+            type="button"
+            onClick={goToPrevQuestion}
+            disabled={!canGoPrev}
+            className={`px-3 py-2 border-2 md:border-4 theme-border font-pixel-eng brutal-shadow brutal-btn ${
+              canGoPrev ? 'theme-bg-card theme-text-primary' : 'theme-bg-panel theme-text-muted opacity-60 cursor-not-allowed'
+            }`}
+            title="上一题"
+          >
+            ← PREV
+          </button>
+          <button
+            type="button"
+            onClick={goToNextQuestion}
+            disabled={!canGoNext}
+            className={`px-3 py-2 border-2 md:border-4 theme-border font-pixel-eng brutal-shadow brutal-btn ${
+              canGoNext ? 'theme-bg-blue theme-text-on-color' : 'theme-bg-panel theme-text-muted opacity-60 cursor-not-allowed'
+            }`}
+            title="下一题"
+          >
+            NEXT →
+          </button>
+        </div>
       </div>
 
       {/* Timer */}
@@ -564,6 +601,7 @@ export default function Quiz({ mode, timeAttack }) {
 
             const canPickOption = !isAnswered && !isWalkthrough;
             const showGloss = openOptionGloss === i;
+            const isOptionSaved = DataManager.isOptionBookmarked(currentQ.id, i);
 
             return (
               <div
@@ -579,19 +617,32 @@ export default function Quiz({ mode, timeAttack }) {
                       {renderWordAwareText(opt, `option-${currentQ.id}-${i}`)}
                     </span>
                   </div>
-                  <button
-                    type="button"
-                    data-option-action="true"
-                    onMouseDown={(event) => event.stopPropagation()}
-                    onClick={(event) => toggleOptionGloss(i, event)}
-                    className={`option-gloss-chip shrink-0 ${showGloss ? 'is-open' : ''}`}
-                    title="查看这个选项的中文"
-                  >
-                    <span className="option-gloss-chip__icon">
-                      <GlossChipIcon />
-                    </span>
-                    <span className="option-gloss-chip__label">CN</span>
-                  </button>
+                  <div className="flex flex-col items-end gap-2 shrink-0">
+                    <button
+                      type="button"
+                      data-option-action="true"
+                      onMouseDown={(event) => event.stopPropagation()}
+                      onClick={(event) => toggleOptionBookmark(i, event)}
+                      className={`option-save-chip ${isOptionSaved ? 'is-saved' : ''}`}
+                      title={isOptionSaved ? '取消收藏这个选项' : '一键收藏这个选项'}
+                    >
+                      <span className="option-save-chip__icon">{isOptionSaved ? '★' : '☆'}</span>
+                      <span className="option-save-chip__label">SAVE</span>
+                    </button>
+                    <button
+                      type="button"
+                      data-option-action="true"
+                      onMouseDown={(event) => event.stopPropagation()}
+                      onClick={(event) => toggleOptionGloss(i, event)}
+                      className={`option-gloss-chip ${showGloss ? 'is-open' : ''}`}
+                      title="查看这个选项的中文"
+                    >
+                      <span className="option-gloss-chip__icon">
+                        <GlossChipIcon />
+                      </span>
+                      <span className="option-gloss-chip__label">CN</span>
+                    </button>
+                  </div>
                 </div>
 
                 {showGloss ? (
