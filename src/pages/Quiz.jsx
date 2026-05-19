@@ -562,24 +562,21 @@ export default function Quiz({ mode, timeAttack }) {
               btnClass += " animate-shake";
             }
 
-            const wordsClickable = showAnswerPanel;
+            const canPickOption = !isAnswered && !isWalkthrough;
             const showGloss = openOptionGloss === i;
 
             return (
               <div
                 key={i}
-                className={`p-3 md:p-4 border-2 md:border-4 ${borderClass} brutal-shadow brutal-btn relative ${btnClass} text-left group self-start ${!wordsClickable ? 'cursor-pointer' : ''}`}
-                onClick={(event) => { if (!wordsClickable) handleOptionCardClick(i, event); }}
+                className={`p-3 md:p-4 border-2 md:border-4 ${borderClass} brutal-shadow brutal-btn relative ${btnClass} text-left group self-start ${canPickOption ? 'cursor-pointer' : ''}`}
+                onClick={(event) => handleOptionCardClick(i, event)}
               >
                 <span className="absolute -top-3 -left-3 theme-bg-inverse theme-text-inverse px-2 py-0.5 border-2 theme-border text-xs font-pixel-eng hidden md:block">[{currentOptionLabels[i]}]</span>
                 <div className="flex items-start gap-3 justify-between">
                   <div className="flex items-start min-w-0 flex-1">
                     <span className="option-label px-2 md:px-3 py-1 mr-2 md:mr-4 border-2 theme-border font-brutal-title text-lg md:text-2xl uppercase shrink-0 transition-colors duration-400">{currentOptionLabels[i]}</span>
                     <span className="font-brutal-body font-bold text-base md:text-2xl break-words min-w-0">
-                      {wordsClickable
-                        ? renderWordAwareText(opt, `option-${currentQ.id}-${i}`)
-                        : opt
-                      }
+                      {renderWordAwareText(opt, `option-${currentQ.id}-${i}`)}
                     </span>
                   </div>
                   <button
