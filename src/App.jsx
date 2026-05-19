@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Quiz from './pages/Quiz';
 import Dashboard from './pages/Dashboard';
 import Flashcards from './pages/Flashcards';
+import BarronStudy from './pages/BarronStudy';
 import { DataManager } from './lib/data';
 import './styles/app.css';
 
@@ -59,6 +60,7 @@ function App() {
           <Route path="/quiz-error" element={currentUser ? <Quiz mode="ERROR" timeAttack={timeAttack} /> : <Navigate to="/login" />} />
           <Route path="/wordbook" element={currentUser ? <Flashcards defaultTab="wordbook" /> : <Navigate to="/login" />} />
           <Route path="/flashcards" element={currentUser ? <Flashcards defaultTab="flashcards" /> : <Navigate to="/login" />} />
+          <Route path="/barron" element={currentUser ? <BarronStudy /> : <Navigate to="/login" />} />
           <Route path="/data-board" element={currentUser ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="/dashboard" element={currentUser ? <Dashboard /> : <Navigate to="/login" />} />
           <Route path="*" element={<Navigate to="/" />} />

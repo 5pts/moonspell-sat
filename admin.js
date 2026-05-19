@@ -7,10 +7,11 @@
 
   // --- API Fetching ---
   async function fetchAdminData() {
-    const token = localStorage.getItem('moonspell_admin_token');
+    const rawToken = localStorage.getItem('moonspell_admin_token') || '';
+    const token = String(rawToken).replace(/^Bearer\s+/i, '').trim();
     try {
       const response = await fetch(`${API_BASE}/api/admin/data`, {
-        headers: { 'Authorization': token }
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
       });
       if (!response.ok) {
         if (response.status === 401) {
@@ -26,8 +27,8 @@
     }
   }
 
-  const apiData = await fetchAdminData();
-  const IS_REMOTE = !!apiData;
+  let apiData = await fetchAdminData();
+  let IS_REMOTE = !!apiData;
   console.log('Admin Mode:', IS_REMOTE ? 'Remote API' : 'Local Storage');
 
   const GLOBAL_STORAGE_KEYS = {
@@ -51,6 +52,66 @@
       return JSON.parse(window.localStorage.getItem(key) || JSON.stringify(fallback));
     } catch (_error) {
       return fallback;
+    }
+  }
+
+  async function recoverLocalHistoriesToServer() {
+    if (!IS_REMOTE) {
+      return { inserted: 0, total: 0, users: 0 };
+    }
+
+    const users = loadJson(GLOBAL_STORAGE_KEYS.USERS, []).filter(function (user) {
+      return user && user.id;
+    });
+
+    let inserted = 0;
+    let total = 0;
+    let touchedUsers = 0;
+
+    for (const user of users) {
+      const history = loadJson(`moonspell_user:${user.id}:${USER_STORAGE_FIELDS.HISTORY}`, []);
+      if (!Array.isArray(history) || !history.length) {
+        continue;
+      }
+
+      touchedUsers += 1;
+      total += history.length;
+
+      try {
+        const response = await fetch(`${API_BASE}/api/records/bulk`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user: user,
+            records: history,
+          }),
+        });
+        if (!response.ok) {
+          continue;
+        }
+        const payload = await response.json();
+        inserted += Number(payload.inserted || 0);
+      } catch (_error) {
+        // Keep page usable even if some recovery requests fail.
+      }
+    }
+
+    return { inserted: inserted, total: total, users: touchedUsers };
+  }
+
+  if (IS_REMOTE) {
+    const recovered = await recoverLocalHistoriesToServer();
+    if (recovered.inserted > 0) {
+      const refreshed = await fetchAdminData();
+      if (refreshed) {
+        apiData = refreshed;
+        IS_REMOTE = true;
+      }
+    }
+    if (recovered.total > 0) {
+      console.log('Recovery scan:', recovered);
     }
   }
 

@@ -850,18 +850,47 @@
     });
   }
 
+  function splitOptionIntoBlankParts(optionText) {
+    if (!optionText) {
+      return [""];
+    }
+    const segments = String(optionText)
+      .split(/(?:\s*(?:\.\s*\.\s*|\.{2,}|…+|[。.]\s*[。.])\s*|\s+[\/\\|]\s+)/)
+      .map(function (segment) {
+        return segment.trim();
+      })
+      .filter(Boolean);
+    return segments.length ? segments : [String(optionText)];
+  }
+
+  function normalizeTranslationDisplay(text) {
+    return String(text || "")
+      .replace(/[。.]\s*[。.]/g, " / ")
+      .replace(/\s*\/\s*\/\s*/g, " / ")
+      .replace(/\s*\/\s*/g, " / ")
+      .replace(/\s{2,}/g, " ")
+      .replace(/^\/\s*|\s*\/$/g, "")
+      .trim();
+  }
+
   function renderSentence(question, answerIndex, showAnswer) {
+    let fillText = "";
+    if (showAnswer && answerIndex >= 0) {
+      fillText = question.options[answerIndex].text;
+    } else if (state.selectedOptionIndex !== null && question.options[state.selectedOptionIndex]) {
+      fillText = question.options[state.selectedOptionIndex].text;
+    }
+
+    const fillParts = splitOptionIntoBlankParts(fillText);
+    let blankIndex = 0;
+
     return question.stem.split(/(_+|[\w'-]+)/g).map(function (part) {
       if (!part) {
         return "";
       }
       if (/^_+$/.test(part)) {
-        let fill = "";
-        if (showAnswer && answerIndex >= 0) {
-          fill = question.options[answerIndex].text;
-        } else if (state.selectedOptionIndex !== null && question.options[state.selectedOptionIndex]) {
-          fill = question.options[state.selectedOptionIndex].text;
-        }
+        const fill = fillParts[blankIndex] || fillParts[0] || "";
+        blankIndex += 1;
         return '<span class="blank-fill">' + escapeHtml(fill) + "</span>";
       }
       if (/^[A-Za-z][A-Za-z'-]*$/.test(part) && part.length >= 3) {
@@ -885,7 +914,7 @@
     if (entry.error) {
       return '<span class="option-translation option-translation--muted">中文暂不可用</span>';
     }
-    return '<span class="option-translation">中: ' + escapeHtml(entry.translation || "") + "</span>";
+    return '<span class="option-translation">中: ' + escapeHtml(normalizeTranslationDisplay(entry.translation || "")) + "</span>";
   }
 
   function optionGlossaryMarkup(question) {

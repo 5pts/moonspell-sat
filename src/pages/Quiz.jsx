@@ -312,7 +312,7 @@ export default function Quiz({ mode, timeAttack }) {
   const splitOptionIntoBlankParts = useCallback((optionText) => {
     if (!optionText) return [''];
     const segments = String(optionText)
-      .split(/\s*\.\.\s*/)
+      .split(/(?:\s*(?:\.\s*\.\s*|\.{2,}|…+|[。.]\s*[。.])\s*|\s+[\/\\|]\s+)/)
       .map((segment) => segment.trim())
       .filter(Boolean);
     return segments.length > 0 ? segments : [String(optionText)];

@@ -72,6 +72,11 @@ export default function Home({ username, currentUser, onLogout, setTimeAttack, t
             <span className="font-brutal-body text-sm md:text-base opacity-80 mt-1">查看收藏生词，规划复习，并从里面进入 flashcards</span>
           </button>
 
+          <button onClick={() => navigate('/barron')} className="w-full py-3 md:py-5 px-4 md:px-6 theme-bg-green theme-text-on-color border-2 md:border-4 theme-border brutal-shadow brutal-btn flex flex-col items-start">
+            <span className="font-brutal-title text-lg md:text-2xl uppercase">BARRON LESSONS -{'>'}</span>
+            <span className="font-brutal-body text-sm md:text-base opacity-80 mt-1">按 Lesson 背巴朗词汇，收藏词会同步进你的账号生词本</span>
+          </button>
+
           <button onClick={() => navigate('/data-board')} className="w-full py-3 md:py-5 px-4 md:px-6 theme-bg-card theme-text-primary border-2 md:border-4 theme-border brutal-shadow brutal-btn flex flex-col items-start">
             <span className="font-brutal-title text-lg md:text-2xl uppercase">DATA BOARD -{'>'}</span>
             <span className="font-brutal-body text-sm md:text-base opacity-60 mt-1">查看正确率、分组表现、错题优先队列、收藏题和收藏选项</span>
