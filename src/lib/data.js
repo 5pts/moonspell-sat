@@ -35,6 +35,7 @@ const wordbookSyncTimers = new Map();
 const wordbookSyncInFlight = new Set();
 const wordbookSyncLastRunAt = new Map();
 const wordbookHydratedUsers = new Set();
+const wordbookRemoteReachableUsers = new Set();
 
 const BARRON_WORDS = Array.isArray(barronWordsData) ? barronWordsData : [];
 const BARRON_LESSON_THEMES = {
@@ -285,27 +286,54 @@ const scheduleUserHistorySync = (user, { force = false, delayMs = 900 } = {}) =>
 
 const hydrateWordBookmarksFromServer = async (user, { force = false } = {}) => {
   const userId = user?.id;
-  if (!userId) return getUserWordBookmarks(userId);
+  if (!userId) {
+    return {
+      words: getUserWordBookmarks(userId),
+      remoteOk: false,
+      merged: false,
+    };
+  }
 
   if (!force && wordbookHydratedUsers.has(userId)) {
-    return getUserWordBookmarks(userId);
+    return {
+      words: getUserWordBookmarks(userId),
+      remoteOk: wordbookRemoteReachableUsers.has(userId),
+      merged: false,
+    };
   }
 
   const localWords = getUserWordBookmarks(userId);
   const remoteWords = await api.fetchWordbook(userId);
   if (!Array.isArray(remoteWords)) {
-    return localWords;
+    wordbookRemoteReachableUsers.delete(userId);
+    return {
+      words: localWords,
+      remoteOk: false,
+      merged: false,
+    };
   }
 
   const mergedWords = normalizeWordBookmarksList([...localWords, ...remoteWords]);
   setUserStorage(USER_STORAGE_FIELDS.WORD_BOOKMARKS, mergedWords, userId);
   wordbookHydratedUsers.add(userId);
-  return mergedWords;
+  wordbookRemoteReachableUsers.add(userId);
+  return {
+    words: mergedWords,
+    remoteOk: true,
+    merged: true,
+  };
 };
 
 const pushWordBookmarksToServer = async (user, { force = false } = {}) => {
   const userId = user?.id;
   if (!userId) return null;
+
+  if (!wordbookHydratedUsers.has(userId)) {
+    const hydrateResult = await hydrateWordBookmarksFromServer(user);
+    if (!hydrateResult?.remoteOk) {
+      return null;
+    }
+  }
 
   const now = Date.now();
   const lastRunAt = wordbookSyncLastRunAt.get(userId) || 0;
@@ -322,7 +350,11 @@ const pushWordBookmarksToServer = async (user, { force = false } = {}) => {
     const result = await api.replaceWordbook(user, words);
     if (result?.success) {
       wordbookSyncLastRunAt.set(userId, Date.now());
+      wordbookRemoteReachableUsers.add(userId);
       return result;
+    }
+    if (force) {
+      wordbookRemoteReachableUsers.delete(userId);
     }
     return null;
   } finally {
@@ -1003,8 +1035,10 @@ export const DataManager = {
     const user = getCurrentUserFromStorage();
     if (user?.id) {
       scheduleUserHistorySync(user);
-      hydrateWordBookmarksFromServer(user).then(() => {
-        scheduleWordbookSync(user, { force: true, delayMs: 500 });
+      hydrateWordBookmarksFromServer(user).then((hydrateResult) => {
+        if (hydrateResult?.remoteOk) {
+          scheduleWordbookSync(user, { force: true, delayMs: 500 });
+        }
       }).catch(() => {});
     }
     return user;
@@ -1042,8 +1076,10 @@ export const DataManager = {
     setCurrentUser(nextUser);
     scheduleUserHistorySync(nextUser, { force: true, delayMs: 400 });
     hydrateWordBookmarksFromServer(nextUser, { force: true })
-      .then(() => {
-        scheduleWordbookSync(nextUser, { force: true, delayMs: 600 });
+      .then((hydrateResult) => {
+        if (hydrateResult?.remoteOk) {
+          scheduleWordbookSync(nextUser, { force: true, delayMs: 600 });
+        }
       })
       .catch(() => {});
     return { user: nextUser };
@@ -1068,8 +1104,10 @@ export const DataManager = {
     setCurrentUser(nextUser);
     scheduleUserHistorySync(nextUser, { force: true, delayMs: 400 });
     hydrateWordBookmarksFromServer(nextUser, { force: true })
-      .then(() => {
-        scheduleWordbookSync(nextUser, { force: true, delayMs: 600 });
+      .then((hydrateResult) => {
+        if (hydrateResult?.remoteOk) {
+          scheduleWordbookSync(nextUser, { force: true, delayMs: 600 });
+        }
       })
       .catch(() => {});
     return { user: nextUser };
@@ -1192,7 +1230,14 @@ export const DataManager = {
   syncWordbookNow: async () => {
     const user = getCurrentUserFromStorage();
     if (!user?.id) return null;
-    await hydrateWordBookmarksFromServer(user, { force: true });
+    const hydrateResult = await hydrateWordBookmarksFromServer(user, { force: true });
+    if (!hydrateResult?.remoteOk) {
+      return {
+        success: false,
+        reason: 'remote_unavailable',
+        words: hydrateResult?.words || getUserWordBookmarks(user.id),
+      };
+    }
     return pushWordBookmarksToServer(user, { force: true });
   },
 
