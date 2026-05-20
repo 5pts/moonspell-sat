@@ -27,6 +27,8 @@ jobs:
       - run: npm ci
 
       - run: npm run build
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
 
       - name: Copy index.html as 404.html for SPA routing
         run: cp dist/index.html dist/404.html
