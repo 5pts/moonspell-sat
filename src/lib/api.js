@@ -36,9 +36,22 @@ const resolveInitialBase = () => {
 };
 
 let apiBase = resolveInitialBase();
+const wordbookPullState = new Map();
 
 const buildApiUrl = (pathname) =>
   `${apiBase}${pathname.startsWith('/') ? pathname : `/${pathname}`}`;
+
+const normalizeWordList = (words = []) =>
+  [...new Set(
+    (words || [])
+      .map((word) =>
+        String(word || '')
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z'-]/g, '')
+      )
+      .filter(Boolean)
+  )];
 
 const readJsonIfOk = async (response) => {
   if (!response.ok) return null;
@@ -131,32 +144,59 @@ export const api = {
 
   // 拉取账号收藏单词
   fetchWordbook: async (userId) => {
+    const safeUserId = String(userId || '').trim();
+    if (!safeUserId) return null;
     try {
       const response = await fetch(
         buildApiUrl(
-          `/api/wordbook?userId=${encodeURIComponent(String(userId || '').trim())}`
+          `/api/wordbook?userId=${encodeURIComponent(safeUserId)}`
         )
       );
       const payload = await readJsonIfOk(response);
-      if (!payload) return null;
-      return Array.isArray(payload.words) ? payload.words : [];
+      if (!payload) {
+        wordbookPullState.set(safeUserId, false);
+        return null;
+      }
+      const words = Array.isArray(payload.words) ? payload.words : [];
+      wordbookPullState.set(safeUserId, true);
+      return normalizeWordList(words);
     } catch (error) {
       console.error('Wordbook fetch API Error:', error);
+      wordbookPullState.set(safeUserId, false);
       return null;
     }
   },
 
   // 全量覆盖账号收藏单词
   replaceWordbook: async (user, words) => {
+    const safeUserId = String(user?.id || '').trim();
+    if (!safeUserId) return null;
+
     try {
+      let payloadWords = normalizeWordList(words);
+
+      // Safety net: if we have not confirmed a successful pull this session,
+      // fetch once before replace and merge to avoid accidental cloud wipe.
+      if (!wordbookPullState.get(safeUserId)) {
+        const remoteWords = await api.fetchWordbook(safeUserId);
+        if (!Array.isArray(remoteWords)) {
+          return null;
+        }
+        payloadWords = normalizeWordList([...remoteWords, ...payloadWords]);
+      }
+
       const response = await fetch(buildApiUrl('/api/wordbook'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user, words }),
+        body: JSON.stringify({ user, words: payloadWords }),
       });
-      return await readJsonIfOk(response);
+      const payload = await readJsonIfOk(response);
+      if (payload?.success) {
+        wordbookPullState.set(safeUserId, true);
+      }
+      return payload;
     } catch (error) {
       console.error('Wordbook replace API Error:', error);
       return null;
