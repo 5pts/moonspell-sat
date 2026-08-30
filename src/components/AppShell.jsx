@@ -8,6 +8,7 @@ import {
   Sun,
 } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
+import FloatingBackground from './FloatingBackground';
 
 const primaryNav = [
   { to: '/', label: '今日', icon: BookOpenText, end: true },
@@ -23,6 +24,7 @@ export default function AppShell({ currentUser, onLogout, theme, onToggleTheme, 
   return (
     <div className={`app-shell ${immersive ? 'app-shell--immersive' : ''}`}>
       <a className="skip-link" href="#main-content">跳到主要内容</a>
+      {!immersive ? <FloatingBackground /> : null}
 
       {!immersive ? (
         <header className="topbar">

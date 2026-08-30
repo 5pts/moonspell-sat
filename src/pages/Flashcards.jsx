@@ -109,6 +109,24 @@ export default function Flashcards({ defaultTab = 'wordbook' }) {
     setVersion((value) => value + 1);
   };
 
+  useEffect(() => {
+    if (tab !== 'review' || !currentEntry) return undefined;
+    const handleKeyDown = (event) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+      if (event.code === 'Space') {
+        event.preventDefault();
+        setRevealed((value) => !value);
+        return;
+      }
+      if (!revealed) return;
+      if (event.key === '1') grade('again');
+      if (event.key === '2') grade('unsure');
+      if (event.key === '3') grade('good');
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentEntry, revealed, tab]);
+
   return (
     <div className="wordbook-page page-enter">
       <header className="page-title-row">
@@ -206,45 +224,55 @@ export default function Flashcards({ defaultTab = 'wordbook' }) {
 
           {currentEntry ? (
             <>
-              <article className={`memory-card ${revealed ? 'is-revealed' : ''}`}>
-                <div className="memory-card__prompt">
-                  <span>{currentEntry.partOfSpeech || 'word'}</span>
-                  <h2>{currentEntry.word}</h2>
-                  <button type="button" className="audio-button" onClick={() => speakWord(currentEntry.word)}>
-                    <Volume2 size={18} /> {currentEntry.phonetic || '播放发音'}
-                  </button>
-                  <p>回忆词义。</p>
-                </div>
-
-                {revealed ? (
-                  <div className="memory-card__answer">
-                    <span>语境义</span>
-                    <h3>{currentEntry.barronZh || currentEntry.shortDefs?.[0] || '暂无可靠中文释义'}</h3>
-                    {(currentEntry.shortDefs || []).slice(0, 2).map((definition) => <p key={definition}>{definition}</p>)}
-
-                    <div className="memory-hook-area">
-                      <h4>巧记</h4>
-                      {currentEntry.memoryHooks?.length ? (
-                        currentEntry.memoryHooks.map((hook) => (
-                          <div key={hook.text}>
-                            <strong>{hook.title}</strong>
-                            <p>{hook.text}</p>
-                            {!hook.reviewed ? <span>待复核联想</span> : <span>已复核</span>}
-                          </div>
-                        ))
-                      ) : (
-                        <p className="quality-note">暂无巧记。</p>
-                      )}
+              <div className={`memory-card-stage ${revealed ? 'is-revealed' : ''}`}>
+                <article className="memory-card">
+                  <div className="memory-card__face memory-card__front" aria-hidden={revealed} inert={revealed ? '' : undefined}>
+                    <div className="memory-card__prompt">
+                      <span>{currentEntry.partOfSpeech || 'word'}</span>
+                      <h2>{currentEntry.word}</h2>
+                      <button type="button" className="audio-button" onClick={() => speakWord(currentEntry.word)}>
+                        <Volume2 size={18} /> {currentEntry.phonetic || '播放发音'}
+                      </button>
+                      <p>回忆词义。</p>
                     </div>
-
-                    {currentEntry.relatedQuestionIds?.length ? (
-                      <Link to={`/quiz?question=${currentEntry.relatedQuestionIds[0]}`} className="text-action">
-                        回到关联题目 <ArrowRight size={16} />
-                      </Link>
-                    ) : null}
                   </div>
-                ) : null}
-              </article>
+                  <div className="memory-card__face memory-card__back" aria-hidden={!revealed} inert={!revealed ? '' : undefined}>
+                    <div className="memory-card__prompt memory-card__prompt--compact">
+                      <span>{currentEntry.partOfSpeech || 'word'}</span>
+                      <h2>{currentEntry.word}</h2>
+                      <button type="button" className="audio-button" onClick={() => speakWord(currentEntry.word)}>
+                        <Volume2 size={18} /> {currentEntry.phonetic || '播放发音'}
+                      </button>
+                    </div>
+                    <div className="memory-card__answer">
+                      <span>语境义</span>
+                      <h3>{currentEntry.barronZh || currentEntry.shortDefs?.[0] || '暂无可靠中文释义'}</h3>
+                      {(currentEntry.shortDefs || []).slice(0, 2).map((definition) => <p key={definition}>{definition}</p>)}
+
+                      <div className="memory-hook-area">
+                        <h4>巧记</h4>
+                        {currentEntry.memoryHooks?.length ? (
+                          currentEntry.memoryHooks.map((hook) => (
+                            <div key={hook.text}>
+                              <strong>{hook.title}</strong>
+                              <p>{hook.text}</p>
+                              {!hook.reviewed ? <span>待复核联想</span> : <span>已复核</span>}
+                            </div>
+                          ))
+                        ) : (
+                          <p className="quality-note">暂无巧记。</p>
+                        )}
+                      </div>
+
+                      {currentEntry.relatedQuestionIds?.length ? (
+                        <Link to={`/quiz?question=${currentEntry.relatedQuestionIds[0]}`} className="text-action">
+                          回到关联题目 <ArrowRight size={16} />
+                        </Link>
+                      ) : null}
+                    </div>
+                  </div>
+                </article>
+              </div>
 
               {!revealed ? (
                 <button type="button" className="primary-action reveal-action" onClick={() => setRevealed(true)}>
@@ -257,6 +285,7 @@ export default function Flashcards({ defaultTab = 'wordbook' }) {
                   <button type="button" className="is-primary" onClick={() => grade('good')}><strong>清楚记得</strong><span>拉长间隔</span></button>
                 </div>
               )}
+              <p className="review-hotkeys">Space 翻面 · 1 / 2 / 3 评分</p>
             </>
           ) : (
             <div className="empty-state review-complete">

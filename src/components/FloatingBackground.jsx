@@ -1,48 +1,41 @@
-import React, { useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 
-const FloatingBackground = () => {
-  const symbols = ['+', '×', '÷', '=', '>', '<', '[ ]', '{ }', 'SAT', 'VERB', 'NOUN', '☽', '☾', '✧', 'A', 'B', 'C', 'D', '///', '\\\\'];
-  const colors = [
-    'var(--text-primary)', 'var(--text-primary)', 'var(--text-primary)', 
-    'var(--accent-blue)', 'var(--accent-orange)', 'var(--accent-red)'
-  ];
-  
-  const elements = useMemo(() => {
-    return Array.from({ length: 45 }).map((_, i) => ({
-      id: i,
-      char: symbols[Math.floor(Math.random() * symbols.length)],
-      color: colors[Math.floor(Math.random() * colors.length)],
-      left: `${Math.random() * 100}%`,
-      fontSize: `${Math.random() * 4 + 2}rem`,
-      animationDuration: `${Math.random() * 20 + 10}s`,
-      animationDelay: `-${Math.random() * 30}s`,
-      opacity: Math.random() * 0.15 + 0.05,
-    }));
+const shapes = ['circle', 'square', 'bar', 'ring', 'half', 'dot'];
+
+export default function FloatingBackground() {
+  const layerRef = useRef(null);
+
+  useEffect(() => {
+    const layer = layerRef.current;
+    const finePointer = window.matchMedia('(pointer: fine)').matches;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!layer || !finePointer || reducedMotion) return undefined;
+
+    let frame = 0;
+    const handlePointerMove = (event) => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        const x = ((event.clientX / window.innerWidth) - 0.5) * 18;
+        const y = ((event.clientY / window.innerHeight) - 0.5) * 18;
+        layer.style.setProperty('--pointer-x', `${x.toFixed(2)}px`);
+        layer.style.setProperty('--pointer-y', `${y.toFixed(2)}px`);
+      });
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('pointermove', handlePointerMove);
+    };
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 1 }}>
-      {elements.map(el => (
-        <div
-          key={el.id}
-          className="absolute font-pixel-eng theme-transition"
-          style={{
-            left: el.left,
-            top: '100%',
-            color: el.color,
-            fontSize: el.fontSize,
-            opacity: el.opacity,
-            fontWeight: 'bold',
-            '--duration': el.animationDuration,
-            animation: `asciiFloat calc(var(--duration) * var(--bg-speed, 1)) linear infinite`,
-            animationDelay: el.animationDelay,
-          }}
-        >
-          {el.char}
-        </div>
+    <div ref={layerRef} className="motion-backdrop" aria-hidden="true">
+      {shapes.map((shape, index) => (
+        <span key={shape} className={`motion-shape motion-shape--${index + 1}`}>
+          <i className={`motion-shape__form motion-shape__form--${shape}`} />
+        </span>
       ))}
     </div>
   );
-};
-
-export default FloatingBackground;
+}

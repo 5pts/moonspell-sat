@@ -250,7 +250,7 @@ export default function Quiz({ mode, timeAttack }) {
         <Link to="/" className="quiz-back"><ArrowLeft size={18} /> 返回</Link>
         <span className="wordmark quiz-wordmark">MOONSPELL</span>
         <div className="quiz-topbar__meta">
-          {timeAttack ? <span className="timer"><Clock3 size={17} /> {timeLeft}s</span> : null}
+          {timeAttack ? <span className={`timer ${timeLeft <= 10 ? 'timer--urgent' : ''}`}><Clock3 size={17} /> {timeLeft}s</span> : null}
           <span className="tabular">{currentIndex + 1} / {filteredQuestions.length}</span>
           <span>{dueOnly ? '复习' : mode === 'ERROR' ? '错题' : '题库'}</span>
           <button
@@ -291,7 +291,7 @@ export default function Quiz({ mode, timeAttack }) {
         </nav>
       </aside>
 
-      <article className="question-workspace">
+      <article key={currentQuestion.id} className="question-workspace question-swap">
         <header className="question-meta">
           <div>
             <strong>{currentQuestion.id}</strong>
