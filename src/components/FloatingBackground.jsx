@@ -1,6 +1,16 @@
 import { useEffect, useRef } from 'react';
 
 const shapes = ['circle', 'square', 'bar', 'ring', 'half', 'dot'];
+const asciiSignals = [
+  { text: 'SAT', left: '8%', duration: '24s', delay: '-7s' },
+  { text: '[A]', left: '18%', duration: '28s', delay: '-20s' },
+  { text: 'NOUN', left: '31%', duration: '31s', delay: '-12s' },
+  { text: '×', left: '43%', duration: '21s', delay: '-16s' },
+  { text: '{ }', left: '55%', duration: '29s', delay: '-4s' },
+  { text: 'VERB', left: '67%', duration: '26s', delay: '-23s' },
+  { text: '///', left: '78%', duration: '33s', delay: '-18s' },
+  { text: '[D]', left: '90%', duration: '25s', delay: '-9s' },
+];
 
 export default function FloatingBackground() {
   const layerRef = useRef(null);
@@ -36,6 +46,21 @@ export default function FloatingBackground() {
           <i className={`motion-shape__form motion-shape__form--${shape}`} />
         </span>
       ))}
+      <div className="ascii-field">
+        {asciiSignals.map((signal) => (
+          <span
+            key={`${signal.text}-${signal.left}`}
+            className="ascii-signal"
+            style={{
+              '--ascii-left': signal.left,
+              '--ascii-duration': signal.duration,
+              '--ascii-delay': signal.delay,
+            }}
+          >
+            {signal.text}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }

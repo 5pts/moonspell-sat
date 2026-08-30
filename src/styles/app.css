@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=VT323&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,7 +24,7 @@
   --header-height: 74px;
   --mobile-nav-height: 76px;
   --content-width: 1380px;
-  font-family: Aptos, "Segoe UI Variable", "Segoe UI", "Noto Sans SC", sans-serif;
+  font-family: "Space Grotesk", Aptos, "Segoe UI Variable", "Segoe UI", "Noto Sans SC", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -1146,6 +1148,23 @@ button:disabled { cursor: not-allowed; opacity: 0.46; }
 .motion-shape__form--ring { border-width: 24px; border-radius: 50%; border-color: var(--cobalt); animation: bauhaus-drift 13s -6s ease-in-out infinite; }
 .motion-shape__form--half { border-radius: 100px 100px 0 0; background: var(--coral); animation: bauhaus-turn 24s linear infinite reverse; }
 .motion-shape__form--dot { border-radius: 50%; background: var(--ochre); animation: bauhaus-pulse 4.5s ease-in-out infinite; }
+.ascii-field { position: absolute; inset: 0; overflow: hidden; }
+.ascii-signal {
+  position: absolute;
+  left: var(--ascii-left);
+  bottom: -12vh;
+  color: var(--ink);
+  opacity: .075;
+  font: 400 clamp(1.6rem, 3vw, 3.2rem)/1 "VT323", monospace;
+  letter-spacing: .08em;
+  animation: ascii-rise var(--ascii-duration) var(--ascii-delay) linear infinite;
+}
+.ascii-signal:nth-child(3n + 1) { color: var(--cobalt); }
+.ascii-signal:nth-child(3n + 2) { color: var(--coral); }
+@keyframes ascii-rise {
+  from { transform: translate3d(0, 10vh, 0) rotate(0deg); }
+  to { transform: translate3d(0, -125vh, 0) rotate(360deg); }
+}
 
 @keyframes bauhaus-drift {
   0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
@@ -1330,11 +1349,68 @@ button:disabled { cursor: not-allowed; opacity: 0.46; }
 .review-grades button:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--line); }
 .review-hotkeys { margin: 18px 0 0; text-align: center; color: var(--ink-soft); font: 700 .72rem/1.5 "Cascadia Mono", monospace; }
 
+/* Original Moonspell accents: deliberately limited to branding and controls. */
+.app-shell::after,
+.login-page::after {
+  content: '';
+  position: fixed;
+  z-index: 40;
+  inset: 0;
+  pointer-events: none;
+  opacity: .026;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.wordmark {
+  font-family: "Press Start 2P", "Cascadia Mono", monospace;
+  font-size: .88rem;
+  letter-spacing: .08em;
+}
+.page-kicker,
+.tabular,
+.word-list-row__index,
+.due-list__index,
+.lexicon-count,
+.lexicon-row__word small,
+.review-hotkeys {
+  font-family: "VT323", "Cascadia Mono", monospace;
+  letter-spacing: .09em;
+}
+.page-kicker { font-size: 1rem; line-height: 1; }
+.question-meta strong,
+.answer-letter {
+  font-family: "Press Start 2P", "Cascadia Mono", monospace;
+  font-size: .72rem;
+}
+.memory-card__front .memory-card__prompt h2 {
+  max-width: 12ch;
+  font-family: "Press Start 2P", "Space Grotesk", sans-serif;
+  font-size: clamp(2rem, 5vw, 4.7rem);
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+  text-shadow: 5px 5px 0 color-mix(in srgb, var(--cobalt) 35%, transparent);
+}
+.login-story .login-poster h1 {
+  font-family: "Press Start 2P", "Arial Black", sans-serif;
+  font-size: clamp(3.4rem, 6.2vw, 6.8rem);
+  line-height: 1.02;
+  letter-spacing: -.075em;
+  text-shadow: 7px 7px 0 var(--cobalt);
+}
+.primary-action:hover:not(:disabled) { transform: translate(-3px, -3px) rotate(-1deg); box-shadow: 8px 8px 0 var(--line); }
+.secondary-action:hover:not(:disabled) { transform: translate(-2px, -2px) rotate(.6deg); }
+.home-work-grid .due-panel,
+.memory-card__face,
+.profile-panel {
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 12px, color-mix(in srgb, var(--line) 2.8%, transparent) 12px, color-mix(in srgb, var(--line) 2.8%, transparent) 24px);
+}
+
 @media (max-width: 860px) {
   .motion-backdrop { inset: 64px 0 var(--mobile-nav-height); }
   .motion-shape { opacity: .055; }
   .motion-shape--3,
   .motion-shape--6 { display: none; }
+  .ascii-signal { opacity: .055; }
+  .ascii-signal:nth-child(even) { display: none; }
   .status-block:hover,
   .answer-row:hover:not(.is-correct):not(.is-wrong),
   .word-list-row:hover,
@@ -1344,4 +1420,6 @@ button:disabled { cursor: not-allowed; opacity: 0.46; }
   .memory-card__back { grid-template-columns: 1fr; grid-template-rows: 190px minmax(0, 1fr); }
   .memory-card__back .memory-card__prompt { min-height: 190px; padding: 22px; border-right: 0; border-bottom: 3px solid var(--line); }
   .memory-card__back .memory-card__answer { padding: 26px 20px; }
+  .login-story .login-poster h1 { font-size: clamp(2.8rem, 13vw, 4.7rem); text-shadow: 5px 5px 0 var(--cobalt); }
+  .memory-card__front .memory-card__prompt h2 { font-size: clamp(1.8rem, 8vw, 3rem); }
 }
