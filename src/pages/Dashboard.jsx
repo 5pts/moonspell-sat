@@ -1,257 +1,182 @@
-import React from 'react';
+import {
+  ArrowRight,
+  BarChart3,
+  Bookmark,
+  CalendarClock,
+  CircleAlert,
+  Gauge,
+  Target,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { DataManager } from '../lib/data';
 
-function formatTime(value) {
-  if (!value) return 'No record yet';
-  try {
-    return new Date(value).toLocaleString();
-  } catch (_error) {
-    return value;
-  }
+function percent(value, fallback = '—') {
+  return value === null || value === undefined ? fallback : `${value}%`;
 }
 
-function StatCard({ label, value, tone = 'theme-text-primary', note }) {
-  return (
-    <div className="border-2 md:border-4 theme-border p-4 md:p-6 theme-bg-panel brutal-shadow">
-      <div className="font-pixel-eng text-sm md:text-lg opacity-70 mb-2 theme-text-primary">{label}</div>
-      <div className={`font-brutal-title text-3xl md:text-5xl ${tone}`}>{value}</div>
-      {note ? <div className="mt-2 font-brutal-body text-sm theme-text-muted">{note}</div> : null}
-    </div>
-  );
+function formatRelative(value) {
+  if (!value) return '尚未练习';
+  const diff = Date.now() - new Date(value).getTime();
+  const days = Math.floor(diff / 86400000);
+  if (days > 0) return `${days} 天前`;
+  const hours = Math.floor(diff / 3600000);
+  if (hours > 0) return `${hours} 小时前`;
+  return '刚刚';
 }
 
 export default function Dashboard() {
   const dashboard = DataManager.getDashboardData();
-  const { overview, sectionStats, focusQueue, bookmarkedQuestions, savedOptions, recentActivity } = dashboard;
+  const learning = DataManager.getLearningSummary();
+  const events = DataManager.getReviewEvents();
+  const confidenceRows = ['low', 'medium', 'high'].map((confidence) => {
+    const rows = events.filter((event) => event.confidence === confidence);
+    const correct = rows.filter((event) => event.correct).length;
+    return {
+      confidence,
+      label: confidence === 'low' ? '低信心' : confidence === 'medium' ? '中信心' : '高信心',
+      attempts: rows.length,
+      accuracy: rows.length ? Math.round((correct / rows.length) * 100) : 0,
+    };
+  });
 
   return (
-    <div className="w-full max-w-6xl flex flex-col items-center animate-fade-in-up z-10 px-4 pb-16">
-      <div className="theme-bg-card border-2 md:border-4 theme-border brutal-shadow-lg p-4 md:p-8 w-full stripe-bg mt-6 md:mt-10">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-8">
-          <div>
-            <h2 className="font-pixel-title text-2xl md:text-4xl theme-text-blue uppercase pixel-text-outline leading-tight">
-              Mission Report
-            </h2>
-            <p className="font-brutal-body text-sm md:text-base theme-text-muted mt-3 max-w-2xl">
-              这个页面现在直接读取本地答题历史、错题、收藏题和单词数据，不再只是 demo。你可以从这里继续练题、跳到具体错题，或者打开完整数据看板。
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <Link
-              to="/quiz"
-              className="theme-bg-green theme-text-on-color border-2 md:border-4 theme-border brutal-shadow brutal-btn px-4 py-3 font-brutal-title text-sm md:text-base uppercase no-underline"
-            >
-              Continue Practice
-            </Link>
-            <Link
-              to="/wordbook"
-              className="theme-bg-orange theme-text-on-orange border-2 md:border-4 theme-border brutal-shadow brutal-btn px-4 py-3 font-brutal-title text-sm md:text-base uppercase no-underline"
-            >
-              Wordbook
-            </Link>
-          </div>
+    <div className="insights-page page-enter">
+      <header className="page-title-row">
+        <div>
+          <p className="page-kicker">05 / DATA</p>
+          <h1>数据</h1>
         </div>
-
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 mb-8">
-          <StatCard label="Accuracy" value={`${overview.accuracy}%`} tone="theme-text-green" note={`${overview.correctCount || 0} correct attempts`} />
-          <StatCard label="Total Attempts" value={overview.totalAttempts} tone="theme-text-blue" note={`${overview.todayAttempts} attempts today`} />
-          <StatCard label="Current / Best Streak" value={`${overview.currentStreak} / ${overview.bestStreak}`} tone="theme-text-orange" note="实时根据本地答题历史计算" />
-          <StatCard label="Mistakes / Words / Options" value={`${overview.mistakes} / ${overview.wordBookmarks} / ${overview.optionBookmarks}`} tone="theme-text-red" note={`${overview.bookmarks} bookmarked questions`} />
+        <div className="page-title-actions">
+          <Link to="/quiz?review=due" className="primary-action">复习到期内容 <ArrowRight size={18} /></Link>
+          <Link to="/quiz" className="secondary-action">继续练习</Link>
         </div>
+      </header>
 
-        <div className="grid grid-cols-1 xl:grid-cols-[1.25fr_0.95fr] gap-6 mb-8">
-          <section className="border-2 md:border-4 theme-border p-4 md:p-6 theme-bg-panel brutal-shadow">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h3 className="font-brutal-title text-xl md:text-2xl">Section Performance</h3>
-              <span className="font-pixel-eng text-sm theme-text-muted">accuracy by section</span>
-            </div>
-            <div className="grid gap-4">
-              {sectionStats.map((section) => (
-                <div key={section.code} className="border-2 theme-border bg-white/80 p-4">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
-                    <div>
-                      <div className="font-brutal-title text-lg">{section.code}</div>
-                      <div className="font-brutal-body text-sm theme-text-muted">{section.displayName}</div>
-                    </div>
-                    <div className="flex flex-wrap gap-2 font-pixel-eng text-sm">
-                      <span className="px-2 py-1 border-2 theme-border">{section.attempts} attempts</span>
-                      <span className="px-2 py-1 border-2 theme-border">{section.mistakeCount} mistakes</span>
-                      <span className="px-2 py-1 border-2 theme-border">{section.bookmarkCount} saved</span>
-                      <span className="px-2 py-1 border-2 theme-border">{section.optionBookmarkCount} option saves</span>
-                    </div>
-                  </div>
-                  <div className="w-full h-5 border-2 theme-border theme-bg-card overflow-hidden">
-                    <div
-                      className="h-full theme-bg-blue transition-all duration-500"
-                      style={{ width: `${Math.max(section.accuracy, section.attempts ? 4 : 0)}%` }}
-                    />
-                  </div>
-                  <div className="mt-2 font-brutal-body text-sm theme-text-primary">
-                    Accuracy: <strong>{section.attempts ? `${section.accuracy}%` : 'No attempts yet'}</strong>
-                  </div>
+      <section className="evidence-strip" aria-label="关键学习指标">
+        <div>
+          <Target size={22} />
+          <span>隔日正确率</span>
+          <strong>{percent(learning.delayedRetention)}</strong>
+          <small>跨天复习</small>
+        </div>
+        <div>
+          <Gauge size={22} />
+          <span>把握误差</span>
+          <strong>{percent(learning.calibrationError)}</strong>
+          <small>越低越好</small>
+        </div>
+        <div>
+          <CalendarClock size={22} />
+          <span>当前到期</span>
+          <strong>{learning.counts.due}</strong>
+          <small>约 {learning.estimatedMinutes} 分钟</small>
+        </div>
+        <div>
+          <BarChart3 size={22} />
+          <span>累计作答</span>
+          <strong>{dashboard.overview.totalAttempts}</strong>
+          <small>{dashboard.overview.uniqueAnswered} 道不同题目</small>
+        </div>
+      </section>
+
+      <div className="insights-grid">
+        <section className="mastery-panel">
+          <div className="section-heading-row">
+            <div><p className="page-kicker">STATUS</p><h2>记忆状态</h2></div>
+            <span>{learning.counts.new + learning.counts.learning + learning.counts.due + learning.counts.stable} 个学习项目</span>
+          </div>
+          <div className="mastery-bars">
+            {[
+              ['新内容', learning.counts.new, 'new'],
+              ['学习中', learning.counts.learning, 'learning'],
+              ['已到期', learning.counts.due, 'due'],
+              ['已稳定', learning.counts.stable, 'stable'],
+            ].map(([label, value, status]) => {
+              const total = Math.max(1, learning.counts.new + learning.counts.learning + learning.counts.due + learning.counts.stable);
+              return (
+                <div key={status}>
+                  <span>{label}<b>{value}</b></span>
+                  <div><i className={`is-${status}`} style={{ width: `${Math.max(value ? 2 : 0, (value / total) * 100)}%` }} /></div>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="border-2 md:border-4 theme-border p-4 md:p-6 theme-bg-panel brutal-shadow">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h3 className="font-brutal-title text-xl md:text-2xl">Focus Queue</h3>
-              <span className="font-pixel-eng text-sm theme-text-muted">priority mistake review</span>
-            </div>
-
-            {focusQueue.length === 0 ? (
-              <div className="font-brutal-body theme-text-muted">No active mistakes yet. Start a practice round first.</div>
-            ) : (
-              <div className="grid gap-3">
-                {focusQueue.map((item) => (
-                  <div key={item.id} className="border-2 theme-border bg-white/80 p-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="font-brutal-title text-lg">{item.id}</div>
-                        <div className="font-brutal-body text-sm theme-text-muted">{item.question.localId} · {item.question.sectionCode}</div>
-                      </div>
-                      <Link
-                        to={`/quiz-error?question=${item.id}`}
-                        className="button theme-bg-red theme-text-on-color border-2 theme-border brutal-shadow px-3 py-2 font-brutal-title text-xs uppercase no-underline"
-                      >
-                        Review
-                      </Link>
-                    </div>
-                    <p className="font-brutal-body text-sm mt-3 leading-relaxed">
-                      {item.question.sentence.slice(0, 140)}
-                      {item.question.sentence.length > 140 ? '...' : ''}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mt-3 font-pixel-eng text-sm">
-                      <span className="px-2 py-1 border-2 theme-border">{item.wrong} wrong</span>
-                      <span className="px-2 py-1 border-2 theme-border">{item.correct} correct</span>
-                      <span className="px-2 py-1 border-2 theme-border">last {formatTime(item.lastSeen)}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
-          <section className="border-2 md:border-4 theme-border p-4 md:p-6 theme-bg-panel brutal-shadow">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h3 className="font-brutal-title text-xl md:text-2xl">Recent Activity</h3>
-              <span className="font-pixel-eng text-sm theme-text-muted">last 10 attempts</span>
-            </div>
-            {recentActivity.length === 0 ? (
-              <div className="font-brutal-body theme-text-muted">No activity yet.</div>
-            ) : (
-              <div className="grid gap-3">
-                {recentActivity.map((item) => (
-                  <Link
-                    key={item.id}
-                    to={`/quiz?question=${item.questionId}`}
-                    className="border-2 theme-border bg-white/80 p-4 no-underline brutal-btn"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <div className="font-brutal-title text-base md:text-lg">{item.questionId}</div>
-                        <div className="font-brutal-body text-sm theme-text-muted">{item.question.localId} · {item.question.sectionCode}</div>
-                      </div>
-                      <span className={`px-2 py-1 border-2 theme-border font-pixel-eng text-sm ${item.correct ? 'theme-bg-green theme-text-on-color' : 'theme-bg-red theme-text-on-color'}`}>
-                        {item.correct ? 'CORRECT' : 'WRONG'}
-                      </span>
-                    </div>
-                    <div className="font-brutal-body text-sm mt-3 leading-relaxed">
-                      {item.question.sentence.slice(0, 160)}
-                      {item.question.sentence.length > 160 ? '...' : ''}
-                    </div>
-                    <div className="font-pixel-eng text-xs theme-text-muted mt-3">{formatTime(item.at)}</div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section className="border-2 md:border-4 theme-border p-4 md:p-6 theme-bg-panel brutal-shadow">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h3 className="font-brutal-title text-xl md:text-2xl">Saved Question Queue</h3>
-              <span className="font-pixel-eng text-sm theme-text-muted">bookmark jump links</span>
-            </div>
-            {bookmarkedQuestions.length === 0 ? (
-              <div className="font-brutal-body theme-text-muted">No bookmarked questions yet.</div>
-            ) : (
-              <div className="grid gap-3">
-                {bookmarkedQuestions.map((question) => (
-                  <Link
-                    key={question.id}
-                    to={`/quiz?question=${question.id}`}
-                    className="border-2 theme-border bg-white/80 p-4 no-underline brutal-btn"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="font-brutal-title text-base md:text-lg">{question.id}</div>
-                      <span className="px-2 py-1 border-2 theme-border font-pixel-eng text-sm">{question.sectionCode}</span>
-                    </div>
-                    <div className="font-brutal-body text-sm theme-text-muted mt-2">{question.localId}</div>
-                    <div className="font-brutal-body text-sm mt-3 leading-relaxed">
-                      {question.sentence.slice(0, 160)}
-                      {question.sentence.length > 160 ? '...' : ''}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </section>
-        </div>
-
-        <section className="border-2 md:border-4 theme-border p-4 md:p-6 theme-bg-panel brutal-shadow mb-8">
-          <div className="flex items-center justify-between gap-3 mb-4">
-            <h3 className="font-brutal-title text-xl md:text-2xl">Saved Options</h3>
-            <span className="font-pixel-eng text-sm theme-text-muted">option-level bookmarks</span>
+              );
+            })}
           </div>
-          {savedOptions.length === 0 ? (
-            <div className="font-brutal-body theme-text-muted">No saved options yet.</div>
-          ) : (
-            <div className="grid gap-3">
-              {savedOptions.map((item) => (
-                <Link
-                  key={item.id}
-                  to={`/quiz?question=${item.questionId}`}
-                  className="border-2 theme-border bg-white/80 p-4 no-underline brutal-btn"
-                >
-                  <div className="flex items-start justify-between gap-3 flex-wrap">
-                    <div>
-                      <div className="font-brutal-title text-base md:text-lg">
-                        {item.questionId} · {item.option.label}. {item.option.text}
-                      </div>
-                      <div className="font-brutal-body text-sm theme-text-muted mt-1">{item.option.translation}</div>
-                    </div>
-                    <span className="px-2 py-1 border-2 theme-border font-pixel-eng text-sm">{item.question.sectionCode}</span>
-                  </div>
-                  <div className="font-brutal-body text-sm mt-3 leading-relaxed">
-                    {item.question.sentence.slice(0, 160)}
-                    {item.question.sentence.length > 160 ? '...' : ''}
-                  </div>
+        </section>
+
+        <section className="calibration-panel">
+          <div className="section-heading-row">
+            <div><p className="page-kicker">ACCURACY</p><h2>把握与正确率</h2></div>
+          </div>
+          <div className="calibration-chart">
+            {confidenceRows.map((row) => (
+              <div key={row.confidence}>
+                <span>{row.label}</span>
+                <div><i style={{ height: `${Math.max(row.accuracy ? 8 : 0, row.accuracy)}%` }} /></div>
+                <strong>{row.attempts ? `${row.accuracy}%` : '—'}</strong>
+                <small>{row.attempts} 次</small>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <section className="section-performance">
+        <div className="section-heading-row">
+          <div><p className="page-kicker">SECTIONS</p><h2>题组表现</h2></div>
+          <span>按全部历史记录计算</span>
+        </div>
+        <div className="section-performance__table">
+          <div className="section-performance__head"><span>题组</span><span>已作答</span><span>正确率</span><span>待修复</span><span>进度</span></div>
+          {dashboard.sectionStats.map((section) => (
+            <div key={section.code} className="section-performance__row">
+              <span><strong>{section.code}</strong><small>{section.displayName}</small></span>
+              <span>{section.attempts}</span>
+              <span>{section.attempts ? `${section.accuracy}%` : '—'}</span>
+              <span>{section.mistakeCount}</span>
+              <span className="row-progress"><i style={{ width: `${section.accuracy}%` }} /></span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="insights-grid insights-grid--lower">
+        <section className="focus-panel">
+          <div className="section-heading-row">
+            <div><p className="page-kicker">WRONG</p><h2>错题</h2></div>
+            <CircleAlert size={21} />
+          </div>
+          {dashboard.focusQueue.length ? (
+            <div className="focus-list">
+              {dashboard.focusQueue.slice(0, 6).map((item, index) => (
+                <Link key={item.id} to={`/quiz-error?question=${item.id}`}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <div><strong>{item.question.answerText || item.id}</strong><small>{item.id} · 错 {item.wrong} 次 · {formatRelative(item.lastSeen)}</small></div>
+                  <ArrowRight size={17} />
                 </Link>
               ))}
             </div>
+          ) : (
+            <div className="empty-inline"><Target size={27} /><div><strong>暂无错题</strong></div></div>
           )}
         </section>
 
-        <div className="flex flex-wrap gap-3">
-          <Link
-            to="/"
-            className="theme-bg-card theme-text-primary border-2 md:border-4 theme-border brutal-shadow brutal-btn px-4 py-3 font-brutal-title text-sm md:text-base uppercase no-underline"
-          >
-            Return Home
-          </Link>
-          <Link
-            to="/quiz-error"
-            className="theme-bg-red theme-text-on-color border-2 md:border-4 theme-border brutal-shadow brutal-btn px-4 py-3 font-brutal-title text-sm md:text-base uppercase no-underline"
-          >
-            Review Wrong Book
-          </Link>
-        </div>
+        <section className="saved-panel">
+          <div className="section-heading-row">
+            <div><p className="page-kicker">SAVED</p><h2>收藏</h2></div>
+            <Bookmark size={21} />
+          </div>
+          <dl>
+            <div><dt>收藏题目</dt><dd>{dashboard.overview.bookmarks}</dd></div>
+            <div><dt>收藏选项</dt><dd>{dashboard.overview.optionBookmarks}</dd></div>
+            <div><dt>生词本</dt><dd>{dashboard.overview.wordBookmarks}</dd></div>
+          </dl>
+          <div className="saved-panel__links">
+            <Link to="/wordbook">查看单词本 <ArrowRight size={16} /></Link>
+            <Link to="/quiz-error">进入错题修复 <ArrowRight size={16} /></Link>
+          </div>
+        </section>
       </div>
+
     </div>
   );
 }

@@ -1,0 +1,42 @@
+{
+  "Q001": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-08-30",
+    "sentenceTranslation": "Maria Irene Fornes 的戏剧《Mud》的舞台布景——一个架在土堆上的写实房间——挑战了人们对舞台布景的传统理解。",
+    "answerTranslation": "舞台布景；故事发生的场景",
+    "hint": "先判断空格所指的对象：破折号后是在描述一个架在土堆上的真实房间，句末又用 stage scenery 限定了讨论范围。哪个名词能指这种舞台上的物理场景？",
+    "cues": [
+      "a realistic room perched on a dirt pile",
+      "stage scenery"
+    ],
+    "logicSteps": [
+      {
+        "title": "先找被描述的对象",
+        "text": "破折号后描述的是一个真实房间，这是一种舞台上的视觉安排。"
+      },
+      {
+        "title": "再看句尾复现",
+        "text": "stage scenery 直接把范围限定在舞台布景，而不是情节或氛围。"
+      },
+      {
+        "title": "填回原句",
+        "text": "setting 既能指故事发生的场景，也能指舞台布景，和两处证据同时吻合。"
+      }
+    ],
+    "concise": "破折号后的“写实房间”和句尾的 stage scenery 都在描述舞台的物理布景，因此应选 setting。",
+    "optionReviews": {
+      "appeal": "appeal 在这里即使取“吸引力”之义，也无法指代一个被布置成写实房间的舞台对象；“上诉”更完全不合语境。",
+      "plot": "plot 是故事情节。写实房间属于舞台呈现方式，不是剧情本身。",
+      "mood": "mood 是作品营造的情绪或氛围，不能直接等同于 stage scenery。",
+      "setting": "正确。setting 可指故事发生的场景或舞台布景，与 realistic room 和 stage scenery 同时对应。",
+      "rehearsal": "rehearsal 是排练过程，句子谈的是布景如何挑战传统理解，而不是排练活动。"
+    },
+    "contextualGlosses": {
+      "appeal": "吸引力",
+      "plot": "情节",
+      "mood": "氛围；情绪",
+      "setting": "舞台布景；场景",
+      "rehearsal": "排练"
+    }
+  }
+}

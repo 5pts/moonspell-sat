@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "check:content": "node scripts/audit_content.mjs",
+    "check": "npm run lint && npm run check:content && npm run build",
     "preview": "vite preview",
     "start": "node server/index.js",
     "postinstall": "cd server && npm install"

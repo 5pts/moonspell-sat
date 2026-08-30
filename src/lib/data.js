@@ -4,6 +4,7 @@ import lexiconData from '../data/lexicon_seed.json';
 import barronWordsData from '../data/barron_words.json';
 import optionTranslations from '../data/option_translations.json';
 import explanationTranslations from '../data/explanation_translations.json';
+import contentOverrides from '../data/content_overrides.json';
 import { api } from './api';
 
 const RAW_QUESTIONS = questionsData?.questions || [];
@@ -15,6 +16,7 @@ const GLOBAL_STORAGE_KEYS = {
   USERS: 'moonspell_users',
   CURRENT_USER: 'moonspell_current_user',
   WORD_LOOKUPS: 'moonspell_word_lookups',
+  PREFERENCES: 'moonspell_preferences',
 };
 
 const USER_STORAGE_FIELDS = {
@@ -23,7 +25,14 @@ const USER_STORAGE_FIELDS = {
   WORD_BOOKMARKS: 'word_bookmarks',
   OPTION_BOOKMARKS: 'option_bookmarks',
   HISTORY: 'history',
+  REVIEW_STATES: 'review_states',
+  REVIEW_EVENTS: 'review_events',
 };
+
+// The old API identifies users from a client-supplied id. Keep it opt-in while
+// the authenticated sync service is rebuilt; local learning data remains fully
+// functional and is safer by default.
+const REMOTE_SYNC_ENABLED = import.meta.env.VITE_ENABLE_LEGACY_SYNC === 'true';
 
 const HISTORY_SYNC_MIN_INTERVAL_MS = 60 * 1000;
 const historySyncTimers = new Map();
@@ -140,9 +149,6 @@ const truncateSentence = (value, limit = 110) => {
   return safe.length > limit ? `${safe.slice(0, limit).trim()}...` : safe;
 };
 
-const COMMON_PREFIXES = ['ab', 'ad', 'anti', 'auto', 'bene', 'circum', 'contra', 'de', 'dis', 'en', 'ex', 'extra', 'fore', 'hyper', 'im', 'in', 'inter', 'intro', 'mal', 'mis', 'non', 'over', 'post', 'pre', 'pro', 're', 'sub', 'super', 'trans', 'under'];
-const COMMON_SUFFIXES = ['able', 'ably', 'acy', 'al', 'ally', 'ance', 'ant', 'ary', 'ate', 'ation', 'ed', 'ence', 'ent', 'er', 'ery', 'ful', 'hood', 'ic', 'ical', 'ify', 'ing', 'ion', 'ious', 'ism', 'ist', 'ity', 'ive', 'ize', 'less', 'logy', 'ly', 'ment', 'ness', 'ory', 'ous', 'ship', 'tion', 'ty', 'ure', 'y'];
-
 const buildUserId = ({ username, email }) => {
   const normalizedEmail = normalizeEmail(email);
   if (normalizedEmail) {
@@ -159,14 +165,33 @@ const buildUserId = ({ username, email }) => {
 
 const buildUserStorageKey = (userId, field) => `moonspell_user:${userId}:${field}`;
 
-const getStoredUsers = () => readStorage(GLOBAL_STORAGE_KEYS.USERS, []);
+const getStoredUsers = () => {
+  const users = readStorage(GLOBAL_STORAGE_KEYS.USERS, []);
+  let changed = false;
+  const sanitized = (Array.isArray(users) ? users : []).map((user) => {
+    if (!user || typeof user !== 'object' || !Object.hasOwn(user, 'password')) return user;
+    const { password: _discardedPassword, ...safeUser } = user;
+    changed = true;
+    return safeUser;
+  }).filter(Boolean);
+
+  if (changed) writeStorage(GLOBAL_STORAGE_KEYS.USERS, sanitized);
+  return sanitized;
+};
 
 const saveStoredUsers = (users) => {
   writeStorage(GLOBAL_STORAGE_KEYS.USERS, users);
   return users;
 };
 
-const getCurrentUserFromStorage = () => readStorage(GLOBAL_STORAGE_KEYS.CURRENT_USER, null);
+const getCurrentUserFromStorage = () => {
+  const user = readStorage(GLOBAL_STORAGE_KEYS.CURRENT_USER, null);
+  if (!user || typeof user !== 'object') return null;
+  if (!Object.hasOwn(user, 'password')) return user;
+  const { password: _discardedPassword, ...safeUser } = user;
+  writeStorage(GLOBAL_STORAGE_KEYS.CURRENT_USER, safeUser);
+  return safeUser;
+};
 
 const getCurrentUserId = () => getCurrentUserFromStorage()?.id || null;
 
@@ -435,23 +460,6 @@ const getAnswerText = (question, answerIndex) => {
   return '';
 };
 
-const extractCueFragments = (sentence, explanation) => {
-  const quoteMatches = Array.from(
-    String(explanation || '').matchAll(/[“"]([^”"]+)[”"]/g),
-    (match) => match[1].trim()
-  ).filter(Boolean);
-
-  if (quoteMatches.length) {
-    return [...new Set(quoteMatches)].slice(0, 3);
-  }
-
-  return String(sentence || '')
-    .split(/[,:;]+/)
-    .map((part) => part.replace(/_+/g, 'blank').trim())
-    .filter(Boolean)
-    .slice(0, 2);
-};
-
 const cleanTranslatedExplanation = (text) =>
   String(text || '')
     .replace(/\s+/g, ' ')
@@ -477,16 +485,11 @@ const pickReasoningText = (question, meta) => {
     return bakedExplanation;
   }
 
-  return '这题需要根据句子上下文判断空格处的词义和语气。';
+  return '';
 };
 
-const findPrefix = (word) =>
-  COMMON_PREFIXES.find((prefix) => word.startsWith(prefix) && word.length - prefix.length >= 4) || '';
-
-const findSuffix = (word) =>
-  COMMON_SUFFIXES.find((suffix) => word.endsWith(suffix) && word.length - suffix.length >= 3) || '';
-
-const cleanDerivatives = (word, derivatives = []) => {
+const cleanDerivatives = (word, derivatives = [], verified = false) => {
+  if (!verified) return [];
   const baseWord = normalizeWord(word);
   const blockedPatterns = [
     /lyly$/,
@@ -515,100 +518,41 @@ const cleanDerivatives = (word, derivatives = []) => {
     .slice(0, 8);
 };
 
-const buildQuestionAnchorHook = (word, relatedQuestionIds = []) => {
-  const anchorQuestionId = relatedQuestionIds[0];
-  const sentence = QUESTION_STEM_BY_ID.get(anchorQuestionId) || '';
-  const snippet = truncateSentence(sentence, 96);
-
-  if (anchorQuestionId && snippet) {
-    return {
-      type: 'context',
-      title: '题目锚点',
-      text: `把 ${toTitleCase(word)} 绑回 ${anchorQuestionId}。再次遇到这道题时，先回想这句：${snippet}`,
-    };
-  }
-
-  return {
-    type: 'context',
-    title: '语境联想',
-    text: `把 ${toTitleCase(word)} 放回题目语境里记，不要孤立背词。先记它在句子里负责表达的语气和逻辑。`,
-  };
-};
-
-const buildStructureHook = (word) => {
-  const cleanWord = normalizeWord(word);
-  const prefix = findPrefix(cleanWord);
-  const suffix = findSuffix(cleanWord);
-
-  if (prefix && suffix && cleanWord.length - prefix.length - suffix.length >= 2) {
-    const stem = cleanWord.slice(prefix.length, cleanWord.length - suffix.length);
-    return {
-      type: 'morphology',
-      title: '词形拆分',
-      text: `${toTitleCase(word)} 可以拆成 ${prefix} + ${stem} + ${suffix}。先抓中间词干，再把前后缀当功能标签记。`,
-    };
-  }
-
-  if (suffix) {
-    return {
-      type: 'suffix',
-      title: '后缀提示',
-      text: `${toTitleCase(word)} 末尾的 -${suffix} 很关键。背词时先记词尾常见功能，再回到整词意义。`,
-    };
-  }
-
-  if (prefix) {
-    return {
-      type: 'prefix',
-      title: '前缀提示',
-      text: `${toTitleCase(word)} 前半段的 ${prefix}- 可以当路标。先记前缀方向，再记后面的核心词干。`,
-    };
-  }
-
-  const chunks = cleanWord.match(/[aeiouy]*[^aeiouy]+|[aeiouy]+/g) || [cleanWord];
-  const displayChunks = chunks.filter(Boolean).slice(0, 3).join(' / ');
-  return {
-    type: 'chunk',
-    title: '分块记忆',
-    text: `${toTitleCase(word)} 可以按 ${displayChunks} 这样分块读两遍。先记字形节奏，再回想它在题目里的意思。`,
-  };
-};
-
 const normalizeMemoryHook = (hook) => {
   if (!hook || !hook.text) return null;
   return {
     type: hook.type || 'memory',
     title: hook.title || '记忆提示',
     text: String(hook.text).trim(),
+    reviewed: Boolean(hook.reviewed || hook.reviewStatus === 'reviewed'),
+    source: hook.source || '',
   };
 };
+
+const LOW_QUALITY_HOOK_PATTERNS = [
+  /把.+绑回/i,
+  /放回原题/i,
+  /词义关键词/i,
+  /拼写首尾/i,
+  /首字母.+末字母/i,
+  /可以拆成.+\+/i,
+  /前半段.+后半段/i,
+  /分块读两遍/i,
+  /常见于这种语境/i,
+  /先记.+再记/i,
+];
 
 const ensureTwoMemoryHooks = (word, entry = {}) => {
   const hooks = (entry.memoryHooks || [])
     .map(normalizeMemoryHook)
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter((hook) => hook.reviewed)
+    .filter((hook) => !LOW_QUALITY_HOOK_PATTERNS.some((pattern) => pattern.test(hook.text)));
 
-  const fallbackHooks = [
-    buildQuestionAnchorHook(word, entry.relatedQuestionIds || []),
-    buildStructureHook(word),
-  ];
-
-  const deduped = [];
-  [...hooks, ...fallbackHooks].forEach((hook) => {
-    if (!hook) return;
-    if (deduped.some((existing) => existing.text === hook.text)) return;
-    deduped.push(hook);
-  });
-
-  while (deduped.length < 2) {
-    deduped.push({
-      type: 'review',
-      title: '复现提醒',
-      text: `把 ${toTitleCase(word)} 放回原题复现一遍，再用 Cambridge / Merriam 的英文义确认细微差别。`,
-    });
-  }
-
-  return deduped.slice(0, 2);
+  // A missing mnemonic is honest. Never fabricate two hooks just to fill UI.
+  return hooks.filter((hook, index, list) => (
+    list.findIndex((candidate) => candidate.text === hook.text) === index
+  )).slice(0, 3);
 };
 
 const toBarronMemoryHooks = (item = {}) => {
@@ -617,12 +561,9 @@ const toBarronMemoryHooks = (item = {}) => {
       type: 'barron',
       title: String(hook?.method || `Barron Hook ${index + 1}`).trim(),
       text: String(hook?.text || '').trim(),
+      reviewed: Boolean(hook?.reviewed || hook?.reviewStatus === 'reviewed'),
     }))
     .filter((hook) => hook.text);
-
-  if (hooks.length >= 2) {
-    return hooks.slice(0, 2);
-  }
 
   return ensureTwoMemoryHooks(item.word || '', { memoryHooks: hooks });
 };
@@ -723,65 +664,33 @@ const getOptionTranslation = (optionText) => {
   return toDisplayText(parts.join(' / '));
 };
 
-const buildConciseAnalysis = (question, answerIndex, answerText, answerTranslation, reasoning) => {
-  const answerLetter = answerIndex >= 0 ? String.fromCharCode(65 + answerIndex) : '?';
-  const cues = extractCueFragments(question.stem, reasoning);
-  const cueText = cues.length ? cues.map((cue) => `“${cue}”`).join('、') : '上下文';
-  const answerParts = splitOptionParts(answerTranslation);
-
-  if ((question.blankCount || 1) > 1) {
-    if (answerParts.length > 1) {
-      return `看 ${cueText}。这题两空要一起成立：第一空应接近“${answerParts[0]}”，第二空应接近“${answerParts[1]}”，所以选 ${answerLetter}. ${answerText}。`;
-    }
-    return `看 ${cueText}。这题两空要一起成立，只有 ${answerLetter}. ${answerText}（${answerTranslation}）能把前后逻辑同时接上。`;
-  }
-
-  return `看 ${cueText}。空格处需要表达“${answerTranslation}”这层意思，放回原句最顺，所以选 ${answerLetter}. ${answerText}。`;
-};
-
-const buildOptionReviews = (question, answerIndex, answerText, answerTranslation, reasoning) => {
-  const cues = extractCueFragments(question.stem, reasoning);
-  const cueText = cues.length ? cues.map((cue) => `“${cue}”`).join('、') : '上下文';
-
-  return (question.options || []).map((option, optionIndex) => {
-    const optionText = option.text;
-    const translation = getOptionTranslation(optionText);
-    const isCorrect = optionIndex === answerIndex;
-
-    let reason = '';
-    if (isCorrect) {
-      if ((question.blankCount || 1) > 1) {
-        reason = `正确。这个组合表示“${translation}”，能同时满足两空逻辑；结合 ${cueText}，句子需要的正是这一组搭配。`;
-      } else {
-        reason = `正确。“${translation}”最符合句子语境；结合 ${cueText}，这里需要的就是“${answerTranslation}”这一层意思。`;
-      }
-    } else if ((question.blankCount || 1) > 1) {
-      reason = `不对。“${translation}”这组搭配放回句中后，前后两空不能同时成立；结合 ${cueText}，句子真正需要的是“${answerTranslation}”。`;
-    } else {
-      reason = `不对。“${translation}”与句意不符；结合 ${cueText}，这里要表达的是“${answerTranslation}”，不是“${translation}”。`;
-    }
-
-    return {
-      label: option.label,
-      text: optionText,
-      translation,
-      isCorrect,
-      reason,
-    };
-  });
-};
-
 const buildAnalysis = (question, answerIndex, reasoning) => {
+  const override = contentOverrides[question.globalId] || null;
+  const isReviewed = override?.reviewStatus === 'reviewed';
   const answerText = getAnswerText(question, answerIndex);
-  const answerTranslation = getOptionTranslation(answerText);
+  const answerTranslation = override?.answerTranslation || getOptionTranslation(answerText);
+  const optionReviews = (question.options || []).map((option, optionIndex) => ({
+    label: option.label,
+    text: option.text,
+    translation: override?.contextualGlosses?.[option.text] || getOptionTranslation(option.text),
+    isCorrect: optionIndex === answerIndex,
+    reason: isReviewed ? override?.optionReviews?.[option.text] || '' : '',
+    reviewStatus: isReviewed && override?.optionReviews?.[option.text] ? 'reviewed' : 'unavailable',
+  }));
+
   return {
     answerLetter: answerIndex >= 0 ? String.fromCharCode(65 + answerIndex) : '?',
     answerText,
     answerTranslation,
-    cues: extractCueFragments(question.stem, reasoning),
-    reasoning,
-    concise: buildConciseAnalysis(question, answerIndex, answerText, answerTranslation, reasoning),
-    optionReviews: buildOptionReviews(question, answerIndex, answerText, answerTranslation, reasoning),
+    hint: isReviewed ? override?.hint || '' : '',
+    cues: isReviewed ? override?.cues || [] : [],
+    reasoning: isReviewed ? override?.reasoning || reasoning : '',
+    concise: isReviewed ? override?.concise || '' : '',
+    logicSteps: isReviewed ? override?.logicSteps || [] : [],
+    sentenceTranslation: override?.sentenceTranslation || question.translation || '',
+    reviewStatus: isReviewed ? 'reviewed' : 'unavailable',
+    reviewedAt: isReviewed ? override?.reviewedAt || '' : '',
+    optionReviews,
   };
 };
 
@@ -837,13 +746,116 @@ const parseWordLookupResponse = (word, payload) => {
   };
 };
 
+const MINUTE_MS = 60 * 1000;
+const DAY_MS = 24 * 60 * MINUTE_MS;
+const REVIEW_EVENT_LIMIT = 5000;
+const confidenceWeight = { low: 0.35, medium: 0.65, high: 0.9 };
+
+const getReviewStates = () => getUserStorage(USER_STORAGE_FIELDS.REVIEW_STATES, {});
+
+const resolveReviewStatus = (state, now = Date.now()) => {
+  if (!state?.reps) return 'new';
+  if (new Date(state.dueAt || 0).getTime() <= now) return 'due';
+  if ((state.stability || 0) >= 14 && (state.lapses || 0) <= 2) return 'stable';
+  return 'learning';
+};
+
+const updateMemoryState = ({
+  itemId,
+  itemType,
+  questionId = '',
+  word = '',
+  correct,
+  confidence = 'medium',
+  grade,
+  at = new Date().toISOString(),
+}) => {
+  const states = getReviewStates();
+  const previous = states[itemId] || {
+    itemId,
+    itemType,
+    questionId,
+    word,
+    reps: 0,
+    lapses: 0,
+    stability: 0.5,
+    difficulty: 0.5,
+  };
+  const failed = grade === 'again' || !correct;
+  const confidenceScore = confidenceWeight[confidence] ?? confidenceWeight.medium;
+  const reviewedAt = new Date(at).getTime();
+  const previousStability = Math.max(0.5, Number(previous.stability || 0.5));
+  const nextReps = Number(previous.reps || 0) + 1;
+  let stability;
+  let intervalMs;
+
+  if (failed) {
+    stability = Math.max(0.5, previousStability * 0.55);
+    intervalMs = itemType === 'word' ? 10 * MINUTE_MS : DAY_MS;
+  } else if (confidence === 'low') {
+    stability = Math.max(1, previousStability * 1.2);
+    intervalMs = DAY_MS;
+  } else {
+    const growth = 1.55 + confidenceScore + Math.min(nextReps, 6) * 0.08;
+    stability = Math.min(180, Math.max(1, previousStability * growth));
+    intervalMs = Math.max(DAY_MS, Math.round(stability) * DAY_MS);
+  }
+
+  const next = {
+    ...previous,
+    itemId,
+    itemType,
+    questionId: questionId || previous.questionId || '',
+    word: word || previous.word || '',
+    reps: nextReps,
+    lapses: Number(previous.lapses || 0) + (failed ? 1 : 0),
+    stability: Number(stability.toFixed(2)),
+    difficulty: Number(Math.min(0.95, Math.max(0.1,
+      Number(previous.difficulty || 0.5) + (failed ? 0.08 : -0.025)
+    )).toFixed(2)),
+    lastReviewedAt: at,
+    lastResult: failed ? 'again' : 'remembered',
+    lastConfidence: confidence,
+    dueAt: new Date(reviewedAt + intervalMs).toISOString(),
+  };
+  next.status = resolveReviewStatus(next, reviewedAt);
+  states[itemId] = next;
+  setUserStorage(USER_STORAGE_FIELDS.REVIEW_STATES, states);
+  return next;
+};
+
+const appendReviewEvent = (event) => {
+  const events = getUserStorage(USER_STORAGE_FIELDS.REVIEW_EVENTS, []);
+  const nextEvents = [{
+    id: event.id || `review-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+    at: event.at || new Date().toISOString(),
+    ...event,
+  }, ...events].slice(0, REVIEW_EVENT_LIMIT);
+  setUserStorage(USER_STORAGE_FIELDS.REVIEW_EVENTS, nextEvents);
+  return nextEvents;
+};
+
 export const DataManager = {
+  // === Preferences ===
+  getPreference: (key, fallback = null) => {
+    const preferences = readStorage(GLOBAL_STORAGE_KEYS.PREFERENCES, {});
+    return Object.hasOwn(preferences, key) ? preferences[key] : fallback;
+  },
+
+  setPreference: (key, value) => {
+    const preferences = readStorage(GLOBAL_STORAGE_KEYS.PREFERENCES, {});
+    const next = { ...preferences, [key]: value };
+    writeStorage(GLOBAL_STORAGE_KEYS.PREFERENCES, next);
+    return value;
+  },
+
   // === Questions ===
   getAllQuestions: () => {
     const questions = questionsData?.questions || [];
     
     return questions.map(q => {
       const meta = questionMeta.questions ? questionMeta.questions[q.globalId] : undefined;
+      const override = contentOverrides[q.globalId] || null;
       
       let answerIndex = resolveAnswerIndex(q, meta);
       let explanation = pickReasoningText(q, meta);
@@ -852,7 +864,7 @@ export const DataManager = {
       const optionDetails = (q.options || []).map((option) => ({
         label: option.label,
         text: option.text,
-        translation: getOptionTranslation(option.text),
+        translation: override?.contextualGlosses?.[option.text] || getOptionTranslation(option.text),
       }));
       const analysis = buildAnalysis(q, answerIndex, explanation);
 
@@ -866,7 +878,7 @@ export const DataManager = {
         answer: answerIndex,
         answerText: getAnswerText(q, answerIndex),
         explanation: explanation,
-        translation: translation,
+        translation: analysis.sentenceTranslation || translation,
         section: q.sectionDisplayName,
         sectionCode: q.sectionCode,
         analysis,
@@ -921,7 +933,11 @@ export const DataManager = {
         ...(barronEntry || {}),
       }),
       authorityExamples: seedEntry?.authorityExamples || barronEntry?.authorityExamples || [],
-      derivatives: cleanDerivatives(cleanWord, seedEntry?.derivatives || barronEntry?.derivatives || []),
+      derivatives: cleanDerivatives(
+        cleanWord,
+        seedEntry?.derivatives || barronEntry?.derivatives || [],
+        Boolean(seedEntry?.derivativesVerified || seedEntry?.derivativesReviewed)
+      ),
       cambridgeUrl:
         barronEntry?.cambridgeUrl ||
         seedEntry?.cambridgeUrl ||
@@ -981,7 +997,7 @@ export const DataManager = {
     const entries = DataManager.getWordbookEntries();
     const withLookup = entries.filter((entry) => entry.shortDefs?.length || entry.phonetic || entry.audioUrl).length;
     const withRelated = entries.filter((entry) => (entry.relatedQuestionIds || []).length > 0).length;
-    const withHooks = entries.filter((entry) => (entry.memoryHooks || []).length >= 2).length;
+    const withHooks = entries.filter((entry) => (entry.memoryHooks || []).length > 0).length;
     const suggestedDeckSize = entries.length <= 12 ? entries.length : Math.min(20, Math.max(12, Math.ceil(entries.length / 3)));
 
     return {
@@ -1033,7 +1049,7 @@ export const DataManager = {
   // === Session ===
   getCurrentUser: () => {
     const user = getCurrentUserFromStorage();
-    if (user?.id) {
+    if (REMOTE_SYNC_ENABLED && user?.id) {
       scheduleUserHistorySync(user);
       hydrateWordBookmarksFromServer(user).then((hydrateResult) => {
         if (hydrateResult?.remoteOk) {
@@ -1050,7 +1066,7 @@ export const DataManager = {
     return getStoredUsers().find((user) => normalizeEmail(user.email) === safeEmail) || null;
   },
 
-  registerUser: ({ username, email, password }) => {
+  registerUser: ({ username, email }) => {
     const safeUsername = String(username ?? '').trim();
     const safeEmail = normalizeEmail(email);
     if (!safeUsername || !safeEmail) return { error: 'missing_fields' };
@@ -1065,7 +1081,6 @@ export const DataManager = {
       username: safeUsername,
       name: safeUsername,
       email: safeEmail,
-      password: password || '',
       className: 'Independent',
       grade: 'SAT SC',
       createdAt: now,
@@ -1074,25 +1089,25 @@ export const DataManager = {
     });
 
     setCurrentUser(nextUser);
-    scheduleUserHistorySync(nextUser, { force: true, delayMs: 400 });
-    hydrateWordBookmarksFromServer(nextUser, { force: true })
-      .then((hydrateResult) => {
-        if (hydrateResult?.remoteOk) {
-          scheduleWordbookSync(nextUser, { force: true, delayMs: 600 });
-        }
-      })
-      .catch(() => {});
+    if (REMOTE_SYNC_ENABLED) {
+      scheduleUserHistorySync(nextUser, { force: true, delayMs: 400 });
+      hydrateWordBookmarksFromServer(nextUser, { force: true })
+        .then((hydrateResult) => {
+          if (hydrateResult?.remoteOk) {
+            scheduleWordbookSync(nextUser, { force: true, delayMs: 600 });
+          }
+        })
+        .catch(() => {});
+    }
     return { user: nextUser };
   },
 
-  loginUser: ({ email, password }) => {
+  loginUser: ({ email }) => {
     const safeEmail = normalizeEmail(email);
     if (!safeEmail) return { error: 'missing_fields' };
 
     const existing = DataManager.findUserByEmail(safeEmail);
     if (!existing) return { error: 'not_found' };
-
-    if ((existing.password || '') !== (password || '')) return { error: 'wrong_password' };
 
     const now = new Date().toISOString();
     const nextUser = upsertUserProfile({
@@ -1102,19 +1117,21 @@ export const DataManager = {
     });
 
     setCurrentUser(nextUser);
-    scheduleUserHistorySync(nextUser, { force: true, delayMs: 400 });
-    hydrateWordBookmarksFromServer(nextUser, { force: true })
-      .then((hydrateResult) => {
-        if (hydrateResult?.remoteOk) {
-          scheduleWordbookSync(nextUser, { force: true, delayMs: 600 });
-        }
-      })
-      .catch(() => {});
+    if (REMOTE_SYNC_ENABLED) {
+      scheduleUserHistorySync(nextUser, { force: true, delayMs: 400 });
+      hydrateWordBookmarksFromServer(nextUser, { force: true })
+        .then((hydrateResult) => {
+          if (hydrateResult?.remoteOk) {
+            scheduleWordbookSync(nextUser, { force: true, delayMs: 600 });
+          }
+        })
+        .catch(() => {});
+    }
     return { user: nextUser };
   },
   logoutUser: () => {
     const currentUser = getCurrentUserFromStorage();
-    if (currentUser?.id) {
+    if (REMOTE_SYNC_ENABLED && currentUser?.id) {
       scheduleWordbookSync(currentUser, { force: true, delayMs: 0 });
     }
     localStorage.removeItem(GLOBAL_STORAGE_KEYS.CURRENT_USER);
@@ -1164,7 +1181,7 @@ export const DataManager = {
     touchCurrentUser();
 
     const user = getCurrentUserFromStorage();
-    if (user?.id) {
+    if (REMOTE_SYNC_ENABLED && user?.id) {
       scheduleWordbookSync(user, { force: true, delayMs: 600 });
     }
 
@@ -1188,8 +1205,19 @@ export const DataManager = {
   },
 
   getHistory: () => getUserStorage(USER_STORAGE_FIELDS.HISTORY, []),
-  recordAttempt: ({ questionId, sectionCode, correct, selectedIndex, answerIndex, mode }) => {
+  recordAttempt: ({
+    questionId,
+    sectionCode,
+    correct,
+    selectedIndex,
+    answerIndex,
+    mode,
+    confidence = 'medium',
+    durationMs = 0,
+    hintUsed = false,
+  }) => {
     const history = getUserStorage(USER_STORAGE_FIELDS.HISTORY, []);
+    const at = new Date().toISOString();
     const entry = {
       id: `${questionId}-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
       questionId,
@@ -1198,15 +1226,54 @@ export const DataManager = {
       selectedIndex,
       answerIndex,
       mode,
-      at: new Date().toISOString(),
+      confidence,
+      durationMs: Math.max(0, Number(durationMs || 0)),
+      hintUsed: Boolean(hintUsed),
+      at,
     };
     const nextHistory = [entry, ...history].slice(0, 1000);
     setUserStorage(USER_STORAGE_FIELDS.HISTORY, nextHistory);
+
+    const questionState = updateMemoryState({
+      itemId: `question:${questionId}`,
+      itemType: 'question',
+      questionId,
+      correct,
+      confidence,
+      at,
+    });
+    appendReviewEvent({
+      itemId: questionState.itemId,
+      itemType: 'question',
+      questionId,
+      correct,
+      confidence,
+      durationMs: entry.durationMs,
+      hintUsed: entry.hintUsed,
+      selectedIndex,
+      answerIndex,
+      mode,
+      at,
+    });
+
+    const question = DataManager.getAllQuestions().find((item) => item.id === questionId);
+    const answerWord = normalizeWord(question?.answerText || '');
+    if (answerWord && !answerWord.includes('-')) {
+      updateMemoryState({
+        itemId: `word:${answerWord}`,
+        itemType: 'word',
+        word: answerWord,
+        questionId,
+        correct,
+        confidence,
+        at,
+      });
+    }
     touchCurrentUser();
 
     // Async sync to backend
     const user = getCurrentUserFromStorage();
-    if (user && user.id) {
+    if (REMOTE_SYNC_ENABLED && user && user.id) {
       api.submitRecord(user, entry)
         .then((ok) => {
           if (!ok) {
@@ -1221,13 +1288,124 @@ export const DataManager = {
     return nextHistory;
   },
 
+  recordReview: ({
+    itemId,
+    itemType = 'word',
+    word = '',
+    questionId = '',
+    correct,
+    confidence = 'medium',
+    grade = correct ? 'good' : 'again',
+    durationMs = 0,
+  }) => {
+    const at = new Date().toISOString();
+    const resolvedItemId = itemId || `${itemType}:${word || questionId}`;
+    const state = updateMemoryState({
+      itemId: resolvedItemId,
+      itemType,
+      word,
+      questionId,
+      correct,
+      confidence,
+      grade,
+      at,
+    });
+    appendReviewEvent({
+      itemId: resolvedItemId,
+      itemType,
+      word,
+      questionId,
+      correct,
+      confidence,
+      grade,
+      durationMs,
+      at,
+    });
+    touchCurrentUser();
+    return state;
+  },
+
+  getReviewState: (itemId) => {
+    const state = getReviewStates()[itemId] || null;
+    return state ? { ...state, status: resolveReviewStatus(state) } : null;
+  },
+
+  getReviewEvents: () => getUserStorage(USER_STORAGE_FIELDS.REVIEW_EVENTS, []),
+
+  getLearningSummary: () => {
+    const questions = DataManager.getAllQuestions();
+    const wordBookmarks = DataManager.getWordBookmarks();
+    const rawStates = Object.values(getReviewStates());
+    const states = rawStates.map((state) => ({ ...state, status: resolveReviewStatus(state) }));
+    const reviewedQuestionIds = new Set(
+      states.filter((state) => state.itemType === 'question').map((state) => state.questionId)
+    );
+    const counts = {
+      new: Math.max(0, questions.length - reviewedQuestionIds.size) + wordBookmarks.filter(
+        (word) => !states.some((state) => state.itemId === `word:${word}`)
+      ).length,
+      learning: states.filter((state) => state.status === 'learning').length,
+      due: states.filter((state) => state.status === 'due').length,
+      stable: states.filter((state) => state.status === 'stable').length,
+    };
+    const dueStates = states
+      .filter((state) => state.status === 'due')
+      .sort((left, right) => String(left.dueAt).localeCompare(String(right.dueAt)));
+    const questionById = new Map(questions.map((question) => [question.id, question]));
+    const dueQueue = dueStates.map((state) => {
+      const question = state.questionId ? questionById.get(state.questionId) : null;
+      const word = state.word || normalizeWord(question?.answerText || '');
+      const entry = word ? DataManager.getWord(word) : null;
+      return {
+        ...state,
+        question,
+        word,
+        translation: question?.analysis?.answerTranslation || entry?.barronZh || entry?.shortDefs?.[0] || '',
+      };
+    });
+    const events = DataManager.getReviewEvents();
+    const lastEventByItem = new Map();
+    const delayedEvents = [...events]
+      .sort((left, right) => new Date(left.at).getTime() - new Date(right.at).getTime())
+      .filter((event) => {
+        const previous = lastEventByItem.get(event.itemId);
+        lastEventByItem.set(event.itemId, event);
+        if (!previous?.at || !event.at) return false;
+        return new Date(event.at).getTime() - new Date(previous.at).getTime() >= 20 * 60 * 60 * 1000;
+      });
+    const delayedCorrect = delayedEvents.filter((event) => event.correct).length;
+    const delayedRetention = delayedEvents.length
+      ? Math.round((delayedCorrect / delayedEvents.length) * 100)
+      : null;
+    const confidenceEvents = events.filter((event) => confidenceWeight[event.confidence] !== undefined);
+    const calibrationError = confidenceEvents.length
+      ? Math.round(confidenceEvents.reduce((sum, event) => (
+        sum + Math.abs(confidenceWeight[event.confidence] - (event.correct ? 1 : 0))
+      ), 0) / confidenceEvents.length * 100)
+      : null;
+
+    return {
+      counts,
+      dueQueue,
+      estimatedMinutes: counts.due ? Math.max(3, Math.ceil(counts.due * 0.65)) : 0,
+      delayedRetention,
+      calibrationError,
+      reviewBurdenMinutes: Math.round(events.filter((event) => isSameDay(event.at)).reduce(
+        (sum, event) => sum + Number(event.durationMs || 0),
+        0
+      ) / 60000),
+    };
+  },
+
   syncHistoryNow: async () => {
+    if (!REMOTE_SYNC_ENABLED) return { success: false, reason: 'legacy_sync_disabled' };
     const user = getCurrentUserFromStorage();
     if (!user?.id) return null;
     return syncUserHistoryToServer(user, { force: true });
   },
 
   syncWordbookNow: async () => {
+    if (!REMOTE_SYNC_ENABLED) return { success: false, reason: 'legacy_sync_disabled' };
     const user = getCurrentUserFromStorage();
     if (!user?.id) return null;
     const hydrateResult = await hydrateWordBookmarksFromServer(user, { force: true });

@@ -1,739 +1,278 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  BookmarkMinus,
+  Download,
+  ExternalLink,
+  RotateCcw,
+  Search,
+  Volume2,
+} from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { DataManager } from '../lib/data';
 
-const QUIZLET_CREATE_SET_URL = 'https://quizlet.com/create-set';
-
-function flattenText(value) {
-  return String(value ?? '')
-    .replace(/\r?\n|\r/g, ' ')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
+function speakWord(word) {
+  if (!('speechSynthesis' in window) || !word) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.86;
+  window.speechSynthesis.speak(utterance);
 }
 
-function encodeCsvCell(value) {
-  return `"${flattenText(value).replaceAll('"', '""')}"`;
-}
-
-function makeTimestampTag() {
-  const now = new Date();
-  const pad = (value) => String(value).padStart(2, '0');
-  return [
-    now.getFullYear(),
-    pad(now.getMonth() + 1),
-    pad(now.getDate()),
-    '-',
-    pad(now.getHours()),
-    pad(now.getMinutes()),
-  ].join('');
-}
-
-function triggerFileDownload(content, filename, mimeType) {
-  const blob = new Blob([content], { type: mimeType });
+function downloadWordbook(entries) {
+  const lines = [['word', 'part_of_speech', 'definition', 'chinese', 'status']];
+  entries.forEach((entry) => lines.push([
+    entry.word,
+    entry.partOfSpeech || '',
+    entry.shortDefs?.[0] || entry.barronEn || '',
+    entry.barronZh || '',
+    DataManager.getReviewState(`word:${entry.word}`)?.status || 'new',
+  ]));
+  const csv = lines.map((line) => line.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(',')).join('\n');
+  const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
   anchor.href = url;
-  anchor.download = filename;
-  document.body.appendChild(anchor);
+  anchor.download = `moonspell-wordbook-${new Date().toISOString().slice(0, 10)}.csv`;
   anchor.click();
-  document.body.removeChild(anchor);
   URL.revokeObjectURL(url);
 }
 
-async function copyText(text) {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-
-  const area = document.createElement('textarea');
-  area.value = text;
-  area.setAttribute('readonly', 'true');
-  area.style.position = 'fixed';
-  area.style.opacity = '0';
-  document.body.appendChild(area);
-  area.select();
-  document.execCommand('copy');
-  document.body.removeChild(area);
-}
-
-function buildWordbookRows(entries) {
-  return entries.map((entry) => {
-    const definitions = Array.isArray(entry.shortDefs) ? entry.shortDefs.filter(Boolean) : [];
-    const hooks = Array.isArray(entry.memoryHooks) ? entry.memoryHooks : [];
-    const hookTexts = hooks.map((hook) => flattenText(hook?.text || '')).filter(Boolean);
-    const primaryDefinition =
-      definitions[0] ||
-      flattenText(entry.barronZh || '') ||
-      hookTexts[0] ||
-      (Array.isArray(entry.derivatives) ? entry.derivatives.join(', ') : '');
-
-    return {
-      term: entry.word || '',
-      definition: primaryDefinition,
-      pronunciation: entry.phonetic || '',
-      extraDefinitions: definitions.slice(1).join(' | '),
-      barronZh: flattenText(entry.barronZh || ''),
-      mnemonic1: hookTexts[0] || '',
-      mnemonic2: hookTexts[1] || '',
-      derivatives: Array.isArray(entry.derivatives) ? entry.derivatives.join(', ') : '',
-      sourceQuestions: Array.isArray(entry.relatedQuestionIds) ? entry.relatedQuestionIds.join(', ') : '',
-      cambridgeUrl: entry.cambridgeUrl || '',
-      merriamUrl: entry.merriamUrl || '',
-    };
-  });
-}
-
-function shuffleList(list) {
-  const next = [...list];
-  for (let i = next.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [next[i], next[j]] = [next[j], next[i]];
-  }
-  return next;
-}
-
-function SummaryCard({ label, value, note, tone = 'theme-text-primary' }) {
-  return (
-    <div className="theme-bg-panel border-2 md:border-4 theme-border p-4 brutal-shadow">
-      <div className="font-pixel-eng text-xs md:text-sm opacity-70">{label}</div>
-      <div className={`font-brutal-title text-2xl md:text-4xl mt-2 ${tone}`}>{value}</div>
-      {note ? <div className="font-brutal-body text-xs md:text-sm mt-2 opacity-80">{note}</div> : null}
-    </div>
-  );
-}
-
 export default function Flashcards({ defaultTab = 'wordbook' }) {
-  const [tab, setTab] = useState(defaultTab);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [lookup, setLookup] = useState(null);
-  const [lookupStatus, setLookupStatus] = useState('idle');
-  const [wordbookVersion, setWordbookVersion] = useState(0);
-  const [sessionQueue, setSessionQueue] = useState([]);
-  const [sessionRound, setSessionRound] = useState(1);
-  const [sessionStats, setSessionStats] = useState({ seen: 0, again: 0, good: 0, easy: 0 });
-  const [exportNotice, setExportNotice] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab = searchParams.get('mode') === 'review' || defaultTab === 'flashcards' ? 'review' : 'wordbook';
+  const [tab, setTab] = useState(initialTab);
+  const [query, setQuery] = useState('');
+  const [version, setVersion] = useState(0);
+  const [queue, setQueue] = useState([]);
+  const [currentWord, setCurrentWord] = useState('');
+  const [revealed, setRevealed] = useState(false);
+  const [sessionReviewed, setSessionReviewed] = useState(0);
+  const startedAtRef = useRef(Date.now());
 
-  const entries = DataManager.getWordbookEntries();
-  const summary = DataManager.getWordbookSummary();
-  const entryWords = useMemo(() => entries.map((entry) => entry.word), [entries]);
-  const entryWordsKey = entryWords.join('|');
+  const entries = useMemo(() => DataManager.getWordbookEntries(), [version]);
+  const summary = useMemo(() => DataManager.getWordbookSummary(), [version]);
   const entryMap = useMemo(() => new Map(entries.map((entry) => [entry.word, entry])), [entries]);
-  const currentEntry = entries[currentIndex] || null;
-  const currentWord = currentEntry?.word || '';
-  const currentFlashWord = sessionQueue[0] || '';
-  const currentFlashEntry = entryMap.get(currentFlashWord) || null;
-  const lookupWord = tab === 'flashcards' ? currentFlashWord : currentWord;
+  const filteredEntries = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return entries;
+    return entries.filter((entry) => (
+      entry.word.includes(normalized)
+      || String(entry.barronZh || '').includes(normalized)
+      || (entry.shortDefs || []).some((definition) => definition.toLowerCase().includes(normalized))
+    ));
+  }, [entries, query]);
 
   useEffect(() => {
-    if (currentIndex >= entries.length && entries.length > 0) {
-      setCurrentIndex(entries.length - 1);
-    }
-    if (!entries.length) {
-      setCurrentIndex(0);
-    }
-  }, [entries.length, currentIndex, wordbookVersion]);
-
-  useEffect(() => {
-    setSessionQueue(shuffleList(entryWords));
-    setSessionRound(1);
-    setSessionStats({ seen: 0, again: 0, good: 0, easy: 0 });
-    setIsFlipped(false);
-  }, [entryWordsKey]);
-
-  useEffect(() => {
-    let active = true;
-
-    if (!lookupWord) {
-      setLookup(null);
-      setLookupStatus('idle');
-      return undefined;
-    }
-
-    const cached = DataManager.getCachedWordLookup(lookupWord);
-    if (cached) {
-      setLookup(cached);
-      setLookupStatus('ready');
-    } else {
-      setLookup(null);
-      setLookupStatus('loading');
-    }
-
-    DataManager.fetchWordLookup(lookupWord).then((result) => {
-      if (!active) return;
-      setLookup(result);
-      setLookupStatus(result ? 'ready' : 'empty');
-    });
-
-    return () => {
-      active = false;
-    };
-  }, [lookupWord]);
-
-  const jumpToWord = (index) => {
-    setIsFlipped(false);
-    setCurrentIndex(index);
-  };
-
-  const playAudio = () => {
-    if (!lookup?.audioUrl) return;
-    const audio = new Audio(lookup.audioUrl);
-    audio.play().catch(() => {});
-  };
-
-  const removeCurrentWord = () => {
-    if (!currentWord) return;
-    DataManager.toggleWordBookmark(currentWord);
-    setWordbookVersion((value) => value + 1);
-    setIsFlipped(false);
-  };
-
-  const gradeFlashcard = useCallback((grade) => {
-    if (!entryWords.length) return;
-
-    setSessionQueue((prevQueue) => {
-      if (!prevQueue.length) return prevQueue;
-
-      const [current, ...rest] = prevQueue;
-      const nextQueue = [...rest];
-
-      if (grade === 'again') {
-        const insertIndex = Math.min(2, nextQueue.length);
-        nextQueue.splice(insertIndex, 0, current);
-      } else if (grade === 'good') {
-        nextQueue.push(current);
-      }
-
-      if (!nextQueue.length) {
-        setSessionRound((round) => round + 1);
-        return shuffleList(entryWords);
-      }
-
-      return nextQueue;
-    });
-
-    setSessionStats((prev) => ({
-      ...prev,
-      seen: prev.seen + 1,
-      [grade]: prev[grade] + 1,
-    }));
-    setIsFlipped(false);
-  }, [entryWords]);
-
-  const skipFlashcard = useCallback(() => {
-    setSessionQueue((prevQueue) => {
-      if (prevQueue.length <= 1) return prevQueue;
-      const [current, ...rest] = prevQueue;
-      return [...rest, current];
-    });
-    setIsFlipped(false);
-  }, []);
-
-  const focusFlashWord = useCallback((word) => {
-    if (!word) return;
-    setSessionQueue((prevQueue) => {
-      if (!prevQueue.includes(word)) return prevQueue;
-      const rest = prevQueue.filter((item) => item !== word);
-      return [word, ...rest];
-    });
-    setIsFlipped(false);
-  }, []);
-
-  const resetFlashSession = useCallback(() => {
-    setSessionQueue(shuffleList(entryWords));
-    setSessionRound(1);
-    setSessionStats({ seen: 0, again: 0, good: 0, easy: 0 });
-    setIsFlipped(false);
-  }, [entryWords]);
-
-  const exportWordbookCsv = useCallback(() => {
-    if (!entries.length) {
-      setExportNotice('Wordbook 还是空的，先收藏几个词再导出。');
-      return;
-    }
-
-    const rows = buildWordbookRows(entries);
-    const headers = [
-      'Term',
-      'Definition',
-      'Pronunciation',
-      'BarronZh',
-      'ExtraDefinitions',
-      'Mnemonic1',
-      'Mnemonic2',
-      'Derivatives',
-      'SourceQuestions',
-      'CambridgeURL',
-      'MerriamURL',
-    ];
-
-    const csvLines = [
-      headers.map(encodeCsvCell).join(','),
-      ...rows.map((row) => ([
-        row.term,
-        row.definition,
-        row.pronunciation,
-        row.barronZh,
-        row.extraDefinitions,
-        row.mnemonic1,
-        row.mnemonic2,
-        row.derivatives,
-        row.sourceQuestions,
-        row.cambridgeUrl,
-        row.merriamUrl,
-      ]).map(encodeCsvCell).join(',')),
-    ];
-
-    const filename = `moonspell-wordbook-${makeTimestampTag()}.csv`;
-    triggerFileDownload(`\uFEFF${csvLines.join('\r\n')}`, filename, 'text/csv;charset=utf-8;');
-    setExportNotice(`已导出 ${rows.length} 个单词到 ${filename}（Excel 可直接打开）。`);
+    const dueWords = entries
+      .filter((entry) => DataManager.getReviewState(`word:${entry.word}`)?.status === 'due')
+      .map((entry) => entry.word);
+    const learningWords = entries
+      .filter((entry) => ['new', 'learning'].includes(DataManager.getReviewState(`word:${entry.word}`)?.status || 'new'))
+      .map((entry) => entry.word);
+    const nextQueue = [...new Set([...dueWords, ...learningWords])];
+    setQueue(nextQueue);
+    setCurrentWord((word) => word && nextQueue.includes(word) ? word : nextQueue[0] || '');
   }, [entries]);
 
-  const copyQuizletImportText = useCallback(async () => {
-    if (!entries.length) {
-      setExportNotice('Wordbook 还是空的，先收藏几个词再复制 Quizlet 文本。');
-      return;
-    }
+  const currentEntry = entryMap.get(currentWord) || null;
+  const changeTab = (nextTab) => {
+    setTab(nextTab);
+    setSearchParams(nextTab === 'review' ? { mode: 'review' } : {});
+    setRevealed(false);
+  };
 
-    const rows = buildWordbookRows(entries);
-    const quizletText = rows
-      .map((row) => `${flattenText(row.term)}\t${flattenText(row.definition)}`)
-      .join('\n');
-
-    try {
-      await copyText(quizletText);
-      setExportNotice(`已复制 ${rows.length} 行 Quizlet 导入文本（Term[TAB]Definition）。`);
-    } catch (_error) {
-      setExportNotice('复制失败，请检查浏览器剪贴板权限。');
-    }
-  }, [entries]);
-
-  const openQuizletImportPage = useCallback(() => {
-    window.open(QUIZLET_CREATE_SET_URL, '_blank', 'noopener,noreferrer');
-    setExportNotice('已打开 Quizlet 创建页面，直接粘贴“复制 Quizlet 文本”的内容即可导入。');
-  }, []);
-
-  useEffect(() => {
-    if (tab !== 'flashcards') return undefined;
-
-    const handleKeydown = (event) => {
-      const targetTag = String(event.target?.tagName || '').toLowerCase();
-      if (targetTag === 'input' || targetTag === 'textarea') {
-        return;
-      }
-
-      if (event.code === 'Space') {
-        event.preventDefault();
-        setIsFlipped((prev) => !prev);
-        return;
-      }
-      if (event.key === '1') {
-        event.preventDefault();
-        gradeFlashcard('again');
-        return;
-      }
-      if (event.key === '2') {
-        event.preventDefault();
-        gradeFlashcard('good');
-        return;
-      }
-      if (event.key === '3') {
-        event.preventDefault();
-        gradeFlashcard('easy');
-        return;
-      }
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        skipFlashcard();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeydown);
-    return () => {
-      window.removeEventListener('keydown', handleKeydown);
-    };
-  }, [tab, gradeFlashcard, skipFlashcard]);
-
-  if (!entries.length) {
-    return (
-      <div className="w-full max-w-2xl flex flex-col items-center animate-fade-in-up z-10 px-4 mt-20">
-        <div className="theme-bg-card border-2 md:border-4 theme-border brutal-shadow-lg p-6 md:p-12 text-center w-full relative stripe-bg">
-          <h2 className="font-pixel-title text-xl md:text-3xl theme-text-blue mb-6">NO WORDBOOK</h2>
-          <p className="font-brutal-body text-lg md:text-xl mb-8">Save words during practice, or open Barron Lessons to batch-add vocabulary into your account wordbook.</p>
-          <div className="grid gap-3">
-            <Link to="/barron" className="block text-center w-full py-3 md:py-4 theme-bg-green theme-text-on-color font-pixel-eng text-xl md:text-2xl uppercase border-2 md:border-4 theme-border brutal-shadow brutal-btn no-underline">
-              OPEN BARRON
-            </Link>
-            <Link to="/" className="block text-center w-full py-3 md:py-4 theme-bg-blue theme-text-on-color font-pixel-eng text-xl md:text-2xl uppercase border-2 md:border-4 theme-border brutal-shadow brutal-btn no-underline">
-              RETURN TO BASE
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const grade = (result) => {
+    if (!currentEntry) return;
+    const grading = {
+      again: { correct: false, confidence: 'low', grade: 'again' },
+      unsure: { correct: true, confidence: 'low', grade: 'good' },
+      good: { correct: true, confidence: 'high', grade: 'good' },
+    }[result];
+    DataManager.recordReview({
+      itemId: `word:${currentEntry.word}`,
+      itemType: 'word',
+      word: currentEntry.word,
+      ...grading,
+      durationMs: Date.now() - startedAtRef.current,
+    });
+    const remaining = queue.filter((word) => word !== currentEntry.word);
+    if (result === 'again') remaining.splice(Math.min(2, remaining.length), 0, currentEntry.word);
+    setQueue(remaining);
+    setCurrentWord(remaining[0] || '');
+    setRevealed(false);
+    setSessionReviewed((count) => count + 1);
+    startedAtRef.current = Date.now();
+    setVersion((value) => value + 1);
+  };
 
   return (
-    <div className="w-full max-w-6xl flex flex-col items-center animate-fade-in-up z-10 px-4 pb-20">
-      <div className="mt-8 mb-6 text-center w-full relative">
-        <h1 className="font-pixel-title text-2xl md:text-4xl theme-text-orange uppercase mb-4 pixel-text-outline leading-tight">WORDBOOK</h1>
-        <div className="font-pixel-eng text-lg md:text-xl theme-text-muted">
-          {tab === 'flashcards'
-            ? `Round ${sessionRound} · Queue ${sessionQueue.length}`
-            : `${currentIndex + 1} / ${entries.length}`}
+    <div className="wordbook-page page-enter">
+      <header className="page-title-row">
+        <div>
+          <p className="page-kicker">04 / WORDS</p>
+          <h1>单词本</h1>
         </div>
-      </div>
-
-      <div className="w-full grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-        <SummaryCard label="Saved Words" value={summary.totalWords} tone="theme-text-orange" note="收藏就自动进入生词本" />
-        <SummaryCard label="Mnemonic Ready" value={summary.withHooks} tone="theme-text-blue" note="每个词至少两条巧记法" />
-        <SummaryCard label="Lookup Ready" value={summary.withLookup} tone="theme-text-green" note="已带词典义 / 音标 / 发音" />
-        <SummaryCard label="Suggested Deck" value={summary.suggestedDeckSize} tone="theme-text-red" note="建议每轮 flashcards 数量" />
-      </div>
-
-      <div className="w-full flex flex-wrap gap-3 mb-6">
-        <Link
-          to="/barron"
-          className="px-4 py-3 border-2 md:border-4 theme-border brutal-shadow brutal-btn font-brutal-title text-sm md:text-base uppercase no-underline theme-bg-green theme-text-on-color"
-        >
-          Barron Lessons
-        </Link>
-        <button
-          type="button"
-          onClick={() => setTab('wordbook')}
-          className={`px-4 py-3 border-2 md:border-4 theme-border brutal-shadow brutal-btn font-brutal-title text-sm md:text-base uppercase ${tab === 'wordbook' ? 'theme-bg-blue theme-text-on-color' : 'theme-bg-card theme-text-primary'}`}
-        >
-          Wordbook
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab('flashcards')}
-          className={`px-4 py-3 border-2 md:border-4 theme-border brutal-shadow brutal-btn font-brutal-title text-sm md:text-base uppercase ${tab === 'flashcards' ? 'theme-bg-orange theme-text-on-orange' : 'theme-bg-card theme-text-primary'}`}
-        >
-          Flashcards
-        </button>
-      </div>
-
-      <div className="w-full mb-6 border-2 md:border-4 theme-border theme-bg-panel brutal-shadow p-4 md:p-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <div className="font-pixel-eng text-xs md:text-sm opacity-70">QUIZLET EXPORT</div>
-            <div className="font-brutal-body text-sm md:text-base theme-text-primary mt-1">
-              一键导出 Excel（CSV）或复制 Quizlet 导入文本。
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={exportWordbookCsv}
-              className="px-3 py-2 border-2 theme-border theme-bg-blue theme-text-on-color font-pixel-eng text-xs md:text-sm brutal-btn"
-            >
-              EXPORT EXCEL CSV
-            </button>
-            <button
-              type="button"
-              onClick={copyQuizletImportText}
-              className="px-3 py-2 border-2 theme-border theme-bg-orange theme-text-on-orange font-pixel-eng text-xs md:text-sm brutal-btn"
-            >
-              COPY QUIZLET TEXT
-            </button>
-            <button
-              type="button"
-              onClick={openQuizletImportPage}
-              className="px-3 py-2 border-2 theme-border theme-bg-card theme-text-primary font-pixel-eng text-xs md:text-sm brutal-btn"
-            >
-              OPEN QUIZLET
-            </button>
-          </div>
+        <div className="page-title-actions">
+          <button type="button" className="secondary-action" onClick={() => downloadWordbook(entries)} disabled={!entries.length}>
+            <Download size={18} /> 导出 CSV
+          </button>
+          <Link to="/barron" className="secondary-action">浏览 Barron 词表 <ArrowRight size={18} /></Link>
         </div>
-        {exportNotice ? (
-          <div className="mt-3 font-brutal-body text-sm theme-text-muted">
-            {exportNotice}
-          </div>
-        ) : null}
+      </header>
+
+      <div className="segmented-tabs" role="tablist" aria-label="单词本模式">
+        <button type="button" role="tab" aria-selected={tab === 'wordbook'} className={tab === 'wordbook' ? 'is-active' : ''} onClick={() => changeTab('wordbook')}>词表</button>
+        <button type="button" role="tab" aria-selected={tab === 'review'} className={tab === 'review' ? 'is-active' : ''} onClick={() => changeTab('review')}>到期复习</button>
       </div>
 
-      <div className="w-full grid gap-6 lg:grid-cols-[1.2fr_0.8fr] items-start">
-        <div className="theme-bg-card border-2 md:border-4 theme-border brutal-shadow-lg p-4 md:p-6 stripe-bg">
-          {tab === 'wordbook' ? (
-            <div className="space-y-6">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <div className="font-pixel-eng text-xs md:text-sm opacity-70">WORD ENTRY</div>
-                  <h2 className="font-brutal-title text-3xl md:text-5xl theme-text-primary break-words">{currentWord}</h2>
-                  {lookup?.phonetic ? (
-                    <div className="font-brutal-body text-base md:text-lg theme-text-blue mt-2">{lookup.phonetic}</div>
-                  ) : null}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {lookup?.audioUrl ? (
-                    <button
-                      type="button"
-                      onClick={playAudio}
-                      className="px-3 py-2 border-2 theme-border theme-bg-orange theme-text-on-orange font-pixel-eng text-sm brutal-btn"
-                    >
-                      PLAY
-                    </button>
-                  ) : null}
-                  <button
-                    type="button"
-                    onClick={removeCurrentWord}
-                    className="px-3 py-2 border-2 theme-border theme-bg-card theme-text-primary font-pixel-eng text-sm brutal-btn"
-                  >
-                    REMOVE
-                  </button>
-                </div>
-              </div>
+      {tab === 'wordbook' ? (
+        <div className="wordbook-layout">
+          <aside className="wordbook-summary">
+            <h2>档案状态</h2>
+            <dl>
+              <div><dt>已收藏</dt><dd>{summary.totalWords}</dd></div>
+              <div><dt>有词典释义</dt><dd>{summary.withLookup}</dd></div>
+              <div><dt>有关联题目</dt><dd>{summary.withRelated}</dd></div>
+              <div><dt>有可用巧记</dt><dd>{summary.withHooks}</dd></div>
+            </dl>
+          </aside>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="border-2 theme-border bg-white/80 p-4">
-                  <div className="font-pixel-eng text-xs md:text-sm opacity-70 mb-2">ENGLISH DEFINITION</div>
-                  {lookupStatus === 'loading' ? (
-                    <div className="font-brutal-body text-base md:text-lg">Loading live dictionary data...</div>
-                  ) : lookup?.shortDefs?.length ? (
-                    <ul className="space-y-2">
-                      {lookup.shortDefs.slice(0, 3).map((definition, index) => (
-                        <li key={`def-${index}`} className="font-brutal-body text-base md:text-lg leading-relaxed">
-                          {index + 1}. {definition}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <div className="font-brutal-body text-base md:text-lg theme-text-muted">Definition not available yet.</div>
-                  )}
-                </div>
+          <section className="word-list-panel">
+            <label className="search-field">
+              <Search size={19} />
+              <span className="sr-only">搜索单词本</span>
+              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索单词、中文义或英文定义" />
+            </label>
 
-                <div className="border-2 theme-border bg-white/80 p-4">
-                  <div className="font-pixel-eng text-xs md:text-sm opacity-70 mb-2">WORD PLAN</div>
-                  <div className="font-brutal-body text-base md:text-lg leading-relaxed">
-                    先把这页两条巧记法看完，再去 Flashcards 模式刷一轮。建议把今天的词卡批次控制在 {summary.suggestedDeckSize} 个以内。
-                  </div>
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    <a href={currentEntry.cambridgeUrl} target="_blank" rel="noopener noreferrer" className="px-3 py-2 border-2 theme-border theme-bg-card theme-text-blue font-brutal-body no-underline">
-                      Cambridge
-                    </a>
-                    <a href={currentEntry.merriamUrl} target="_blank" rel="noopener noreferrer" className="px-3 py-2 border-2 theme-border theme-bg-card theme-text-blue font-brutal-body no-underline">
-                      Merriam-Webster
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                {currentEntry.memoryHooks.map((hook, index) => (
-                  <div key={`${currentWord}-hook-${index}`} className="border-2 theme-border bg-white/80 p-4 brutal-shadow">
-                    <div className="font-pixel-eng text-xs md:text-sm opacity-70 mb-2">MNEMONIC {index + 1}</div>
-                    <div className="font-brutal-title text-lg md:text-xl theme-text-blue mb-2">{hook.title}</div>
-                    <div className="font-brutal-body text-sm md:text-base leading-relaxed">{hook.text}</div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="border-2 theme-border bg-white/80 p-4">
-                  <div className="font-pixel-eng text-xs md:text-sm opacity-70 mb-2">WORD FAMILY</div>
-                  {currentEntry.derivatives?.length ? (
-                    <div className="font-brutal-body text-sm md:text-base leading-relaxed">
-                      {currentEntry.derivatives.join(', ')}
-                    </div>
-                  ) : (
-                    <div className="font-brutal-body text-sm md:text-base theme-text-muted">No clean derivative list yet.</div>
-                  )}
-                </div>
-
-                <div className="border-2 theme-border bg-white/80 p-4">
-                  <div className="font-pixel-eng text-xs md:text-sm opacity-70 mb-2">SOURCE QUESTIONS</div>
-                  {currentEntry.relatedQuestionIds?.length ? (
-                    <div className="flex flex-wrap gap-2">
-                      {currentEntry.relatedQuestionIds.slice(0, 8).map((questionId) => (
-                        <Link
-                          key={`${currentWord}-${questionId}`}
-                          to={`/quiz?question=${questionId}`}
-                          className="px-3 py-2 border-2 theme-border theme-bg-card theme-text-primary font-pixel-eng text-xs md:text-sm no-underline brutal-btn"
-                        >
-                          {questionId}
-                        </Link>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="font-brutal-body text-sm md:text-base theme-text-muted">No source-question link yet.</div>
-                  )}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2 py-1 border-2 theme-border theme-bg-card font-pixel-eng text-xs">Round {sessionRound}</span>
-                <span className="px-2 py-1 border-2 theme-border theme-bg-card font-pixel-eng text-xs">Queue {sessionQueue.length}</span>
-                <span className="px-2 py-1 border-2 theme-border theme-bg-card font-pixel-eng text-xs">Seen {sessionStats.seen}</span>
-                <span className="px-2 py-1 border-2 theme-border theme-bg-card font-pixel-eng text-xs">Again {sessionStats.again}</span>
-                <span className="px-2 py-1 border-2 theme-border theme-bg-card font-pixel-eng text-xs">Good {sessionStats.good}</span>
-                <span className="px-2 py-1 border-2 theme-border theme-bg-card font-pixel-eng text-xs">Easy {sessionStats.easy}</span>
-              </div>
-
-              <div className="w-full h-80 md:h-96 relative perspective-1000 cursor-pointer group" onClick={() => setIsFlipped((prev) => !prev)}>
-                <div className={`relative w-full h-full transition-transform duration-500 ${isFlipped ? 'rotate-y-180' : ''}`} style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}>
-                  <div className="absolute inset-0 backface-hidden theme-bg-card border-2 md:border-4 theme-border brutal-shadow-lg flex flex-col items-center justify-center p-6 md:p-8 stripe-bg">
-                    <div className="absolute top-4 left-4 font-pixel-eng text-xs md:text-sm opacity-50">FRONT</div>
-                    <div className="absolute top-4 right-4 font-pixel-eng text-xs md:text-sm opacity-70 theme-text-blue">
-                      {lookup?.phonetic || currentFlashEntry?.phonetic || 'Flip for review'}
-                    </div>
-                    <h2 className="font-brutal-title text-4xl md:text-7xl theme-text-primary mb-4 break-words text-center">{currentFlashWord}</h2>
-                    <div className="font-brutal-body text-lg md:text-xl theme-text-blue">Tap / Space to flip, then rate memory strength</div>
-                  </div>
-
-                  <div className="absolute inset-0 backface-hidden theme-bg-inverse theme-text-inverse border-2 md:border-4 theme-border brutal-shadow-lg p-6 md:p-8" style={{ transform: 'rotateY(180deg)', backfaceVisibility: 'hidden' }}>
-                    <div className="font-pixel-eng text-xs md:text-sm opacity-50 mb-3">BACK</div>
-                    <div className="space-y-4 overflow-y-auto max-h-full pr-1">
-                      {currentFlashEntry?.barronZh ? (
+            {filteredEntries.length ? (
+              <div className="word-list">
+                {filteredEntries.map((entry, index) => {
+                  const state = DataManager.getReviewState(`word:${entry.word}`);
+                  return (
+                    <article key={entry.word} className="word-list-row">
+                      <span className="word-list-row__index">{String(index + 1).padStart(2, '0')}</span>
+                      <div className="word-list-row__main">
                         <div>
-                          <div className="font-pixel-eng text-xs md:text-sm opacity-70 mb-1">BARRON CHINESE</div>
-                          <div className="font-brutal-body text-base md:text-lg leading-relaxed">{currentFlashEntry.barronZh}</div>
+                          <h2>{entry.word}</h2>
+                          <button type="button" className="audio-button" onClick={() => speakWord(entry.word)} aria-label={`播放 ${entry.word} 发音`}>
+                            <Volume2 size={16} /> {entry.phonetic || '播放'}
+                          </button>
                         </div>
-                      ) : null}
-
-                      <div>
-                        <div className="font-pixel-eng text-xs md:text-sm opacity-70 mb-1">DEFINITION</div>
-                        {lookup?.shortDefs?.length ? (
-                          <div className="font-brutal-body text-base md:text-lg leading-relaxed">{lookup.shortDefs[0]}</div>
-                        ) : currentFlashEntry?.shortDefs?.length ? (
-                          <div className="font-brutal-body text-base md:text-lg leading-relaxed">{currentFlashEntry.shortDefs[0]}</div>
-                        ) : (
-                          <div className="font-brutal-body text-base md:text-lg theme-text-muted">Definition not available yet.</div>
-                        )}
+                        <p>{entry.barronZh || entry.shortDefs?.[0] || '释义需要联网查询或人工补充'}</p>
+                        <span>{entry.partOfSpeech || 'word'} · {state?.status || 'new'}</span>
                       </div>
+                      <div className="word-list-row__actions">
+                        <button type="button" onClick={() => { setCurrentWord(entry.word); changeTab('review'); }}>
+                          复习 <ArrowRight size={17} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            DataManager.toggleWordBookmark(entry.word);
+                            setVersion((value) => value + 1);
+                          }}
+                          aria-label={`从单词本移除 ${entry.word}`}
+                        >
+                          <BookmarkMinus size={18} />
+                        </button>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="empty-state">
+                <BookOpen size={34} />
+                <h2>{entries.length ? '没有匹配的词' : '单词本还是空的'}</h2>
+                <p>{entries.length ? '换一个关键词试试。' : '在做题或 Barron 词表中收藏单词后，它们会出现在这里。'}</p>
+                {!entries.length ? <Link to="/quiz" className="primary-action">开始练习 <ArrowRight size={18} /></Link> : null}
+              </div>
+            )}
+          </section>
+        </div>
+      ) : (
+        <section className="review-studio">
+          <header>
+            <div>
+              <p className="page-kicker">REVIEW</p>
+              <h2>{currentEntry ? `${queue.length} 个待处理` : '本轮复习完成'}</h2>
+            </div>
+            <span>本轮已复习 {sessionReviewed}</span>
+          </header>
 
-                      {(currentFlashEntry?.memoryHooks || []).map((hook, index) => (
-                        <div key={`${currentFlashWord}-flash-hook-${index}`}>
-                          <div className="font-pixel-eng text-xs md:text-sm opacity-70 mb-1">MNEMONIC {index + 1}</div>
-                          <div className="font-brutal-body text-sm md:text-base leading-relaxed">{hook.text}</div>
-                        </div>
-                      ))}
-
-                      {currentFlashEntry?.derivatives?.length ? (
-                        <div>
-                          <div className="font-pixel-eng text-xs md:text-sm opacity-70 mb-1">WORD FAMILY</div>
-                          <div className="font-brutal-body text-sm md:text-base leading-relaxed">{currentFlashEntry.derivatives.slice(0, 6).join(', ')}</div>
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
+          {currentEntry ? (
+            <>
+              <article className={`memory-card ${revealed ? 'is-revealed' : ''}`}>
+                <div className="memory-card__prompt">
+                  <span>{currentEntry.partOfSpeech || 'word'}</span>
+                  <h2>{currentEntry.word}</h2>
+                  <button type="button" className="audio-button" onClick={() => speakWord(currentEntry.word)}>
+                    <Volume2 size={18} /> {currentEntry.phonetic || '播放发音'}
+                  </button>
+                  <p>回忆词义。</p>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-6">
-                <button onClick={() => gradeFlashcard('again')} className="py-3 theme-bg-red theme-text-on-color font-pixel-eng text-sm md:text-lg uppercase border-2 theme-border brutal-shadow brutal-btn">
-                  1 AGAIN
-                </button>
-                <button onClick={() => gradeFlashcard('good')} className="py-3 theme-bg-blue theme-text-on-color font-pixel-eng text-sm md:text-lg uppercase border-2 theme-border brutal-shadow brutal-btn">
-                  2 GOOD
-                </button>
-                <button onClick={() => gradeFlashcard('easy')} className="py-3 theme-bg-green theme-text-on-color font-pixel-eng text-sm md:text-lg uppercase border-2 theme-border brutal-shadow brutal-btn">
-                  3 EASY
-                </button>
-                <button onClick={skipFlashcard} className="py-3 theme-bg-panel theme-text-primary font-pixel-eng text-sm md:text-lg uppercase border-2 theme-border brutal-shadow brutal-btn">
-                  SKIP
-                </button>
-                <button onClick={resetFlashSession} className="py-3 theme-bg-orange theme-text-on-orange font-pixel-eng text-sm md:text-lg uppercase border-2 theme-border brutal-shadow brutal-btn">
-                  RESET
-                </button>
-              </div>
+                {revealed ? (
+                  <div className="memory-card__answer">
+                    <span>语境义</span>
+                    <h3>{currentEntry.barronZh || currentEntry.shortDefs?.[0] || '暂无可靠中文释义'}</h3>
+                    {(currentEntry.shortDefs || []).slice(0, 2).map((definition) => <p key={definition}>{definition}</p>)}
 
-              <div className="mt-3 font-pixel-eng text-xs theme-text-muted">
-                Hotkeys: `Space` flip · `1` again · `2` good · `3` easy · `→` skip
-              </div>
+                    <div className="memory-hook-area">
+                      <h4>巧记</h4>
+                      {currentEntry.memoryHooks?.length ? (
+                        currentEntry.memoryHooks.map((hook) => (
+                          <div key={hook.text}>
+                            <strong>{hook.title}</strong>
+                            <p>{hook.text}</p>
+                            {!hook.reviewed ? <span>待复核联想</span> : <span>已复核</span>}
+                          </div>
+                        ))
+                      ) : (
+                        <p className="quality-note">暂无巧记。</p>
+                      )}
+                    </div>
+
+                    {currentEntry.relatedQuestionIds?.length ? (
+                      <Link to={`/quiz?question=${currentEntry.relatedQuestionIds[0]}`} className="text-action">
+                        回到关联题目 <ArrowRight size={16} />
+                      </Link>
+                    ) : null}
+                  </div>
+                ) : null}
+              </article>
+
+              {!revealed ? (
+                <button type="button" className="primary-action reveal-action" onClick={() => setRevealed(true)}>
+                  显示答案
+                </button>
+              ) : (
+                <div className="review-grades">
+                  <button type="button" onClick={() => grade('again')}><RotateCcw size={18} /><strong>没想起</strong><span>10 分钟后</span></button>
+                  <button type="button" onClick={() => grade('unsure')}><strong>想起但不确定</strong><span>较近复习</span></button>
+                  <button type="button" className="is-primary" onClick={() => grade('good')}><strong>清楚记得</strong><span>拉长间隔</span></button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="empty-state review-complete">
+              <BookOpen size={38} />
+              <h2>暂无到期单词</h2>
+              <button type="button" className="secondary-action" onClick={() => changeTab('wordbook')}><ArrowLeft size={18} /> 返回词表</button>
             </div>
           )}
-        </div>
+        </section>
+      )}
 
-        <div className="theme-bg-card border-2 md:border-4 theme-border brutal-shadow-lg p-4 md:p-5 stripe-bg">
-          <div className="flex items-center justify-between gap-3 mb-4">
-            <div>
-              <div className="font-pixel-eng text-xs opacity-70">{tab === 'flashcards' ? 'FLASH QUEUE' : 'WORD LIST'}</div>
-              <h2 className="font-brutal-title text-xl md:text-2xl">{tab === 'flashcards' ? 'Session Queue' : 'Saved Vocabulary'}</h2>
-            </div>
-            <div className="font-pixel-eng text-sm theme-text-muted">{tab === 'flashcards' ? `${sessionQueue.length} in queue` : `${entries.length} saved`}</div>
-          </div>
-
-          <div className="space-y-3 max-h-[42rem] overflow-y-auto pr-1">
-            {(tab === 'flashcards' ? sessionQueue : entries.map((entry) => entry.word)).map((word, index) => {
-              const entry = entryMap.get(word);
-              if (!entry) return null;
-
-              const active = tab === 'flashcards'
-                ? index === 0
-                : index === currentIndex;
-
-              return (
-                <div key={entry.word} className={`border-2 theme-border brutal-shadow p-3 ${active ? 'theme-bg-orange theme-text-on-orange' : 'theme-bg-panel theme-text-primary'}`}>
-                  <div className="flex items-start justify-between gap-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (tab === 'flashcards') {
-                          focusFlashWord(entry.word);
-                        } else {
-                          jumpToWord(index);
-                        }
-                      }}
-                      className="text-left flex-1"
-                    >
-                      <div className="font-brutal-title text-lg md:text-xl break-words">{entry.word}</div>
-                      <div className="font-brutal-body text-xs md:text-sm mt-1 opacity-80">
-                        {entry.barronZh || entry.shortDefs?.[0] || '2 mnemonics ready'}
-                      </div>
-                    </button>
-
-                    <div className="flex flex-col gap-2 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          DataManager.toggleWordBookmark(entry.word);
-                          setWordbookVersion((value) => value + 1);
-                        }}
-                        className="px-2 py-1 border-2 theme-border theme-bg-card theme-text-primary font-pixel-eng text-xs brutal-btn"
-                      >
-                        REMOVE
-                      </button>
-                      <a
-                        href={entry.cambridgeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-2 py-1 border-2 theme-border theme-bg-card theme-text-blue font-pixel-eng text-xs no-underline"
-                      >
-                        CAM
-                      </a>
-                      <a
-                        href={entry.merriamUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-2 py-1 border-2 theme-border theme-bg-card theme-text-blue font-pixel-eng text-xs no-underline"
-                      >
-                        MW
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-3 mt-8">
-        <Link to="/" className="theme-text-muted font-pixel-eng hover:theme-text-primary transition-colors">
-          EXIT TO MENU
-        </Link>
-        <button
-          type="button"
-          onClick={() => setTab('flashcards')}
-          className="theme-bg-orange theme-text-on-orange border-2 theme-border brutal-shadow brutal-btn px-4 py-2 font-brutal-title text-sm uppercase"
-        >
-          Open Flashcards Mode
-        </button>
-      </div>
+      <footer className="source-links">
+        <span>需要核对词义时，优先查看权威词典。</span>
+        <a href="https://dictionary.cambridge.org/" target="_blank" rel="noreferrer">Cambridge <ExternalLink size={15} /></a>
+        <a href="https://www.merriam-webster.com/" target="_blank" rel="noreferrer">Merriam-Webster <ExternalLink size={15} /></a>
+      </footer>
     </div>
   );
 }

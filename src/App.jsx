@@ -1,78 +1,120 @@
-import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import FloatingBackground from './components/FloatingBackground';
-import Login from './pages/Login';
-import Home from './pages/Home';
-import Quiz from './pages/Quiz';
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import AppShell from './components/AppShell';
+import ErrorBoundary from './components/ErrorBoundary';
+import BarronStudy from './pages/BarronStudy';
 import Dashboard from './pages/Dashboard';
 import Flashcards from './pages/Flashcards';
-import BarronStudy from './pages/BarronStudy';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Quiz from './pages/Quiz';
 import { DataManager } from './lib/data';
 import './styles/app.css';
 
-import ErrorBoundary from './components/ErrorBoundary';
+function ProtectedLayout({ currentUser, onLogout, theme, onToggleTheme }) {
+  if (!currentUser) return <Navigate to="/login" replace />;
 
-function App() {
+  return (
+    <AppShell
+      currentUser={currentUser}
+      onLogout={onLogout}
+      theme={theme}
+      onToggleTheme={onToggleTheme}
+    >
+      <Outlet />
+    </AppShell>
+  );
+}
+
+function AppRoutes() {
+  const location = useLocation();
   const [currentUser, setCurrentUser] = useState(() => DataManager.getCurrentUser());
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [timeAttack, setTimeAttack] = useState(false);
+  const [theme, setTheme] = useState(() => DataManager.getPreference('theme', 'light'));
+  const [timeAttack, setTimeAttack] = useState(() => DataManager.getPreference('examTiming', false));
 
-  const handleLogin = (user) => {
-    setCurrentUser(user);
-  };
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.lang = 'zh-CN';
+  }, [theme]);
 
+  useEffect(() => {
+    document.title = location.pathname.startsWith('/quiz')
+      ? '练习 | Moonspell'
+      : 'Moonspell | SAT 词汇';
+  }, [location.pathname]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [location.pathname]);
+
+  const handleLogin = (user) => setCurrentUser(user);
   const handleLogout = () => {
     DataManager.logoutUser();
     setCurrentUser(null);
   };
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    DataManager.setPreference('theme', nextTheme);
+  };
+  const updateExamTiming = (enabled) => {
+    setTimeAttack(enabled);
+    DataManager.setPreference('examTiming', enabled);
+  };
 
+  return (
+    <Routes>
+      <Route
+        path="/login"
+        element={(
+          <Login
+            onLogin={handleLogin}
+            currentUser={currentUser}
+            onLogout={handleLogout}
+          />
+        )}
+      />
+
+      <Route
+        element={(
+          <ProtectedLayout
+            currentUser={currentUser}
+            onLogout={handleLogout}
+            theme={theme}
+            onToggleTheme={toggleTheme}
+          />
+        )}
+      >
+        <Route
+          index
+          element={(
+            <Home
+              currentUser={currentUser}
+              timeAttack={timeAttack}
+              setTimeAttack={updateExamTiming}
+            />
+          )}
+        />
+        <Route path="quiz" element={<Quiz mode="LOCAL" timeAttack={timeAttack} />} />
+        <Route path="quiz-error" element={<Quiz mode="ERROR" timeAttack={false} />} />
+        <Route path="wordbook" element={<Flashcards defaultTab="wordbook" />} />
+        <Route path="flashcards" element={<Flashcards defaultTab="flashcards" />} />
+        <Route path="barron" element={<BarronStudy />} />
+        <Route path="data-board" element={<Dashboard />} />
+        <Route path="dashboard" element={<Dashboard />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to={currentUser ? '/' : '/login'} replace />} />
+    </Routes>
+  );
+}
+
+export default function App() {
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <ErrorBoundary>
-      <div className={`min-h-screen flex flex-col items-center justify-center relative moonspell-container theme-bg-body theme-text-primary overflow-x-hidden ${isDarkMode ? 'dark-mode' : ''}`}>
-        <div className="grain-overlay"></div>
-        <FloatingBackground />
-
-        {/* Theme Toggle */}
-        <button 
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          className="fixed top-4 right-4 md:top-6 md:right-6 z-[100] w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border-4 theme-border theme-bg-card theme-text-primary brutal-shadow brutal-btn text-2xl"
-          title="Toggle Theme Protocol"
-        >
-          {isDarkMode ? '☼' : '☾'}
-        </button>
-
-        <Routes>
-          <Route path="/login" element={<Login onLogin={handleLogin} currentUser={currentUser} onLogout={handleLogout} />} />
-          <Route
-            path="/"
-            element={currentUser ? (
-              <Home
-                username={currentUser.username || currentUser.name}
-                currentUser={currentUser}
-                onLogout={handleLogout}
-                setTimeAttack={setTimeAttack}
-                timeAttack={timeAttack}
-              />
-            ) : <Navigate to="/login" />}
-          />
-          <Route path="/quiz" element={currentUser ? <Quiz mode="LOCAL" timeAttack={timeAttack} /> : <Navigate to="/login" />} />
-          <Route path="/quiz-error" element={currentUser ? <Quiz mode="ERROR" timeAttack={timeAttack} /> : <Navigate to="/login" />} />
-          <Route path="/wordbook" element={currentUser ? <Flashcards defaultTab="wordbook" /> : <Navigate to="/login" />} />
-          <Route path="/flashcards" element={currentUser ? <Flashcards defaultTab="flashcards" /> : <Navigate to="/login" />} />
-          <Route path="/barron" element={currentUser ? <BarronStudy /> : <Navigate to="/login" />} />
-          <Route path="/data-board" element={currentUser ? <Dashboard /> : <Navigate to="/login" />} />
-          <Route path="/dashboard" element={currentUser ? <Dashboard /> : <Navigate to="/login" />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-        <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-[90] text-center text-[11px] md:text-xs theme-text-secondary/80 px-3">
-          <div>created by IsoLab</div>
-          <div>Any issues, contact linjh0811@gmail.com</div>
-        </div>
-      </div>
+        <AppRoutes />
       </ErrorBoundary>
     </BrowserRouter>
   );
 }
-
-export default App;
