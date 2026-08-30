@@ -1,6 +1,7 @@
 import { ArrowRight, UserRound } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import MoonAscii from '../components/MoonAscii';
 import { DataManager } from '../lib/data';
 
 export default function Login({ onLogin, currentUser, onLogout }) {
@@ -51,10 +52,12 @@ export default function Login({ onLogin, currentUser, onLogout }) {
       </div>
 
       <section className="login-story" aria-labelledby="login-title">
-        <a className="wordmark wordmark--large" href="./">MOONSPELL</a>
+        <a className="wordmark wordmark--large" href="./">MOONSPELL / SAT</a>
         <div className="login-poster">
-          <span className="login-poster__index">00</span>
-          <h1 id="login-title">SAT<br />VOCAB</h1>
+          <span className="login-poster__index">00 / START</span>
+          <h1 id="login-title">MOONSPELL</h1>
+          <p className="login-poster__subtitle">SAT SENTENCE COMPLETION</p>
+          <div className="login-poster__moon" aria-hidden="true"><MoonAscii /></div>
           <div className="login-poster__shapes" aria-hidden="true"><i /><i /><i /></div>
         </div>
       </section>

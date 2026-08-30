@@ -17,12 +17,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DataManager } from '../lib/data';
 
-const confidenceOptions = [
-  { value: 'low', label: '低' },
-  { value: 'medium', label: '中' },
-  { value: 'high', label: '高' },
-];
-
 function makeNavItems(sections) {
   const items = [{ id: 'ALL', label: '全部题目', count: 384 }];
   sections.forEach((section) => {
@@ -62,28 +56,6 @@ function QuestionSentence({ sentence, answer, showAnswer }) {
   );
 }
 
-function ConfidencePicker({ value, onChange, disabled = false }) {
-  return (
-    <fieldset className="confidence-picker" disabled={disabled}>
-      <legend>把握</legend>
-      <div>
-        {confidenceOptions.map((option) => (
-          <label key={option.value} className={value === option.value ? 'is-selected' : ''}>
-            <input
-              type="radio"
-              name="confidence"
-              value={option.value}
-              checked={value === option.value}
-              onChange={() => onChange(option.value)}
-            />
-            <strong>{option.label}</strong>
-          </label>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
 export default function Quiz({ mode, timeAttack }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -96,7 +68,6 @@ export default function Quiz({ mode, timeAttack }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [confidence, setConfidence] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [openReview, setOpenReview] = useState(null);
@@ -139,7 +110,6 @@ export default function Quiz({ mode, timeAttack }) {
 
   const resetQuestionState = useCallback(() => {
     setSelectedOption(null);
-    setConfidence(null);
     setIsSubmitted(false);
     setHintUsed(false);
     setOpenReview(null);
@@ -158,15 +128,13 @@ export default function Quiz({ mode, timeAttack }) {
     if (target >= 0) setCurrentIndex(target);
   }, [filteredQuestions, requestedQuestionId]);
 
-  const submitAnswer = useCallback((timedOut = false) => {
+  const submitAnswer = useCallback((timedOut = false, explicitSelection = null) => {
     if (!currentQuestion || isSubmitted) return;
-    const finalSelection = timedOut ? -1 : selectedOption;
-    const finalConfidence = confidence || (timedOut ? 'low' : null);
-    if (finalSelection === null || !finalConfidence) return;
+    const finalSelection = timedOut ? -1 : explicitSelection ?? selectedOption;
+    if (finalSelection === null) return;
 
     const correct = finalSelection === currentQuestion.answer;
     setSelectedOption(finalSelection);
-    setConfidence(finalConfidence);
     setIsSubmitted(true);
     setOpenReview(finalSelection >= 0 && !correct ? finalSelection : null);
     DataManager.recordAttempt({
@@ -176,12 +144,12 @@ export default function Quiz({ mode, timeAttack }) {
       selectedIndex: finalSelection,
       answerIndex: currentQuestion.answer,
       mode: dueOnly ? 'review' : mode === 'ERROR' ? 'error-review' : 'practice',
-      confidence: finalConfidence,
+      confidence: 'medium',
       durationMs: Date.now() - startedAtRef.current,
       hintUsed,
     });
     setBookmarksVersion((value) => value + 1);
-  }, [confidence, currentQuestion, dueOnly, hintUsed, isSubmitted, mode, selectedOption]);
+  }, [currentQuestion, dueOnly, hintUsed, isSubmitted, mode, selectedOption]);
 
   useEffect(() => {
     if (!timeAttack || isSubmitted || !currentQuestion) return undefined;
@@ -208,12 +176,11 @@ export default function Quiz({ mode, timeAttack }) {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
       if (!isSubmitted && /^[1-5]$/.test(event.key)) {
         const index = Number(event.key) - 1;
-        if (currentQuestion?.options[index]) setSelectedOption(index);
+        if (currentQuestion?.options[index]) submitAnswer(false, index);
       }
-      if (event.key === 'Enter') {
+      if (event.key === 'Enter' && isSubmitted) {
         event.preventDefault();
-        if (isSubmitted) goNext();
-        else submitAnswer(false);
+        goNext();
       }
       if (event.key === 'ArrowLeft' && !isSubmitted) goToQuestion(currentIndex - 1);
       if (event.key === 'ArrowRight' && isSubmitted) goNext();
@@ -335,7 +302,7 @@ export default function Quiz({ mode, timeAttack }) {
                   type="button"
                   className="answer-row__choice"
                   disabled={isSubmitted}
-                  onClick={() => setSelectedOption(index)}
+                  onClick={() => submitAnswer(false, index)}
                   role="radio"
                   aria-checked={selected}
                 >
@@ -443,26 +410,13 @@ export default function Quiz({ mode, timeAttack }) {
               <div><i style={{ width: `${(DataManager.getDashboardData().overview.uniqueAnswered / allQuestions.length) * 100}%` }} /></div>
             </div>
           </section>
-          <ConfidencePicker value={confidence} onChange={setConfidence} />
           <section className="keyboard-help">
             <h2>键盘快捷键</h2>
             <dl>
-              <div><dt>1–5</dt><dd>选择选项</dd></div>
-              <div><dt>Enter</dt><dd>提交答案</dd></div>
+              <div><dt>1–5</dt><dd>作答并查看解析</dd></div>
               <div><dt>←</dt><dd>上一题</dd></div>
             </dl>
           </section>
-          <button
-            type="button"
-            className="submit-answer"
-            disabled={selectedOption === null || !confidence}
-            onClick={() => submitAnswer(false)}
-          >
-            提交答案
-          </button>
-          <p className="submit-help">
-            {selectedOption === null ? '选择答案' : !confidence ? '选择把握' : ''}
-          </p>
         </aside>
       ) : null}
 
@@ -471,18 +425,7 @@ export default function Quiz({ mode, timeAttack }) {
           <button type="button" className="secondary-action" onClick={resetQuestionState}>再答一次</button>
           <button type="button" className="primary-action" onClick={goNext}>下一题 <ArrowRight size={18} /></button>
         </footer>
-      ) : (
-        <div className="mobile-submit-bar">
-          <button
-            type="button"
-            className="primary-action"
-            disabled={selectedOption === null || !confidence}
-            onClick={() => submitAnswer(false)}
-          >
-            提交答案
-          </button>
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }

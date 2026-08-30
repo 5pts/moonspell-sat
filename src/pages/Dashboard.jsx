@@ -3,8 +3,8 @@ import {
   BarChart3,
   Bookmark,
   CalendarClock,
+  CheckCircle2,
   CircleAlert,
-  Gauge,
   Target,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -27,17 +27,6 @@ function formatRelative(value) {
 export default function Dashboard() {
   const dashboard = DataManager.getDashboardData();
   const learning = DataManager.getLearningSummary();
-  const events = DataManager.getReviewEvents();
-  const confidenceRows = ['low', 'medium', 'high'].map((confidence) => {
-    const rows = events.filter((event) => event.confidence === confidence);
-    const correct = rows.filter((event) => event.correct).length;
-    return {
-      confidence,
-      label: confidence === 'low' ? '低信心' : confidence === 'medium' ? '中信心' : '高信心',
-      attempts: rows.length,
-      accuracy: rows.length ? Math.round((correct / rows.length) * 100) : 0,
-    };
-  });
 
   return (
     <div className="insights-page page-enter">
@@ -60,10 +49,10 @@ export default function Dashboard() {
           <small>跨天复习</small>
         </div>
         <div>
-          <Gauge size={22} />
-          <span>把握误差</span>
-          <strong>{percent(learning.calibrationError)}</strong>
-          <small>越低越好</small>
+          <CheckCircle2 size={22} />
+          <span>总正确率</span>
+          <strong>{percent(dashboard.overview.accuracy)}</strong>
+          <small>{dashboard.overview.correctCount} 次正确</small>
         </div>
         <div>
           <CalendarClock size={22} />
@@ -103,20 +92,16 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="calibration-panel">
+        <section className="calibration-panel practice-summary-panel">
           <div className="section-heading-row">
-            <div><p className="page-kicker">ACCURACY</p><h2>把握与正确率</h2></div>
+            <div><p className="page-kicker">PRACTICE</p><h2>练习概况</h2></div>
           </div>
-          <div className="calibration-chart">
-            {confidenceRows.map((row) => (
-              <div key={row.confidence}>
-                <span>{row.label}</span>
-                <div><i style={{ height: `${Math.max(row.accuracy ? 8 : 0, row.accuracy)}%` }} /></div>
-                <strong>{row.attempts ? `${row.accuracy}%` : '—'}</strong>
-                <small>{row.attempts} 次</small>
-              </div>
-            ))}
-          </div>
+          <dl className="practice-summary">
+            <div><dt>累计作答</dt><dd>{dashboard.overview.totalAttempts}</dd></div>
+            <div><dt>已做题目</dt><dd>{dashboard.overview.uniqueAnswered}</dd></div>
+            <div><dt>当前错题</dt><dd>{dashboard.overview.mistakes}</dd></div>
+            <div><dt>今日作答</dt><dd>{dashboard.overview.todayAttempts}</dd></div>
+          </dl>
         </section>
       </div>
 
