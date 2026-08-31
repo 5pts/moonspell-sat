@@ -7,15 +7,27 @@ import { DataManager } from '../lib/data';
 export default function Login({ onLogin, currentUser, onLogout, theme, onToggleTheme }) {
   const navigate = useNavigate();
   const [mode, setMode] = useState('login');
-  const [loginForm, setLoginForm] = useState({ username: '', email: '', password: '' });
+  const [loginForm, setLoginForm] = useState({ username: '', email: '' });
   const [error, setError] = useState('');
+  const localProfiles = DataManager.getAllUsers().slice(0, 3);
+  const questionCount = DataManager.getAllQuestions().length;
+
+  const openProfile = (email) => {
+    const result = DataManager.loginUser({ email });
+    if (!result.user) {
+      setError('无法打开这个本机档案');
+      return;
+    }
+    onLogin(result.user);
+    navigate('/');
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setError('');
 
     if (mode === 'register') {
-      if (!loginForm.username.trim() || !loginForm.email.trim() || !loginForm.password.trim()) {
+      if (!loginForm.username.trim() || !loginForm.email.trim()) {
         setError('请填写所有字段');
         return;
       }
@@ -33,8 +45,8 @@ export default function Login({ onLogin, currentUser, onLogout, theme, onToggleT
       return;
     }
 
-    if (!loginForm.email.trim() || !loginForm.password.trim()) {
-      setError('请输入邮箱和密码');
+    if (!loginForm.email.trim()) {
+      setError('请输入邮箱');
       return;
     }
     const result = DataManager.loginUser({ email: loginForm.email });
@@ -75,10 +87,12 @@ export default function Login({ onLogin, currentUser, onLogout, theme, onToggleT
             <div className="absolute -top-5 -left-4 theme-bg-orange border-4 theme-border px-4 py-1 font-brutal-title text-xl rotate-[-4deg] brutal-shadow z-10 flex items-center gap-2">
               <span>☽</span> SYSTEM_INFO
             </div>
-            <p className="font-brutal-body text-xl md:text-2xl font-bold leading-relaxed mt-3 theme-text-primary">
-              The ultimate <span className="theme-bg-blue-light px-2 py-0.5 border-2 theme-border inline-block transform -rotate-1 brutal-shadow">SAT Sentence Completion</span> training protocol.
-              <br /><br />
-              Enter the brutalist arena, summon the AI Tutor, and break the test.
+            <div className="legacy-system-grid mt-3">
+              <div><span>QUESTIONS</span><strong>{questionCount}</strong></div>
+              <div><span>MODE</span><strong>LOCAL</strong></div>
+            </div>
+            <p className="legacy-system-note font-brutal-body theme-text-primary">
+              SAT Sentence Completion<br />数据保存在当前设备。
             </p>
           </div>
         </div>
@@ -86,7 +100,7 @@ export default function Login({ onLogin, currentUser, onLogout, theme, onToggleT
         <div className="w-full max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: '150ms', animationFillMode: 'forwards' }}>
           <form onSubmit={handleSubmit} className="w-full theme-bg-card border-4 theme-border brutal-shadow-lg p-8 relative stripe-bg">
             <div className="absolute -top-5 -left-4 theme-bg-orange border-4 theme-border px-3 py-1 font-brutal-title text-xl rotate-[3deg] brutal-shadow z-10">
-              {mode === 'register' ? 'NEW AGENT' : 'SECURE LOGIN'}
+              {mode === 'register' ? 'NEW AGENT' : 'PROFILE CONTROL'}
             </div>
 
             {currentUser ? (
@@ -106,7 +120,7 @@ export default function Login({ onLogin, currentUser, onLogout, theme, onToggleT
                     type="button"
                     onClick={() => {
                       onLogout?.();
-                      setLoginForm({ username: '', email: '', password: '' });
+                      setLoginForm({ username: '', email: '' });
                       setError('');
                     }}
                     className="theme-bg-card theme-text-primary border-2 theme-border brutal-shadow brutal-btn px-3 py-2 font-brutal-title text-sm uppercase"
@@ -141,6 +155,20 @@ export default function Login({ onLogin, currentUser, onLogout, theme, onToggleT
               </div>
             ) : null}
 
+            {mode === 'login' && !currentUser && localProfiles.length ? (
+              <section className="legacy-recent-profiles" aria-labelledby="recent-profiles-title">
+                <div id="recent-profiles-title">RECENT AGENTS</div>
+                <div>
+                  {localProfiles.map((profile) => (
+                    <button key={profile.id || profile.email} type="button" onClick={() => openProfile(profile.email)}>
+                      <span>{String(profile.username || profile.name || '?').slice(0, 1).toUpperCase()}</span>
+                      <strong>{profile.username || profile.name}</strong>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            ) : null}
+
             {mode === 'register' ? (
               <div className="mb-6 relative">
                 <label htmlFor="legacy-username" className="font-brutal-title text-sm uppercase theme-bg-inverse theme-text-inverse px-2 py-1 absolute -top-3 left-4 border-2 theme-border z-10">Agent ID</label>
@@ -152,11 +180,6 @@ export default function Login({ onLogin, currentUser, onLogout, theme, onToggleT
               <label htmlFor="legacy-email" className="font-brutal-title text-sm uppercase theme-bg-inverse theme-text-inverse px-2 py-1 absolute -top-3 left-4 border-2 theme-border z-10">Email Address</label>
               <input id="legacy-email" type="email" required value={loginForm.email} onChange={(event) => setLoginForm({ ...loginForm, email: event.target.value })} placeholder="your@email.com" className="w-full border-4 theme-border p-4 pt-5 font-brutal-body text-xl brutal-input brutal-shadow" />
             </div>
-            <div className="mb-8 relative">
-              <label htmlFor="legacy-password" className="font-brutal-title text-sm uppercase theme-bg-inverse theme-text-inverse px-2 py-1 absolute -top-3 left-4 border-2 theme-border z-10">Passcode</label>
-              <input id="legacy-password" type="password" required value={loginForm.password} onChange={(event) => setLoginForm({ ...loginForm, password: event.target.value })} placeholder="••••••••" className="w-full border-4 theme-border p-4 pt-5 font-brutal-body text-xl brutal-input brutal-shadow" />
-            </div>
-
             <button type="submit" className={`w-full py-4 font-pixel-eng text-3xl uppercase border-4 theme-border brutal-shadow brutal-btn relative overflow-hidden group ${mode === 'register' ? 'theme-bg-orange' : 'theme-bg-blue'}`}>
               <span className="relative z-10">{mode === 'register' ? 'REGISTER ->' : 'INITIALIZE ->'}</span>
               <span className={`absolute inset-0 ${mode === 'register' ? 'theme-bg-blue' : 'theme-bg-orange'} transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out z-0`} aria-hidden="true" />

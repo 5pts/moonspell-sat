@@ -17,6 +17,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { DataManager } from '../lib/data';
 
+const feedbackParticles = [
+  [-44, -28], [-34, 8], [-26, -42], [-16, 34], [-7, -20], [4, 42], [12, -38],
+  [21, 24], [30, -14], [39, 36], [46, -34], [-41, 39], [36, 3], [-2, -46],
+];
+
 function makeNavItems(sections) {
   const items = [{ id: 'ALL', label: '全部题目', count: 384 }];
   sections.forEach((section) => {
@@ -34,6 +39,32 @@ function makeNavItems(sections) {
     }
   });
   return items;
+}
+
+function AnswerFeedbackFx({ correct, timedOut }) {
+  const tone = timedOut ? 'timeout' : correct ? 'correct' : 'wrong';
+  const label = timedOut ? 'TIME OUT' : correct ? 'CORRECT' : 'WRONG';
+  const symbols = correct ? ['✦', '+', '✓', '[OK]'] : timedOut ? ['⌁', '!', '00', '///'] : ['×', '!', '[ERR]', '///'];
+
+  return (
+    <div className={`answer-feedback-fx answer-feedback-fx--${tone}`} aria-hidden="true">
+      <span className="answer-feedback-fx__wash" />
+      <div className="answer-feedback-fx__stamp">
+        <small>RESULT</small>
+        <strong>{label}</strong>
+      </div>
+      <div className="answer-feedback-fx__particles">
+        {feedbackParticles.map(([x, y], index) => (
+          <i
+            key={`${x}-${y}`}
+            style={{ '--fx-x': `${x}vw`, '--fx-y': `${y}vh`, '--fx-delay': `${index * 18}ms` }}
+          >
+            {symbols[index % symbols.length]}
+          </i>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function QuestionSentence({ sentence, answer, showAnswer }) {
@@ -205,6 +236,14 @@ export default function Quiz({ mode, timeAttack }) {
 
   return (
     <div className={`quiz-layout page-enter ${isSidebarOpen ? '' : 'quiz-layout--collapsed'}`}>
+      {isSubmitted ? (
+        <AnswerFeedbackFx
+          key={`${currentQuestion.id}-${selectedOption}`}
+          correct={isCorrect}
+          timedOut={selectedOption === -1}
+        />
+      ) : null}
+
       <header className="quiz-topbar">
         <button
           className="icon-button quiz-sidebar-toggle"
@@ -333,6 +372,9 @@ export default function Quiz({ mode, timeAttack }) {
             <div className="feedback-outcome">
               <span className={isCorrect ? 'outcome-icon outcome-icon--correct' : 'outcome-icon outcome-icon--wrong'}>
                 {isCorrect ? <Check size={18} /> : <X size={18} />}
+              </span>
+              <span className={`feedback-verdict-stamp ${isCorrect ? 'is-correct' : selectedOption === -1 ? 'is-timeout' : 'is-wrong'}`}>
+                {isCorrect ? 'CORRECT!' : selectedOption === -1 ? 'TIME OUT' : 'WRONG!'}
               </span>
               <strong>{isCorrect ? '正确' : selectedOption === -1 ? '时间到' : '错误'}</strong>
               <span><b>{analysis.answerLetter}. {analysis.answerText}</b>　{analysis.answerTranslation}</span>
