@@ -1,127 +1,184 @@
-import { ArrowRight, UserRound } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import FloatingBackground from '../components/FloatingBackground';
 import MoonAscii from '../components/MoonAscii';
 import { DataManager } from '../lib/data';
 
-export default function Login({ onLogin, currentUser, onLogout }) {
+export default function Login({ onLogin, currentUser, onLogout, theme, onToggleTheme }) {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '' });
+  const [mode, setMode] = useState('login');
+  const [loginForm, setLoginForm] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
-
-  const continueWith = (user) => {
-    onLogin(user);
-    navigate('/');
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setError('');
-    const email = form.email.trim().toLowerCase();
-    const name = form.name.trim();
 
-    if (!email) {
-      setError('请输入用于区分学习档案的邮箱。');
+    if (mode === 'register') {
+      if (!loginForm.username.trim() || !loginForm.email.trim() || !loginForm.password.trim()) {
+        setError('请填写所有字段');
+        return;
+      }
+      const result = DataManager.registerUser(loginForm);
+      if (result.error === 'email_taken') {
+        setError('该邮箱已注册，请直接登录');
+        return;
+      }
+      if (result.error) {
+        setError('注册失败，请检查输入');
+        return;
+      }
+      onLogin(result.user);
+      navigate('/');
       return;
     }
 
-    const existing = DataManager.findUserByEmail(email);
-    if (existing) {
-      const result = DataManager.loginUser({ email });
-      if (result.user) continueWith(result.user);
-      else setError('无法打开这个本机档案。');
+    if (!loginForm.email.trim() || !loginForm.password.trim()) {
+      setError('请输入邮箱和密码');
       return;
     }
-
-    if (!name) {
-      setError('这是一个新档案，请填写你的称呼。');
+    const result = DataManager.loginUser({ email: loginForm.email });
+    if (result.error === 'not_found') {
+      setError('该邮箱未注册，请先注册');
       return;
     }
-
-    const result = DataManager.registerUser({ username: name, email });
-    if (result.user) continueWith(result.user);
-    else setError('无法创建学习档案，请检查输入。');
+    if (result.error) {
+      setError('登录失败');
+      return;
+    }
+    onLogin(result.user);
+    navigate('/');
   };
 
   return (
-    <main className="login-page" id="main-content">
-      <div className="login-bauhaus" aria-hidden="true">
-        <span className="login-bauhaus__circle" />
-        <span className="login-bauhaus__square" />
-        <span className="login-bauhaus__line" />
+    <main className={`legacy-login-shell moonspell-container ${theme === 'dark' ? 'dark-mode' : ''}`} id="main-content">
+      <div className="grain-overlay" aria-hidden="true" />
+      <FloatingBackground variant="legacy" />
+
+      <button
+        type="button"
+        onClick={onToggleTheme}
+        className="legacy-theme-toggle fixed top-4 right-4 md:top-6 md:right-6 z-[100] w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border-4 theme-border theme-bg-card theme-text-primary brutal-shadow brutal-btn text-2xl"
+        title="Toggle Theme Protocol"
+        aria-label="切换明暗主题"
+      >
+        {theme === 'dark' ? '☼' : '☾'}
+      </button>
+
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center z-10 px-4 md:px-8">
+        <div className="flex flex-col items-start animate-fade-in-up relative">
+          <MoonAscii />
+          <h1 className="font-pixel-title text-6xl md:text-[7rem] lg:text-[8rem] theme-text-blue uppercase mb-8 pixel-text-outline leading-none animate-float tracking-tighter">
+            Moon<br />spell
+          </h1>
+          <div className="theme-bg-card border-4 theme-border p-8 brutal-shadow-lg relative stripe-bg w-full max-w-lg">
+            <div className="absolute -top-5 -left-4 theme-bg-orange border-4 theme-border px-4 py-1 font-brutal-title text-xl rotate-[-4deg] brutal-shadow z-10 flex items-center gap-2">
+              <span>☽</span> SYSTEM_INFO
+            </div>
+            <p className="font-brutal-body text-xl md:text-2xl font-bold leading-relaxed mt-3 theme-text-primary">
+              The ultimate <span className="theme-bg-blue-light px-2 py-0.5 border-2 theme-border inline-block transform -rotate-1 brutal-shadow">SAT Sentence Completion</span> training protocol.
+              <br /><br />
+              Enter the brutalist arena, summon the AI Tutor, and break the test.
+            </p>
+          </div>
+        </div>
+
+        <div className="w-full max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: '150ms', animationFillMode: 'forwards' }}>
+          <form onSubmit={handleSubmit} className="w-full theme-bg-card border-4 theme-border brutal-shadow-lg p-8 relative stripe-bg">
+            <div className="absolute -top-5 -left-4 theme-bg-orange border-4 theme-border px-3 py-1 font-brutal-title text-xl rotate-[3deg] brutal-shadow z-10">
+              {mode === 'register' ? 'NEW AGENT' : 'SECURE LOGIN'}
+            </div>
+
+            {currentUser ? (
+              <div className="mt-8 mb-6 border-4 theme-border theme-bg-panel brutal-shadow p-4 text-left">
+                <div className="font-pixel-eng text-sm theme-text-muted mb-2">CURRENT SESSION</div>
+                <div className="font-brutal-title text-lg theme-text-blue">{currentUser.username || currentUser.name}</div>
+                <div className="font-brutal-body text-sm theme-text-muted mt-1">{currentUser.email || 'No email on file'}</div>
+                <div className="flex gap-3 mt-4">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/')}
+                    className="theme-bg-green theme-text-on-color border-2 theme-border brutal-shadow brutal-btn px-3 py-2 font-brutal-title text-sm uppercase"
+                  >
+                    Continue
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onLogout?.();
+                      setLoginForm({ username: '', email: '', password: '' });
+                      setError('');
+                    }}
+                    className="theme-bg-card theme-text-primary border-2 theme-border brutal-shadow brutal-btn px-3 py-2 font-brutal-title text-sm uppercase"
+                  >
+                    Switch
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="mt-8 mb-6 flex border-4 theme-border brutal-shadow overflow-hidden">
+              <button
+                type="button"
+                onClick={() => { setMode('login'); setError(''); }}
+                className={`flex-1 py-3 font-brutal-title text-base md:text-lg uppercase transition-colors ${mode === 'login' ? 'theme-bg-blue theme-text-on-color' : 'theme-bg-card theme-text-primary'}`}
+              >
+                LOGIN
+              </button>
+              <div className="w-1 theme-bg-primary" />
+              <button
+                type="button"
+                onClick={() => { setMode('register'); setError(''); }}
+                className={`flex-1 py-3 font-brutal-title text-base md:text-lg uppercase transition-colors ${mode === 'register' ? 'theme-bg-orange theme-text-on-orange' : 'theme-bg-card theme-text-primary'}`}
+              >
+                REGISTER
+              </button>
+            </div>
+
+            {error ? (
+              <div className="mb-6 border-4 theme-border-red theme-bg-red theme-text-on-color p-3 font-brutal-body text-sm" role="alert">
+                {error}
+              </div>
+            ) : null}
+
+            {mode === 'register' ? (
+              <div className="mb-6 relative">
+                <label htmlFor="legacy-username" className="font-brutal-title text-sm uppercase theme-bg-inverse theme-text-inverse px-2 py-1 absolute -top-3 left-4 border-2 theme-border z-10">Agent ID</label>
+                <input id="legacy-username" type="text" required value={loginForm.username} onChange={(event) => setLoginForm({ ...loginForm, username: event.target.value })} placeholder="Your Name..." className="w-full border-4 theme-border p-4 pt-5 font-brutal-body text-xl brutal-input brutal-shadow" />
+              </div>
+            ) : null}
+
+            <div className="mb-6 relative">
+              <label htmlFor="legacy-email" className="font-brutal-title text-sm uppercase theme-bg-inverse theme-text-inverse px-2 py-1 absolute -top-3 left-4 border-2 theme-border z-10">Email Address</label>
+              <input id="legacy-email" type="email" required value={loginForm.email} onChange={(event) => setLoginForm({ ...loginForm, email: event.target.value })} placeholder="your@email.com" className="w-full border-4 theme-border p-4 pt-5 font-brutal-body text-xl brutal-input brutal-shadow" />
+            </div>
+            <div className="mb-8 relative">
+              <label htmlFor="legacy-password" className="font-brutal-title text-sm uppercase theme-bg-inverse theme-text-inverse px-2 py-1 absolute -top-3 left-4 border-2 theme-border z-10">Passcode</label>
+              <input id="legacy-password" type="password" required value={loginForm.password} onChange={(event) => setLoginForm({ ...loginForm, password: event.target.value })} placeholder="••••••••" className="w-full border-4 theme-border p-4 pt-5 font-brutal-body text-xl brutal-input brutal-shadow" />
+            </div>
+
+            <button type="submit" className={`w-full py-4 font-pixel-eng text-3xl uppercase border-4 theme-border brutal-shadow brutal-btn relative overflow-hidden group ${mode === 'register' ? 'theme-bg-orange' : 'theme-bg-blue'}`}>
+              <span className="relative z-10">{mode === 'register' ? 'REGISTER ->' : 'INITIALIZE ->'}</span>
+              <span className={`absolute inset-0 ${mode === 'register' ? 'theme-bg-blue' : 'theme-bg-orange'} transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out z-0`} aria-hidden="true" />
+            </button>
+
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}
+                className="font-brutal-body text-sm theme-text-muted hover:theme-text-blue transition-colors underline"
+              >
+                {mode === 'login' ? '没有账号？点击注册' : '已有账号？点击登录'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
 
-      <section className="login-story" aria-labelledby="login-title">
-        <a className="wordmark wordmark--large" href="./">MOONSPELL / SAT</a>
-        <div className="login-poster">
-          <span className="login-poster__index">00 / START</span>
-          <h1 id="login-title">MOONSPELL</h1>
-          <p className="login-poster__subtitle">SAT SENTENCE COMPLETION</p>
-          <div className="login-poster__moon" aria-hidden="true"><MoonAscii /></div>
-          <div className="login-poster__shapes" aria-hidden="true"><i /><i /><i /></div>
-        </div>
-      </section>
-
-      <section className="profile-panel" aria-labelledby="profile-title">
-        {currentUser ? (
-          <div className="current-profile">
-            <span className="profile-icon"><UserRound size={24} /></span>
-            <p>当前档案</p>
-            <h2 id="profile-title">{currentUser.username || currentUser.name}</h2>
-            <span>{currentUser.email}</span>
-            <button type="button" className="primary-action" onClick={() => continueWith(currentUser)}>
-              进入 <ArrowRight size={20} />
-            </button>
-            <button
-              type="button"
-              className="text-button"
-              onClick={() => {
-                onLogout?.();
-                setError('');
-              }}
-            >
-              使用其他档案
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} noValidate>
-            <span className="profile-icon"><UserRound size={24} /></span>
-            <p className="panel-kicker">PROFILE</p>
-            <h2 id="profile-title">学习档案</h2>
-            <div className="form-field">
-              <label htmlFor="profile-name">称呼</label>
-              <input
-                id="profile-name"
-                autoComplete="name"
-                value={form.name}
-                onChange={(event) => setForm({ ...form, name: event.target.value })}
-                placeholder="新档案时填写"
-              />
-              <small>已有档案可以留空。</small>
-            </div>
-            <div className="form-field">
-              <label htmlFor="profile-email">邮箱</label>
-              <input
-                id="profile-email"
-                type="email"
-                autoComplete="email"
-                required
-                value={form.email}
-                onChange={(event) => setForm({ ...form, email: event.target.value })}
-                placeholder="name@example.com"
-                aria-describedby={error ? 'profile-error' : 'profile-local-note'}
-              />
-              <small id="profile-local-note">仅用于区分本机档案。</small>
-            </div>
-            {error ? <p className="form-error" id="profile-error" role="alert">{error}</p> : null}
-            <button type="submit" className="primary-action">
-              进入 <ArrowRight size={20} />
-            </button>
-          </form>
-        )}
-
-        <p className="local-data-note">数据保存在本机。</p>
-      </section>
+      <footer className="legacy-login-footer fixed bottom-3 left-1/2 -translate-x-1/2 z-[90] text-center text-[11px] md:text-xs theme-text-muted px-3">
+        <div>created by IsoLab</div>
+        <div>Any issues, contact linjh0811@gmail.com</div>
+      </footer>
     </main>
   );
 }

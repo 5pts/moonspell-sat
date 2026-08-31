@@ -71,6 +71,8 @@ function AppRoutes() {
             onLogin={handleLogin}
             currentUser={currentUser}
             onLogout={handleLogout}
+            theme={theme}
+            onToggleTheme={toggleTheme}
           />
         )}
       />

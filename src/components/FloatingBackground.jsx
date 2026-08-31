@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 const shapes = ['circle', 'square', 'bar', 'ring', 'half', 'dot'];
 const asciiSignals = [
@@ -12,7 +12,46 @@ const asciiSignals = [
   { text: '[D]', left: '90%', duration: '25s', delay: '-9s' },
 ];
 
-export default function FloatingBackground() {
+function LegacyFloatingBackground() {
+  const symbols = ['+', '×', '÷', '=', '>', '<', '[ ]', '{ }', 'SAT', 'VERB', 'NOUN', '☽', '☾', '✧', 'A', 'B', 'C', 'D', '///', '\\\\'];
+  const colors = [
+    'var(--text-primary)', 'var(--text-primary)', 'var(--text-primary)',
+    'var(--accent-blue)', 'var(--accent-orange)', 'var(--accent-red)',
+  ];
+  const elements = useMemo(() => Array.from({ length: 45 }).map((_, index) => ({
+    id: index,
+    char: symbols[Math.floor(Math.random() * symbols.length)],
+    color: colors[Math.floor(Math.random() * colors.length)],
+    left: `${Math.random() * 100}%`,
+    fontSize: `${Math.random() * 4 + 2}rem`,
+    animationDuration: `${Math.random() * 20 + 10}s`,
+    animationDelay: `-${Math.random() * 30}s`,
+    opacity: Math.random() * .15 + .05,
+  })), []);
+
+  return (
+    <div className="legacy-floating-background" aria-hidden="true">
+      {elements.map((element) => (
+        <span
+          key={element.id}
+          className="font-pixel-eng theme-transition"
+          style={{
+            left: element.left,
+            color: element.color,
+            fontSize: element.fontSize,
+            opacity: element.opacity,
+            '--duration': element.animationDuration,
+            animationDelay: element.animationDelay,
+          }}
+        >
+          {element.char}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function BauhausFloatingBackground() {
   const layerRef = useRef(null);
 
   useEffect(() => {
@@ -63,4 +102,8 @@ export default function FloatingBackground() {
       </div>
     </div>
   );
+}
+
+export default function FloatingBackground({ variant = 'bauhaus' }) {
+  return variant === 'legacy' ? <LegacyFloatingBackground /> : <BauhausFloatingBackground />;
 }
