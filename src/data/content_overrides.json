@@ -38,5 +38,933 @@
       "setting": "舞台布景；场景",
       "rehearsal": "排练"
     }
+  },
+  "Q002": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "讽刺的是，一个富裕社会购买的食物远超实际需要，却恰恰因这种过剩而受害，因为在富裕条件下，与过度饮食和营养不良有关的疾病似乎会滋长。",
+    "answerTranslation": "过剩；滋长",
+    "hint": "第一空要概括“购买的食物远超实际需要”；第二空要说明相关疾病在富裕条件下不是消退，而是变得更常见、更严重。哪组词能同时满足这两点？",
+    "cues": [
+      "purchases much more food than it actually needs",
+      "diseases related to overeating and poor nutrition"
+    ],
+    "logicSteps": [
+      {
+        "title": "锁定第一空的因果对象",
+        "text": "that 指回前文“购买的食物远超需要”这一情况，因此第一空应表示数量过多，而不是肥胖本身或生活方式是否实用。"
+      },
+      {
+        "title": "判断第二空的变化方向",
+        "text": "句子说社会因此受害，说明与过度饮食有关的疾病在富裕环境中会滋长，而不是仅仅“适应”或“醒来”。"
+      },
+      {
+        "title": "检查整组搭配",
+        "text": "overabundance 准确概括食物过剩，thrive 表示疾病在这种条件下大量滋生，两空共同完成讽刺性的因果关系。"
+      }
+    ],
+    "concise": "much more food than it needs 对应 overabundance；社会因此受害，说明相关疾病会 thrive。",
+    "optionReviews": {
+      "lavishness . . adapt": "lavishness 强调奢华或铺张，不直接概括食物数量过剩；adapt 只表示适应，也没有说明疾病变得更多或更严重。",
+      "overabundance . . thrive": "正确。overabundance 对应远超需要的食物，thrive 对应相关疾病在富裕条件下滋长。",
+      "corpulence . . vex": "corpulence 是肥胖状态，不是 that 所指的食物过剩；vex 通常作及物动词，不能自然地单独接在 seem to 后。",
+      "practicality . . awaken": "购买过量食物不是 practicality；疾病“醒来”也不是这里描述流行或加重的自然表达。",
+      "commonness . . abound": "abound 可表示大量存在，但 commonness 不能指前文的食物过剩，因果对象不对。"
+    },
+    "contextualGlosses": {
+      "lavishness . . adapt": "奢华；适应",
+      "overabundance . . thrive": "过剩；滋长",
+      "corpulence . . vex": "肥胖；使烦恼",
+      "practicality . . awaken": "实用性；唤醒",
+      "commonness . . abound": "普通；大量存在"
+    }
+  },
+  "Q003": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "由于温泉具有治疗作用，患有各种疾病的游客纷纷涌向这个村庄的温泉池。",
+    "answerTranslation": "有治疗作用的",
+    "hint": "游客患有各种疾病，却主动涌向温泉池。第一句需要说明温泉对这些疾病可能产生什么积极作用。",
+    "cues": [
+      "tourists suffering from various ailments",
+      "flocked to the village's thermal pools"
+    ],
+    "logicSteps": [
+      {
+        "title": "用行为反推原因",
+        "text": "游客带病前往温泉池，说明他们相信温泉能缓解或治疗疾病。"
+      },
+      {
+        "title": "匹配 effects 的含义",
+        "text": "therapeutic effects 是“治疗作用”的固定而自然的搭配，能直接解释 flocked to。"
+      }
+    ],
+    "concise": "患病游客涌向温泉池，是因为温泉被认为具有 therapeutic effects，即治疗作用。",
+    "optionReviews": {
+      "succulent": "succulent 表示多汁的，通常形容食物或植物，不能解释温泉为何吸引病人。",
+      "redolent": "redolent 表示散发某种气味或使人联想到某物，与治疗疾病无关。",
+      "cerebral": "cerebral 表示与大脑有关或偏理性的，不是温泉吸引病人的原因。",
+      "mandatory": "mandatory 表示强制的；句中没有规定游客必须前往。",
+      "therapeutic": "正确。therapeutic 表示有治疗或缓解作用，直接对应 ailments 和游客涌来。"
+    },
+    "contextualGlosses": {
+      "succulent": "多汁的",
+      "redolent": "散发气味的；使人联想的",
+      "cerebral": "与大脑有关的；理性的",
+      "mandatory": "强制的",
+      "therapeutic": "有治疗作用的"
+    }
+  },
+  "Q004": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "Salazar 的研究比此前提出的任何相关理论都更有价值、更全面，因此为她所在领域此后的一切研究奠定了基础。",
+    "answerTranslation": "提供了；研究",
+    "hint": "开头对这项研究作了明确肯定。后半句又出现 the basis for，所选动词应表达“奠定基础”，第二空则应是后来在该领域继续进行的学术活动。",
+    "cues": [
+      "More valuable and comprehensive",
+      "the basis for all subsequent"
+    ],
+    "logicSteps": [
+      {
+        "title": "确定评价方向",
+        "text": "valuable and comprehensive 是正面评价，因此第一空不能表示破坏或消解基础。"
+      },
+      {
+        "title": "识别基础与后续工作的关系",
+        "text": "一项全面研究可以 provide the basis，后来的 investigations 则建立在这一基础之上。"
+      },
+      {
+        "title": "排除负面结果词",
+        "text": "debacles 和 misconceptions 都是负面结果，与句首对 Salazar 研究的肯定不一致。"
+      }
+    ],
+    "concise": "正面评价说明这项研究提供了基础；建立在基础之上的后续学术工作应是 investigations。",
+    "optionReviews": {
+      "undermined . . advancements": "advancements 虽是正面词，但 undermined the basis 表示削弱基础，与句首肯定相反。",
+      "prepared . . debacles": "prepared the basis 不如 provided 自然，而且 debacles 是惨败，不能作为这项优秀研究带来的后续成果。",
+      "provided . . investigations": "正确。provided the basis 是自然搭配，investigations 指后续研究。",
+      "dissolved . . experiments": "dissolved the basis 表示消解基础，与“更有价值、更全面”矛盾。",
+      "reinforced . . misconceptions": "reinforced 可接 basis，但 misconceptions 是错误观念，不能承接正面的研究评价。"
+    },
+    "contextualGlosses": {
+      "undermined . . advancements": "削弱；进展",
+      "prepared . . debacles": "准备；惨败",
+      "provided . . investigations": "提供；研究",
+      "dissolved . . experiments": "消解；实验",
+      "reinforced . . misconceptions": "加强；错误观念"
+    }
+  },
+  "Q005": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "危险的强风阻挠了航天飞机按计划开始任务的尝试，使发射推迟了将近一周。",
+    "answerTranslation": "阻挠；挫败",
+    "hint": "句末的 delaying the launch 给出了直接结果：原定发射没有成功进行。空格中的动词应说明强风对 attempts 做了什么。",
+    "cues": [
+      "Dangerously high winds",
+      "delaying the launch by nearly a week"
+    ],
+    "logicSteps": [
+      {
+        "title": "从结果判断动作",
+        "text": "发射被推迟，说明强风使按时启动任务的尝试失败。"
+      },
+      {
+        "title": "检查动词宾语",
+        "text": "thwart attempts 表示阻挠尝试，既符合含义，也与 attempts 构成自然搭配。"
+      }
+    ],
+    "concise": "发射被推迟近一周，说明强风 thwarted 按时开始任务的尝试。",
+    "optionReviews": {
+      "thwarted": "正确。thwarted 表示阻挠、挫败，直接对应发射被推迟。",
+      "forfeited": "forfeit 表示放弃或丧失某物，强风不能自然地“放弃这些尝试”。",
+      "implemented": "implemented 表示实施，会帮助任务开始，与推迟结果相反。",
+      "discharged": "discharged 表示释放、履行或解雇，不能表达使发射尝试失败。",
+      "redoubled": "redoubled 表示加倍；强风加倍尝试既不合主谓关系，也无法解释推迟。"
+    },
+    "contextualGlosses": {
+      "thwarted": "阻挠；挫败",
+      "forfeited": "放弃；丧失",
+      "implemented": "实施",
+      "discharged": "释放；履行",
+      "redoubled": "使加倍"
+    }
+  },
+  "Q006": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "奥普拉·温弗瑞脱口秀上的嘉宾先是对观众进行长篇斥责，随后又拒绝缓和这些言辞过激的评论，因而冒犯了观众。",
+    "answerTranslation": "长篇斥责；言辞过激的",
+    "hint": "offended 是总结果，and then 连接两个同方向的行为。第一空应是直接针对观众的冒犯性动作；第二空要说明这些 remarks 为什么需要被 moderate。",
+    "cues": [
+      "offended the audience",
+      "refusing to moderate these remarks"
+    ],
+    "logicSteps": [
+      {
+        "title": "让两个行为共同解释 offended",
+        "text": "第一空不能是赞美，第二空也不能是和解性的；两处都应体现攻击性或失控。"
+      },
+      {
+        "title": "利用 moderate 反推形容词",
+        "text": "需要被缓和的 remarks 应是过激、无节制的，即 intemperate。"
+      },
+      {
+        "title": "检查第一空的语法",
+        "text": "by first 后需要动名词。haranguing 表示对人长篇训斥，与 offended the audience 完全对应。"
+      }
+    ],
+    "concise": "haranguing 是对观众长篇斥责；intemperate remarks 是需要被缓和的过激言论，两者共同解释 offended。",
+    "optionReviews": {
+      "flattering . . commendable": "奉承观众和发表值得赞扬的评论通常不会构成冒犯，方向相反。",
+      "haranguing . . intemperate": "正确。haranguing 是长篇斥责，intemperate 表示言辞过激、缺乏节制。",
+      "praising . . radical": "praising 与 offended 不符；radical 只表示激进，并不必然等于无节制的冒犯言辞。",
+      "enraging . . conciliatory": "enraging 可解释冒犯，但 conciliatory 表示调和、安抚；拒绝缓和“安抚性的评论”不合逻辑。",
+      "accommodation . . indulgent": "accommodation 是名词，不能接在 by first 后充当动作；indulgent 也不对应必须缓和的过激评论。"
+    },
+    "contextualGlosses": {
+      "flattering . . commendable": "奉承；值得赞扬的",
+      "haranguing . . intemperate": "长篇斥责；言辞过激的",
+      "praising . . radical": "赞扬；激进的",
+      "enraging . . conciliatory": "激怒；调和的",
+      "accommodation . . indulgent": "迁就；宽纵的"
+    }
+  },
+  "Q007": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "在漫长而艰苦的徒步接近尾声时，Chris 步履蹒跚，缓慢地一瘸一拐回到营地。",
+    "answerTranslation": "蹒跚的；走走停停的",
+    "hint": "long, arduous、limping 和 slowly 都在描写体力耗尽后的步态。所选形容词应表示动作不流畅、时断时续。",
+    "cues": [
+      "long, arduous hike",
+      "limping slowly"
+    ],
+    "logicSteps": [
+      {
+        "title": "抓住步态描写",
+        "text": "limping slowly 说明 Chris 不是健步如飞，而是步子迟缓、不连贯。"
+      },
+      {
+        "title": "匹配 gait 的常见搭配",
+        "text": "a halting gait 指犹豫、停顿或不稳的步态，准确概括疲惫后的行走方式。"
+      }
+    ],
+    "concise": "limping slowly 对应 a halting gait，表示蹒跚、断续的步态。",
+    "optionReviews": {
+      "halting": "正确。halting 表示走走停停、不流畅的，符合 limping slowly。",
+      "robust": "robust 表示强健有力，与艰苦徒步后的跛行相反。",
+      "constant": "constant 只表示持续不变，没有表达步态困难。",
+      "prompt": "prompt 表示迅速或及时，与 slowly 相反。",
+      "facile": "facile 可表示轻松完成的，与 arduous 和 limping 不符。"
+    },
+    "contextualGlosses": {
+      "halting": "蹒跚的；断续的",
+      "robust": "强健的",
+      "constant": "持续不变的",
+      "prompt": "迅速的；及时的",
+      "facile": "轻松的；肤浅的"
+    }
+  },
+  "Q008": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "情节剧演员常常以夸张表演来突出紧张时刻，例如提高嗓门并假装昏厥。",
+    "answerTranslation": "表演夸张的；戏剧化的",
+    "hint": "for example 后不是补充新信息，而是在定义前面的表演方式：提高音量、假装昏倒共同体现了怎样的表演风格？",
+    "cues": [
+      "Actors in melodramas",
+      "raising their voices and pretending to swoon"
+    ],
+    "logicSteps": [
+      {
+        "title": "把例子还原成特征",
+        "text": "提高嗓门和假装昏厥都是刻意夸大的舞台动作。"
+      },
+      {
+        "title": "匹配 melodramas",
+        "text": "histrionic 专指过分戏剧化、情绪夸张的表现，与情节剧演员的例子吻合。"
+      }
+    ],
+    "concise": "raise their voices 和 pretend to swoon 都是夸张的戏剧动作，因此应选 histrionic。",
+    "optionReviews": {
+      "imperious": "imperious 表示专横、命令式的，例子强调的是夸张表演而非支配他人。",
+      "inscrutable": "inscrutable 表示难以理解或看透，与公开夸张的动作相反。",
+      "convivial": "convivial 表示友好欢乐、善于交际，不能概括假装昏厥。",
+      "histrionic": "正确。histrionic 表示表演过度、戏剧化，正对应提高音量和假装昏厥。",
+      "solicitous": "solicitous 表示关切体贴或急切担忧，句中没有关心他人的行为。"
+    },
+    "contextualGlosses": {
+      "imperious": "专横的",
+      "inscrutable": "难以理解的",
+      "convivial": "欢乐友好的",
+      "histrionic": "表演夸张的；戏剧化的",
+      "solicitous": "关切的；体贴的"
+    }
+  },
+  "Q009": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "第一批访客抵达后不久，这座偏远岛屿上越来越多的居民开始认为，外部世界或许并非充满威胁，反而可能十分迷人，值得探索。",
+    "answerTranslation": "具有威胁的；迷人的",
+    "hint": "instead of 要求前后形成反转，后面的 and worth exploring 又限定第二空必须是正面评价。第一空则应是居民先前对外部世界的负面看法。",
+    "cues": [
+      "instead of being",
+      "worth exploring"
+    ],
+    "logicSteps": [
+      {
+        "title": "确定第二空的感情色彩",
+        "text": "worth exploring 表明外部世界对居民产生了吸引力，因此第二空必须是正面的。"
+      },
+      {
+        "title": "利用 instead of 建立对比",
+        "text": "新认识与旧看法相反，所以第一空应表示危险或令人畏惧，第二空应表示迷人。"
+      },
+      {
+        "title": "检查语义完整性",
+        "text": "threatening 与 fascinating 构成明确反转，也能解释访客到来后居民为何愿意探索外界。"
+      }
+    ],
+    "concise": "instead of 建立负面到正面的反转；worth exploring 对应 fascinating，原先的看法则是 threatening。",
+    "optionReviews": {
+      "insular . . unlimited": "insular 通常形容人或社会闭塞，不自然地形容“外部世界”；unlimited 也不直接说明值得探索。",
+      "friendly . . wicked": "从 friendly 转为 wicked 是正面到负面，与 worth exploring 冲突。",
+      "amiable . . cooperative": "两词都偏正面，不能满足 instead of 所需的观念反转。",
+      "threatening . . fascinating": "正确。居民发现外部世界并非危险，而是迷人且值得探索。",
+      "forbidding . . harmful": "forbidding 和 harmful 都是负面词，第二空无法与 worth exploring 并列。"
+    },
+    "contextualGlosses": {
+      "insular . . unlimited": "闭塞的；无限的",
+      "friendly . . wicked": "友好的；邪恶的",
+      "amiable . . cooperative": "和蔼的；合作的",
+      "threatening . . fascinating": "具有威胁的；迷人的",
+      "forbidding . . harmful": "令人生畏的；有害的"
+    }
+  },
+  "Q010": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "她讨厌奉承，因此把那些试图通过赞美来赢得她认可的人视为谄媚者。",
+    "answerTranslation": "奉承；谄媚者",
+    "hint": "第二空的人被后面的定语从句直接定义：他们通过 praise 来争取认可。第一空则是她不喜欢的这种行为本身。",
+    "cues": [
+      "win her approval through praise",
+      "Her dislike of"
+    ],
+    "logicSteps": [
+      {
+        "title": "先定义第二空的人",
+        "text": "靠赞美有权势者来获得好感的人是 sycophants，即谄媚者。"
+      },
+      {
+        "title": "再回填第一空的行为",
+        "text": "sycophants 使用的手段正是 flattery，因此她对奉承的厌恶让她这样评价他们。"
+      }
+    ],
+    "concise": "through praise 定义了 flattery；用赞美换取认可的人是 sycophants。",
+    "optionReviews": {
+      "autocrats . . dictators": "两词都指专制统治者，无法对应“通过赞美赢得认可”的人。",
+      "defiance . . toadied": "defiance 是反抗，不是赞美；toadied 是动词过去式，也不能作 regard...as 后的身份名词。",
+      "tyrants . . connoisseurs": "connoisseurs 是鉴赏家，与讨好他人无关；tyrants 也不是她厌恶的赞美行为。",
+      "adulation . . superiors": "adulation 与 flattery 接近，但 superiors 只是上级，并不表示通过赞美讨好她的人。",
+      "flattery . . sycophants": "正确。flattery 是奉承，sycophants 是以奉承换取好感的人。"
+    },
+    "contextualGlosses": {
+      "autocrats . . dictators": "独裁者；专制统治者",
+      "defiance . . toadied": "反抗；谄媚",
+      "tyrants . . connoisseurs": "暴君；鉴赏家",
+      "adulation . . superiors": "过度赞美；上级",
+      "flattery . . sycophants": "奉承；谄媚者"
+    }
+  },
+  "Q011": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "一些科学家推测，侏罗纪时期一种名为 Sordes pilosus 的小型翼龙长有膜状翅膀，这些翅膀轻薄、柔韧，而且有些透明。",
+    "answerTranslation": "膜状的",
+    "hint": "that were 后的 thin、pliable、transparent 共同描述翅膀的材质。哪一个词表示像薄膜一样的结构？",
+    "cues": [
+      "thin, pliable",
+      "somewhat transparent"
+    ],
+    "logicSteps": [
+      {
+        "title": "把三个性质合并",
+        "text": "轻薄、可弯曲且略透明，说明翅膀不是坚硬实体，而是由薄膜构成。"
+      },
+      {
+        "title": "匹配生物结构词",
+        "text": "membranous 表示膜状的，正是对这种翼结构的准确描述。"
+      }
+    ],
+    "concise": "thin、pliable、transparent 都指向薄膜结构，因此翅膀是 membranous。",
+    "optionReviews": {
+      "callous": "callous 表示皮肤硬化的或冷酷的，与轻薄柔韧相反。",
+      "arable": "arable 表示土地适合耕种，不能修饰翅膀材质。",
+      "inflexible": "inflexible 表示不能弯曲，直接与 pliable 矛盾。",
+      "membranous": "正确。membranous 表示膜状的，符合轻薄、柔韧和半透明。",
+      "viscous": "viscous 表示液体黏稠，不能描述这种翅膀结构。"
+    },
+    "contextualGlosses": {
+      "callous": "硬化的；冷酷的",
+      "arable": "适合耕种的",
+      "inflexible": "不能弯曲的",
+      "membranous": "膜状的",
+      "viscous": "黏稠的"
+    }
+  },
+  "Q012": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "为了反映该国口语的多样性，该国作家经常混合使用不同方言。",
+    "answerTranslation": "多样性；异质性",
+    "hint": "后半句的 a mixture of dialects 是第一空的具体表现。多种方言混合说明该国口语具有什么性质？",
+    "cues": [
+      "a mixture of dialects",
+      "that nation's spoken languages"
+    ],
+    "logicSteps": [
+      {
+        "title": "识别 reflect 的对象",
+        "text": "作家混合不同方言，是为了在作品中呈现该国语言并不单一。"
+      },
+      {
+        "title": "用名词概括差异",
+        "text": "heterogeneity 表示由不同成分构成的多样性，能概括方言混合。"
+      }
+    ],
+    "concise": "a mixture of dialects 表明口语由多种不同成分构成，即 heterogeneity。",
+    "optionReviews": {
+      "articulation": "articulation 指发音或清晰表达，不等于方言种类多。",
+      "intonation": "intonation 指语调变化，不能概括多种方言并存。",
+      "spontaneity": "spontaneity 指自发性，后文没有讨论说话是否预先计划。",
+      "profundity": "profundity 指深刻性，与方言混合无关。",
+      "heterogeneity": "正确。heterogeneity 指异质性或多样性，对应 mixture of dialects。"
+    },
+    "contextualGlosses": {
+      "articulation": "发音；清晰表达",
+      "intonation": "语调",
+      "spontaneity": "自发性",
+      "profundity": "深刻性",
+      "heterogeneity": "多样性；异质性"
+    }
+  },
+  "Q013": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "她一再郑重道歉，却发现那些为自己开脱的借口并没有起到缓和作用。",
+    "answerTranslation": "缓和的；减轻痛苦的",
+    "hint": "道歉和借口原本应当降低对方的不满，但 only to discover 与 failed 表明这个目的没有达到。第一空要说她希望产生的“缓解”效果。",
+    "cues": [
+      "apologized profusely",
+      "failed to have an effect"
+    ],
+    "logicSteps": [
+      {
+        "title": "判断预期功能",
+        "text": "道歉通常试图缓和冒犯或不快，因此所期待的是减轻负面影响。"
+      },
+      {
+        "title": "理解 palliative",
+        "text": "palliative 可指缓解疼痛或问题的作用；failed 表示她的自利借口没有带来这种缓和。"
+      }
+    ],
+    "concise": "道歉本应缓和不满；她的借口没有产生这种 palliative effect。",
+    "optionReviews": {
+      "reprehensible": "reprehensible 表示应受谴责的；句子需要的是借口本应产生、却未产生的缓和效果。",
+      "palliative": "正确。palliative effect 指减轻痛苦、冲突或负面影响的作用。",
+      "depreciatory": "depreciatory 表示贬低的，不是道歉试图达到的效果。",
+      "litigious": "litigious 表示好诉讼的，不能自然说明道歉的效果。",
+      "compendious": "compendious 表示简明而全面的，通常描述文字或概述，不描述道歉效果。"
+    },
+    "contextualGlosses": {
+      "reprehensible": "应受谴责的",
+      "palliative": "缓和的；减轻痛苦的",
+      "depreciatory": "贬低的",
+      "litigious": "好诉讼的",
+      "compendious": "简明而全面的"
+    }
+  },
+  "Q014": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "骗子的猎物通常是轻信他人、无法抵挡其圈套的人。",
+    "answerTranslation": "猎物；受害者",
+    "hint": "who 从句描述的是会掉进圈套的人。空格要表达这个人与 swindler 之间“被欺骗者”的关系。",
+    "cues": [
+      "a gullible person",
+      "unable to resist the swindler's traps"
+    ],
+    "logicSteps": [
+      {
+        "title": "确定角色关系",
+        "text": "swindler 设置圈套，gullible person 落入圈套，因此后者是受害者。"
+      },
+      {
+        "title": "理解比喻用法",
+        "text": "prey 原指被捕食的猎物，也常比喻骗子或掠夺者的受害者。"
+      }
+    ],
+    "concise": "会落入骗子圈套的轻信者是骗子的 prey，即猎物或受害者。",
+    "optionReviews": {
+      "peer": "peer 是同等地位者，不能表达被骗子利用的人。",
+      "ally": "ally 是盟友，与落入圈套的受害者角色不同。",
+      "prey": "正确。prey 可比喻骗子锁定并欺骗的受害者。",
+      "nemesis": "nemesis 是难以战胜的对手或报应，不会是 gullible 的受骗者。",
+      "superior": "superior 是上级或更优秀者，与骗子圈套中的受害关系无关。"
+    },
+    "contextualGlosses": {
+      "peer": "同等者；同龄人",
+      "ally": "盟友",
+      "prey": "猎物；受害者",
+      "nemesis": "克星；报应",
+      "superior": "上级；更优秀者"
+    }
+  },
+  "Q015": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "十九世纪冷藏和运输条件的改善，扩大了许多美国家庭可以买到的食物种类。",
+    "answerTranslation": "扩大了；种类",
+    "hint": "冷藏减少变质，运输让更多产地的食物进入家庭。两项 improvements 共同改变的应是可获得食物的范围，而不是制造短缺。",
+    "cues": [
+      "Improvements in refrigeration and transportation",
+      "available food"
+    ],
+    "logicSteps": [
+      {
+        "title": "分析两项技术的共同结果",
+        "text": "冷藏延长保存时间，运输扩大来源，两者都会让家庭获得更多不同食物。"
+      },
+      {
+        "title": "匹配动词与宾语",
+        "text": "expanded the variety 表示扩大种类，既符合历史变化方向，也是自然搭配。"
+      }
+    ],
+    "concise": "冷藏和运输改善使更多种类的食物可获得，因此 expanded the variety。",
+    "optionReviews": {
+      "slowed . . distribution": "运输改善不会减慢分配；该组合与 improvements 的方向相反。",
+      "accelerated . . perishability": "冷藏会降低易腐性，而不是加速变质。",
+      "expanded . . variety": "正确。技术改善扩大了家庭可获得食物的种类。",
+      "lowered . . amount": "改善供应条件不会减少可获得食物的数量。",
+      "created . . dearth": "dearth 是短缺；冷藏和运输改善通常缓解而非制造短缺。"
+    },
+    "contextualGlosses": {
+      "slowed . . distribution": "减慢；分配",
+      "accelerated . . perishability": "加速；易腐性",
+      "expanded . . variety": "扩大；种类",
+      "lowered . . amount": "降低；数量",
+      "created . . dearth": "造成；短缺"
+    }
+  },
+  "Q016": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "虽然 Eudora Welty 和 William Faulkner 的写作风格截然不同，但由于两人都曾生活在密西西比州并以那里为写作对象，把他们进行比较是不可避免的。",
+    "answerTranslation": "比较；不可避免的",
+    "hint": "Although 先承认风格不同，because 则给出把两位作家联系起来的共同点。句子不是说他们相似，而是说评论者很难不做某件事。",
+    "cues": [
+      "distinctively different styles",
+      "both lived in and wrote about Mississippi"
+    ],
+    "logicSteps": [
+      {
+        "title": "区分“比较”与“相似”",
+        "text": "风格不同不妨碍比较；共同的地域背景反而会促使人们把他们并置讨论。"
+      },
+      {
+        "title": "利用 because 判断必然性",
+        "text": "两人都生活并书写密西西比，使这种 comparison 很自然，甚至 inevitable。"
+      }
+    ],
+    "concise": "两人风格虽不同，却共享密西西比背景，因此 comparison 是 inevitable。",
+    "optionReviews": {
+      "comparison . . inevitable": "正确。共同地域背景使人们不可避免地比较两位作家。",
+      "cooperation . . destructive": "句中没有两人合作的信息，也没有说明这种合作会造成破坏。",
+      "discord . . legendary": "风格不同不等于两人不和，更没有“传奇般不和”的证据。",
+      "similarity . . unlikely": "句子承认风格不同，但 because 引出的共同点用来解释为何要比较，而不是断言相似性不可能。",
+      "rivalry . . redundant": "共同地点不能证明两人竞争，redundant 也无法由 because 合理推出。"
+    },
+    "contextualGlosses": {
+      "comparison . . inevitable": "比较；不可避免的",
+      "cooperation . . destructive": "合作；破坏性的",
+      "discord . . legendary": "不和；传奇性的",
+      "similarity . . unlikely": "相似性；不太可能的",
+      "rivalry . . redundant": "竞争；多余的"
+    }
+  },
+  "Q017": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "Cito Gaston 是最不外露情感的棒球经理之一，因此他在球队赢得季后赛后当众落泪，让记者十分惊讶。",
+    "answerTranslation": "感情外露的；善于表达的",
+    "hint": "surprised reporters 说明公开落泪与他一贯形象相反。空格位于 least 后，应描述“公开表现情绪”这种特征。",
+    "cues": [
+      "one of the least",
+      "weeping openly"
+    ],
+    "logicSteps": [
+      {
+        "title": "用 surprised 建立反差",
+        "text": "如果他平时很少公开表现情绪，那么胜利后当众哭泣才会令记者意外。"
+      },
+      {
+        "title": "匹配人物特征词",
+        "text": "demonstrative 可指感情外露、以动作公开表达情绪，正好与 weeping openly 对应。"
+      }
+    ],
+    "concise": "公开落泪之所以令人意外，是因为他平时 least demonstrative，不轻易外露情感。",
+    "optionReviews": {
+      "somber": "somber 表示严肃或忧郁；least somber 不能解释为什么公开落泪令人意外。",
+      "demonstrative": "正确。demonstrative 表示感情外露，least demonstrative 与 weeping openly 构成反差。",
+      "insufferable": "insufferable 表示令人难以忍受，与是否公开表达情绪无关。",
+      "bountiful": "bountiful 表示丰富慷慨，通常不这样描述经理的情绪表达。",
+      "wistful": "wistful 表示惆怅向往；least wistful 也不能直接对应当众落泪的表达方式。"
+    },
+    "contextualGlosses": {
+      "somber": "严肃的；忧郁的",
+      "demonstrative": "感情外露的",
+      "insufferable": "令人难以忍受的",
+      "bountiful": "丰富的；慷慨的",
+      "wistful": "惆怅向往的"
+    }
+  },
+  "Q018": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "那位评论家的文章晦涩而密集，以至于初读时，人们会觉得其不透明、难懂之处很难穿透。",
+    "answerTranslation": "晦涩；不透明性",
+    "hint": "obscure、dense 和 hard to penetrate 共同使用了“看不透”的比喻。第一空要把这种难以理解的性质名词化。",
+    "cues": [
+      "obscure and dense",
+      "hard to penetrate"
+    ],
+    "logicSteps": [
+      {
+        "title": "识别贯穿全句的比喻",
+        "text": "文章像不透明物体一样难以穿透，实际指内容难懂。"
+      },
+      {
+        "title": "选择对应抽象名词",
+        "text": "opacity 既可指物理上的不透明，也可比喻语言或思想晦涩。"
+      }
+    ],
+    "concise": "obscure、dense、penetrate 都指向“看不透”的比喻，因此应选 opacity。",
+    "optionReviews": {
+      "brevity": "brevity 是简短；文章晦涩密集不等于篇幅短。",
+      "rigidity": "rigidity 是僵硬或严格，不能直接概括难以理解。",
+      "floridity": "floridity 是辞藻华丽；它可能造成阅读负担，但题干核心是晦涩和难以穿透。",
+      "harmony": "harmony 是和谐，与 obscure and dense 的负面描述不符。",
+      "opacity": "正确。opacity 可比喻文章晦涩难懂，与 hard to penetrate 呼应。"
+    },
+    "contextualGlosses": {
+      "brevity": "简短",
+      "rigidity": "僵硬；严格",
+      "floridity": "辞藻华丽",
+      "harmony": "和谐",
+      "opacity": "晦涩；不透明性"
+    }
+  },
+  "Q019": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "寻求获准在阿拉斯加野生动物保护区钻探的石油公司声称，以往在类似地区钻探对动物造成的影响微乎其微。",
+    "answerTranslation": "微不足道的；可忽略的",
+    "hint": "石油公司正在争取 drilling permission，因此会选择一个能降低环境担忧的说法。空格应表示以往钻探对动物几乎没有造成影响。",
+    "cues": [
+      "seeking permission to drill",
+      "effects of previous drilling"
+    ],
+    "logicSteps": [
+      {
+        "title": "先判断说话者的目的",
+        "text": "公司想获得许可，会强调类似钻探没有给动物带来严重后果。"
+      },
+      {
+        "title": "匹配影响程度",
+        "text": "negligible 表示小到可以忽略，恰好服务于公司降低风险的论证。"
+      }
+    ],
+    "concise": "为了争取钻探许可，公司会声称既往影响很小，因此选 negligible。",
+    "optionReviews": {
+      "irrepressible": "irrepressible 表示无法抑制，不能自然说明影响的大小，也不利于争取许可。",
+      "counterproductive": "counterproductive 表示产生反效果，仍是明显负面影响，与公司论证目的不符。",
+      "negligible": "正确。negligible 表示影响小到可忽略，能支持获准钻探的主张。",
+      "momentous": "momentous 表示影响重大，与公司希望淡化环境风险相反。",
+      "magnanimous": "magnanimous 表示宽宏大量，通常形容人或行为，不能形容钻探对动物的影响。"
+    },
+    "contextualGlosses": {
+      "irrepressible": "无法抑制的",
+      "counterproductive": "产生反效果的",
+      "negligible": "微不足道的；可忽略的",
+      "momentous": "重大的",
+      "magnanimous": "宽宏大量的"
+    }
+  },
+  "Q020": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "为了避免自己的歌曲变得可预测，作曲家 Stephen Sondheim 力求在其中加入出人意料的元素。",
+    "answerTranslation": "可预测的",
+    "hint": "句末的 surprise 与第一空构成直接反义。加入惊喜元素，是为了避免作品具有什么缺点？",
+    "cues": [
+      "To avoid being",
+      "an element of surprise"
+    ],
+    "logicSteps": [
+      {
+        "title": "识别目的关系",
+        "text": "strives for surprise 是手段，avoid being 后是他想防止的相反状态。"
+      },
+      {
+        "title": "建立反义对应",
+        "text": "surprising 的相反状态是 predictable，即听众能够预料歌曲的发展。"
+      }
+    ],
+    "concise": "追求 surprise 是为了避免歌曲 predictable。",
+    "optionReviews": {
+      "erratic": "erratic 表示变化无常，本身就不易预测，不需要靠 surprise 来避免。",
+      "informal": "informal 表示不正式，与歌曲是否出人意料没有直接关系。",
+      "elaborate": "elaborate 表示复杂精细，加入惊喜并不是为了避免复杂。",
+      "predictable": "正确。surprise 用来打破听众可以预料的模式。",
+      "idiosyncratic": "idiosyncratic 表示独特个性化，通常更容易带来意外感，不是这里要避免的缺点。"
+    },
+    "contextualGlosses": {
+      "erratic": "变化无常的",
+      "informal": "非正式的",
+      "elaborate": "复杂精细的",
+      "predictable": "可预测的",
+      "idiosyncratic": "独特个性化的"
+    }
+  },
+  "Q021": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "由于这些大熊猫已经因疾病和干旱而变得虚弱，一个严酷的冬天会给它们带来灾难性后果。",
+    "answerTranslation": "灾难性的",
+    "hint": "Because 引出的疾病和干旱已经削弱了熊猫；再叠加 harsh winter，后果的严重程度应当被放大，而不是被弱化。",
+    "cues": [
+      "already been weakened by disease and drought",
+      "a harsh winter"
+    ],
+    "logicSteps": [
+      {
+        "title": "累积风险条件",
+        "text": "熊猫已经受到疾病和干旱影响，抵御严冬的能力很弱。"
+      },
+      {
+        "title": "判断后果强度",
+        "text": "harsh winter 在这种脆弱状态下可能造成极其严重的损失，因此应是 catastrophic。"
+      }
+    ],
+    "concise": "疾病、干旱和严冬叠加会造成极严重后果，因此选 catastrophic。",
+    "optionReviews": {
+      "preventive": "preventive 表示预防性的，严冬不会预防熊猫面临的问题。",
+      "regressive": "regressive 表示倒退的，不能准确表达对虚弱动物造成的严重损害。",
+      "catastrophic": "正确。catastrophic 表示灾难性的，符合多重风险叠加后的严重结果。",
+      "unforeseen": "unforeseen 表示未预见的；前文已经列出虚弱原因，严重后果并非重点在“意外”。",
+      "moderate": "moderate 表示中等的，明显低估了 disease、drought 和 harsh winter 的共同影响。"
+    },
+    "contextualGlosses": {
+      "preventive": "预防性的",
+      "regressive": "倒退的",
+      "catastrophic": "灾难性的",
+      "unforeseen": "未预见的",
+      "moderate": "中等的；适度的"
+    }
+  },
+  "Q022": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "对许多村民来说，婚姻是一种实际安排：它不一定完全没有爱情，但主要还是以经济利益为基础。",
+    "answerTranslation": "安排；缺乏",
+    "hint": "冒号后在解释 practical 的含义：婚姻主要基于经济利益，但 not necessarily 又保留了爱情可能存在的空间。第一空需要一个中性的制度性名词，第二空应能与 of love 搭配表示“没有爱情”。",
+    "cues": [
+      "a practical",
+      "grounded largely in economic advantage"
+    ],
+    "logicSteps": [
+      {
+        "title": "概括婚姻的功能性质",
+        "text": "以经济利益为主要基础的婚姻可被描述为一种 practical arrangement。"
+      },
+      {
+        "title": "处理 not necessarily",
+        "text": "devoid of love 表示没有爱情；not necessarily devoid 则准确表达“并非一定没有爱情”。"
+      },
+      {
+        "title": "检查让步语气",
+        "text": "整句不是否认爱情，而是说即使可能有爱情，经济优势仍是主要基础。"
+      }
+    ],
+    "concise": "婚姻被视为 practical arrangement；not necessarily devoid of love 表示可能有爱，但主要基于经济利益。",
+    "optionReviews": {
+      "arrangement . . devoid": "正确。arrangement 是中性的实际安排，devoid of love 是“没有爱情”的自然搭配。",
+      "entertainment . . disparaging": "婚姻不是一种 entertainment；disparaging of love 表示贬低爱情，也不等于没有爱情。",
+      "attitude . . consisting": "婚姻本身不是 attitude；consisting of love 与 economic advantage 的关系也不符合原句结构。",
+      "bargain . . worthy": "bargain 带交易色彩但过于狭窄；not necessarily worthy of love 表示“不值得被爱”，不是婚姻是否包含爱情。",
+      "misfortune . . trusting": "misfortune 是不幸，句中只是强调实际性；trusting of love 也不是自然搭配。"
+    },
+    "contextualGlosses": {
+      "arrangement . . devoid": "安排；缺乏",
+      "entertainment . . disparaging": "娱乐；贬低的",
+      "attitude . . consisting": "态度；由……组成",
+      "bargain . . worthy": "交易；值得的",
+      "misfortune . . trusting": "不幸；信任的"
+    }
+  },
+  "Q023": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "Maggie 是个拖延者，天生倾向于拖着不作决定，并把讨论延长。",
+    "answerTranslation": "拖延决定；延长",
+    "hint": "逗号后的两个动作都要具体解释 procrastinator。第二空修饰 discussions，应表示让讨论更久；第一空则是为争取时间而迟迟不表态。",
+    "cues": [
+      "is a procrastinator",
+      "discussions"
+    ],
+    "logicSteps": [
+      {
+        "title": "让两个动词同向",
+        "text": "拖延者会延后决定，也会让讨论持续更久，两空都应表达推迟。"
+      },
+      {
+        "title": "确认精确词义",
+        "text": "temporize 指为了争取时间而拖延或含糊应对，prolong discussions 则是延长讨论。"
+      }
+    ],
+    "concise": "procrastinator 会 temporize，并 prolong discussions；两处都具体表现拖延。",
+    "optionReviews": {
+      "meddle . . scoff at": "meddle 是干涉，scoff at 是嘲笑，都不是拖延行为。",
+      "temporize . . prolong": "正确。temporize 是拖延表态，prolong 是延长讨论。",
+      "misbehave . . disrupt": "行为不端和打断讨论可能造成问题，但不能准确解释 procrastinator。",
+      "sneer . . terminate": "sneer 是嘲笑，terminate discussions 还是结束讨论，与拖延相反。",
+      "withdraw . . intrude in": "退出和介入方向矛盾，也没有体现把事情拖延。"
+    },
+    "contextualGlosses": {
+      "meddle . . scoff at": "干涉；嘲笑",
+      "temporize . . prolong": "拖延决定；延长",
+      "misbehave . . disrupt": "行为不端；扰乱",
+      "sneer . . terminate": "讥笑；终止",
+      "withdraw . . intrude in": "退出；闯入"
+    }
+  },
+  "Q024": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "正如玻璃窗既让光线进入建筑又起到隔热作用，某些大气气体也让射入的阳光通过，并把地面辐射出的热量留住，从而防止温暖逸散。",
+    "answerTranslation": "让……进入；留住",
+    "hint": "Just as 建立窗户与大气气体的对应：窗户让光进入，同时阻止热量逃走。两空必须分别表达“放进阳光”和“留住热量”。",
+    "cues": [
+      "offer buildings both light and insulation",
+      "preventing warmth from escaping"
+    ],
+    "logicSteps": [
+      {
+        "title": "拆开类比的两项功能",
+        "text": "light 对应允许阳光进入，insulation 对应阻止热量离开。"
+      },
+      {
+        "title": "匹配两个宾语",
+        "text": "gases admit incoming sunlight，并 contain radiated heat，分别完成透光与保温。"
+      },
+      {
+        "title": "用结果验证",
+        "text": "contain heat 才能推出 preventing warmth from escaping；释放或传递热量都会与结果冲突。"
+      }
+    ],
+    "concise": "大气气体像玻璃一样 admit sunlight、contain heat，因此温暖不会逸散。",
+    "optionReviews": {
+      "conduct . . release": "conduct sunlight 不如 admit 符合“让光进入”；release heat 会让热量逸散，与句末相反。",
+      "deflect . . transmit": "deflect sunlight 表示把阳光偏转开，不能提供 light；transmit heat 也不表示保温。",
+      "admit . . contain": "正确。admit 是让阳光进入，contain 是把地面辐射的热量留住。",
+      "absorb . . dispense": "absorb sunlight 强调吸收而非让光通过；dispense heat 表示释放或分配热量，与保温相反。",
+      "resist . . trap": "trap heat 符合第二空，但 resist sunlight 表示阻挡阳光，不能对应窗户提供光线。"
+    },
+    "contextualGlosses": {
+      "conduct . . release": "传导；释放",
+      "deflect . . transmit": "使偏转；传递",
+      "admit . . contain": "让……进入；留住",
+      "absorb . . dispense": "吸收；释放",
+      "resist . . trap": "阻挡；困住"
+    }
+  },
+  "Q025": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "这位演讲者因风格出众而受到赞扬，却因内容空洞而遭到嘲笑；她常常仅凭华丽言辞打动天真的听众，让他们误以为她的演讲有实质内容。",
+    "answerTranslation": "华丽言辞；实质内容",
+    "hint": "style 与 vacuity 是核心对照：她拥有能打动人的表达形式，却缺少真正内容。第一空是形式，第二空是听众误以为存在的内容。",
+    "cues": [
+      "praised for her style yet ridiculed for her vacuity",
+      "alone"
+    ],
+    "logicSteps": [
+      {
+        "title": "把评价拆成形式与内容",
+        "text": "她的 style 受到肯定，但 vacuity 表示思想内容空洞。"
+      },
+      {
+        "title": "解释 naive listeners 的误判",
+        "text": "听众被 rhetoric 打动，便误以为华丽表达背后存在 substance。"
+      },
+      {
+        "title": "利用 alone 强调空洞",
+        "text": "rhetoric alone 表明真正发挥作用的只有修辞，而非论证或实质内容。"
+      }
+    ],
+    "concise": "她只有动人的 rhetoric，却让听众误以为演讲有 substance；这正对应 style 与 vacuity 的对照。",
+    "optionReviews": {
+      "reason . . dalliance": "reason 是理性论证，不符合 vacuity；dalliance 是短暂涉猎或调情，也不是演讲的实质内容。",
+      "infelicity . . conviction": "infelicity 是表达不当，与 praised for her style 相反；conviction 也不等于内容充实。",
+      "rhetoric . . substance": "正确。rhetoric 是有感染力的表达形式，substance 是她实际上缺少却让听众误以为存在的内容。",
+      "pragmatism . . futility": "pragmatism 不是单纯语言风格；让人相信演讲“有徒劳性”也不合语义。",
+      "boorishness . . integrity": "boorishness 是粗鲁，与风格受赞扬相反；integrity 指正直或完整性，不是 vacuity 的直接反面。"
+    },
+    "contextualGlosses": {
+      "reason . . dalliance": "理性；短暂涉猎",
+      "infelicity . . conviction": "表达不当；确信",
+      "rhetoric . . substance": "华丽言辞；实质内容",
+      "pragmatism . . futility": "实用主义；徒劳",
+      "boorishness . . integrity": "粗鲁；正直"
+    }
+  },
+  "Q026": {
+    "reviewStatus": "reviewed",
+    "reviewedAt": "2026-09-01",
+    "sentenceTranslation": "这位演员以任性易怒的行为闻名：只要他的每个突发念头没有立刻得到满足，他就会迅速恼怒。",
+    "answerTranslation": "任性易怒的；孩子气的",
+    "hint": "冒号后的 he quickly became irritated 是对空格的定义，if his every whim was not immediately satisfied 则进一步表现出孩子气的任性。",
+    "cues": [
+      "quickly became irritated",
+      "every whim was not immediately satisfied"
+    ],
+    "logicSteps": [
+      {
+        "title": "提取行为特征",
+        "text": "愿望稍不满足就立刻生气，表现为任性、缺乏耐心和孩子气。"
+      },
+      {
+        "title": "匹配人格形容词",
+        "text": "petulant 专指因小事或愿望不被满足而闹脾气、易怒。"
+      }
+    ],
+    "concise": "每个 whim 不被立即满足就恼怒，是典型的 petulant behavior。",
+    "optionReviews": {
+      "fastidious": "fastidious 表示对细节或标准非常挑剔，不能准确概括愿望不满足就闹脾气。",
+      "sedulous": "sedulous 表示勤勉认真的，与易怒任性无关。",
+      "vindictive": "vindictive 表示怀恨并寻求报复；句中只有立即恼怒，没有报复行为。",
+      "petulant": "正确。petulant 表示孩子气地任性易怒，正对应 whim 未满足便生气。",
+      "mercenary": "mercenary 表示唯利是图，句中没有金钱动机。"
+    },
+    "contextualGlosses": {
+      "fastidious": "挑剔的；一丝不苟的",
+      "sedulous": "勤勉的",
+      "vindictive": "报复心强的",
+      "petulant": "任性易怒的；孩子气的",
+      "mercenary": "唯利是图的"
+    }
   }
 }
